@@ -16,8 +16,6 @@ export class RegisterDto {
   name: string;
 
   @IsString()
-  @MinLength(10)
-  @MaxLength(11)
   @ApiProperty({ required: true, example: '13996063278' })
   @Matches(regexBase.celular, { message: 'invalid phone number format' })
   phone: string;
