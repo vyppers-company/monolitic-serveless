@@ -1,4 +1,4 @@
-import { Role } from 'src/domain/interfaces/role.interface';
+import { Role } from '../interfaces/others/role.interface';
 
 export interface IBffMsRegisterEntity {
   _id?: string;
