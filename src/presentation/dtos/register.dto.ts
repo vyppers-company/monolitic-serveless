@@ -19,7 +19,7 @@ export class RegisterDto {
   @MinLength(10)
   @MaxLength(11)
   @ApiProperty({ required: true, example: '13996063278' })
-  @Matches(regexBase.senhaForte, { message: 'invalid phone number format' })
+  @Matches(regexBase.celular, { message: 'invalid phone number format' })
   phone: string;
 
   @IsString()
