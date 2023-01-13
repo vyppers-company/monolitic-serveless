@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { environment } from '../../main/config/environment';
-import { DecodedJwt } from '../../domain/interfaces/jwt.interface';
+import { DecodedJwt } from '../../domain/interfaces/others/jwt.interface';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {

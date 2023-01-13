@@ -7,7 +7,7 @@ import {
 import { BffMsRegister, BffMsRegisterDocument } from '../model/register.schema';
 
 @Injectable()
-export class UsersRepository extends BaseAbstractRepository<BffMsRegisterDocument> {
+export class RegisterRepository extends BaseAbstractRepository<BffMsRegisterDocument> {
   constructor(
     @InjectModel(BffMsRegister.name)
     private readonly bffMsRegisterModel: BaseModel<BffMsRegisterDocument>,

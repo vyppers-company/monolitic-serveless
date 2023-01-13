@@ -12,6 +12,14 @@ export const environment = {
   },
   secret: {
     jwt: process.env.SECRET_KEY || '',
-    apiKey: process.env.X_API_KEY || '',
+  },
+  cryptoData: {
+    cipherString: process.env.CIPHER_STRING,
+    keyPass: process.env.KEY_PASS,
+    keySalt: process.env.KEY_SALT,
+    keyLength: Number(process.env.KEY_LENGTH),
+    bufferSize: Number(process.env.BUFFER_SIZE),
+    bufferFill: process.env.BUFFER_FILL,
+    encryptBaseEncoding: process.env.ENCRYPT_BASE_ENCODING,
   },
 };

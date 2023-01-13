@@ -8,8 +8,8 @@ import {
 } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { environment } from '../../main/config/environment';
-import { DecodedJwt } from '../../domain/interfaces/jwt.interface';
-import { Role } from '../../domain/interfaces/role.interface';
+import { DecodedJwt } from '../../domain/interfaces/others/jwt.interface';
+import { Role } from '../../domain/interfaces/others/role.interface';
 
 @Injectable()
 export class InternalsRole implements CanActivate {

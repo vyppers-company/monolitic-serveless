@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Role } from '../../../domain/interfaces/role.interface';
+import { Role } from '../../../domain/interfaces/others/role.interface';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import { IBffMsRegisterEntity } from '../../../domain/entity/register.entity';
 

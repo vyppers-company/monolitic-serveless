@@ -1,32 +1,41 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
+import { RegisterRepository } from '../../data/mongoose/repositories/register.repository';
 import { IBffMsRegisterEntity } from '../entity/register.entity';
-import { hashPassword } from 'src/shared/utils/passwordHook.util';
-import { UsersRepository } from '../../data/mongoose/repositories/register.repository';
+import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
 
 @Injectable()
-export class RegisterService {
-  constructor(private readonly usersRepository: UsersRepository) {}
+export class RegisterService implements IRegisterUseCase {
+  constructor(
+    private readonly registerRepository: RegisterRepository,
+    private readonly cryptoAdapter: CryptoAdapter,
+  ) {}
 
   async register(dto: IBffMsRegisterEntity) {
-    const findedOne = await this.usersRepository.findOne({
-      phone: dto.phone,
+    if (!dto.role) {
+      throw new BadRequestException('o tipo de usuário é obrigatório');
+    }
+
+    const hashedPhone = this.cryptoAdapter.encryptText(dto.phone);
+
+    const findedOne = await this.registerRepository.findOne({
+      phone: hashedPhone,
+      role: dto.role,
     });
 
     if (findedOne) {
       throw new BadRequestException('este usuário já esta cadastrado');
     }
 
-    const hashedPassword = hashPassword(dto.password);
-    if (!dto.role) {
-      throw new BadRequestException('o tipo de usuário é obrigatório');
-    }
+    const hashedPassword = this.cryptoAdapter.encryptText(dto.password);
+    const hashedName = this.cryptoAdapter.encryptText(dto.name);
 
     const newDto = {
       ...dto,
       password: hashedPassword,
+      name: hashedName,
+      phone: hashedPhone,
     };
-    await this.usersRepository.create({ ...newDto });
-
-    return 'Registrado com sucesso';
+    await this.registerRepository.create({ ...newDto });
   }
 }

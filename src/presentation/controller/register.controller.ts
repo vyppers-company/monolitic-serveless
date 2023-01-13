@@ -7,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { Role } from '../../domain/interfaces/role.interface';
+import { Role } from '../../domain/interfaces/others/role.interface';
 import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 import { InternalsRole } from '../../shared/guards/role.guard';
 
@@ -22,7 +22,7 @@ export class RegisterController {
     this.logger = new Logger();
   }
 
-  @Post('customer')
+  @Post('v1/customer')
   @ApiBody({ type: RegisterDto })
   async customer(@Body() dto: RegisterDto) {
     if (dto.role !== Role.CUSTOMERS) {
@@ -31,7 +31,7 @@ export class RegisterController {
     return await this.registerService.register(dto);
   }
 
-  @Post('professional')
+  @Post('v1/professional')
   @ApiBody({ type: RegisterDto })
   async professional(@Body() dto: RegisterDto) {
     if (dto.role !== Role.PROFESSIONAL) {
@@ -41,7 +41,7 @@ export class RegisterController {
   }
 
   @ApiBearerAuth()
-  @Post('employee')
+  @Post('v1/employee')
   @UseGuards(JwtAuthGuard)
   @UseGuards(InternalsRole)
   @ApiBody({ type: RegisterDto })
@@ -53,7 +53,7 @@ export class RegisterController {
   }
 
   @ApiBearerAuth()
-  @Post('admin')
+  @Post('v1/admin')
   @UseGuards(JwtAuthGuard)
   @UseGuards(InternalsRole)
   @ApiBody({ type: RegisterDto })
