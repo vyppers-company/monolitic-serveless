@@ -6,7 +6,7 @@ import { environment } from './main/config/environment';
 
 const setupSwagger = (app: INestApplication) => {
   const options = new DocumentBuilder()
-    .setTitle('Cuidame - Bff-ms-gateway-user')
+    .setTitle('Finbot - Bff-ms-gateway-user')
     .setDescription(
       'Este microserviço registra usuários do tipo: cliente,profissional, admins e funcionários da empresa',
     )
