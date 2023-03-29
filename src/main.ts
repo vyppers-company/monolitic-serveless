@@ -6,7 +6,7 @@ import { environment } from './main/config/environment';
 
 const setupSwagger = (app: INestApplication) => {
   const options = new DocumentBuilder()
-    .setTitle('Cuidame - Bff-ms-register')
+    .setTitle('Cuidame - Bff-ms-gateway-user')
     .setDescription(
       'Este microserviço registra usuários do tipo: cliente,profissional, admins e funcionários da empresa',
     )
@@ -20,7 +20,7 @@ const setupSwagger = (app: INestApplication) => {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
-  app.setGlobalPrefix('api/bffmsregister/');
+  app.setGlobalPrefix('api/bffmsgatewayuser/');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   setupSwagger(app);
   await app.listen(environment.port, () => {

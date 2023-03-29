@@ -10,9 +10,6 @@ export const environment = {
     db: process.env.MONGODB_NAME || '',
     collection: process.env.MONGODB_COLLECTION_NAME || '',
   },
-  secret: {
-    jwt: process.env.SECRET_KEY || '',
-  },
   cryptoData: {
     cipherString: process.env.CIPHER_STRING,
     keyPass: process.env.KEY_PASS,
@@ -20,6 +17,10 @@ export const environment = {
     keyLength: Number(process.env.KEY_LENGTH),
     bufferSize: Number(process.env.BUFFER_SIZE),
     bufferFill: process.env.BUFFER_FILL,
-    encryptBaseEncoding: process.env.ENCRYPT_BASE_ENCODING,
+    jwe: {
+      expiresIn: process.env.SESSION_EXPIRE,
+      algorithm: process.env.ALGORITHM,
+      encrypt: process.env.ENCRYPT,
+    },
   },
 };

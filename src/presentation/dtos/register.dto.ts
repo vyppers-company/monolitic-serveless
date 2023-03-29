@@ -1,30 +1,26 @@
 import { Role } from '../../domain/interfaces/others/role.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsString, Matches } from 'class-validator';
 import regexBase from '../../shared/helpers/regex';
 import { Match } from '../../shared/decorators/match.decorator';
+import { IUserEntity } from 'src/domain/entity/user.entity';
 
-export class RegisterDto {
+export class RegisterDto implements IUserEntity {
   @IsString()
   @ApiProperty({ required: true, example: 'Juliana' })
   name: string;
 
   @IsString()
-  @MinLength(10)
-  @MaxLength(11)
   @ApiProperty({ required: true, example: '13996063278' })
   @Matches(regexBase.celular, { message: 'invalid phone number format' })
   phone: string;
 
   @IsString()
-  @MinLength(8)
-  @MaxLength(50)
+  @IsEmail()
+  @ApiProperty({ required: true, example: 'email@email.com' })
+  email: string;
+
+  @IsString()
   @ApiProperty({ required: true, example: 'userPassword@2022' })
   @Matches(regexBase.senhaForte, {
     message: 'invalid minimum format  password',
@@ -32,8 +28,6 @@ export class RegisterDto {
   password: string;
 
   @IsString()
-  @MinLength(8)
-  @MaxLength(50)
   @Match('password')
   @ApiProperty({ required: true, example: 'userPassword@2022' })
   passwordConfirm: string;
@@ -41,6 +35,7 @@ export class RegisterDto {
   @IsEnum(Role)
   @ApiProperty({
     enum: ['CUSTOMER', 'PROFESSIONAL', 'EMPLOYES', 'ADMIN'],
+    required: true,
   })
   role: Role;
 }

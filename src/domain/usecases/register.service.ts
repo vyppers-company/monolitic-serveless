@@ -1,30 +1,42 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
-import { RegisterRepository } from '../../data/mongoose/repositories/register.repository';
-import { IBffMsRegisterEntity } from '../entity/register.entity';
+import { UserRepository } from '../../data/mongoose/repositories/user.repository';
+import { IUserEntity } from '../entity/user.entity';
 import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
 
 @Injectable()
 export class RegisterService implements IRegisterUseCase {
   constructor(
-    private readonly registerRepository: RegisterRepository,
+    private readonly userRepository: UserRepository,
     private readonly cryptoAdapter: CryptoAdapter,
   ) {}
 
-  async register(dto: IBffMsRegisterEntity) {
+  async register(dto: IUserEntity) {
     if (!dto.role) {
-      throw new BadRequestException('o tipo de usuário é obrigatório');
+      throw new BadRequestException();
     }
 
     const hashedPhone = this.cryptoAdapter.encryptText(dto.phone);
-
-    const findedOne = await this.registerRepository.findOne({
-      phone: hashedPhone,
-      role: dto.role,
+    const hashedEmail = this.cryptoAdapter.encryptText(dto.email);
+    const findedOne = await this.userRepository.findOne({
+      $or: [
+        {
+          phone: hashedPhone,
+          role: dto.role,
+        },
+        {
+          role: dto.role,
+          email: hashedEmail,
+        },
+      ],
     });
 
     if (findedOne) {
-      throw new BadRequestException('este usuário já esta cadastrado');
+      throw new ConflictException();
     }
 
     const hashedPassword = this.cryptoAdapter.encryptText(dto.password);
@@ -35,7 +47,8 @@ export class RegisterService implements IRegisterUseCase {
       password: hashedPassword,
       name: hashedName,
       phone: hashedPhone,
+      email: hashedEmail,
     };
-    await this.registerRepository.create({ ...newDto });
+    await this.userRepository.create({ ...newDto });
   }
 }

@@ -1,18 +1,18 @@
 import {
-  CanActivate,
+  createParamDecorator,
   ExecutionContext,
-  Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { environment } from '../../main/config/environment';
 import { scryptSync } from 'node:crypto';
 import { jwtDecrypt } from 'jose';
-@Injectable()
-export class JwtAuthGuard implements CanActivate {
-  async canActivate(context: ExecutionContext): Promise<any> {
+
+export const Logged = createParamDecorator(
+  async (data: unknown, context: ExecutionContext): Promise<any> => {
     try {
       const request = context.switchToHttp().getRequest();
+      console.log(request.headers.authorization);
       if (
         !request.headers.authorization ||
         request.headers.authorization === undefined
@@ -30,12 +30,13 @@ export class JwtAuthGuard implements CanActivate {
       const key = scryptSync(keyPass, keySalt, keyLength);
       const decrypted = await jwtDecrypt(authorization, key);
 
-      if (!decrypted.payload) {
+      if (!decrypted?.payload) {
         throw new UnauthorizedException();
       }
-      return true;
+
+      return decrypted.payload;
     } catch (err) {
       throw new InternalServerErrorException();
     }
-  }
-}
+  },
+);

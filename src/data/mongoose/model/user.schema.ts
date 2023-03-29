@@ -2,15 +2,15 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { Role } from '../../../domain/interfaces/others/role.interface';
 import { correctDateNow } from '../../../shared/utils/correctDate';
-import { IBffMsRegisterEntity } from '../../../domain/entity/register.entity';
+import { IUserEntity } from '../../../domain/entity/user.entity';
 
-export type BffMsRegisterDocument = BffMsRegister & Document;
+export type UserDocument = User & Document;
 
 @Schema({
   timestamps: { currentTime: correctDateNow },
-  collection: 'bff-ms-register',
+  collection: 'bff-ms-gateway-user',
 })
-export class BffMsRegister extends Document implements IBffMsRegisterEntity {
+export class User extends Document implements IUserEntity {
   _id?: string;
 
   @Prop()
@@ -20,10 +20,13 @@ export class BffMsRegister extends Document implements IBffMsRegisterEntity {
   phone: string;
 
   @Prop()
+  email: string;
+
+  @Prop()
   password: string;
 
   @Prop({ type: 'string', enum: Role })
   role: Role;
 }
 
-export const BffMsRegisterSchema = SchemaFactory.createForClass(BffMsRegister);
+export const UserSchema = SchemaFactory.createForClass(User);
