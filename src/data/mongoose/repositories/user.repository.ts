@@ -17,14 +17,11 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
   }
 
   async updateOne(dto: IUserEntity, password: string) {
-    await this.user.updateOne(
-      { _id: dto._id },
-      {
-        $set: {
-          ...dto,
-          password,
-        },
+    await this.user.updateOne(dto, {
+      $set: {
+        ...dto,
+        password,
       },
-    );
+    });
   }
 }

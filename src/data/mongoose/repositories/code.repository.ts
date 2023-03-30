@@ -17,12 +17,12 @@ export class CodeRepository extends BaseAbstractRepository<CodeDocument> {
     super(code);
   }
 
-  async upsertOne(id: string, dto: ICodeEntity) {
+  async upsertOne(oldDto: ICodeEntity, newDto: ICodeEntity) {
     await this.code.updateOne(
-      { _id: id },
+      oldDto,
       {
         $set: {
-          ...dto,
+          ...newDto,
         },
       },
       {

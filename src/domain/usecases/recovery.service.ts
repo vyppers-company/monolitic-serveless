@@ -48,7 +48,7 @@ export class RecoveryService implements IRcoveryUseCase {
     if (!existentCode || existentCode.expiresIn < Date.now()) {
       const code = generateCode();
 
-      await this.codeRecoveryRepository.upsertOne(existentCode?._id, {
+      await this.codeRecoveryRepository.upsertOne(existentCode, {
         code: code.value,
         owner: findedOne._id,
         expiresIn: Date.now() + environment.mail.expiration,
