@@ -1,9 +1,9 @@
 import { Role } from '../../domain/interfaces/others/role.interface';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsEnum, IsString, Matches } from 'class-validator';
-import regexBase from '../../shared/helpers/regex';
+import regex from '../../shared/helpers/regex';
 import { Match } from '../../shared/decorators/match.decorator';
-import { IUserEntity } from 'src/domain/entity/user.entity';
+import { IUserEntity } from '../../domain/entity/user.entity';
 
 export class RegisterDto implements IUserEntity {
   @IsString()
@@ -12,7 +12,7 @@ export class RegisterDto implements IUserEntity {
 
   @IsString()
   @ApiProperty({ required: true, example: '13996063278' })
-  @Matches(regexBase.celular, { message: 'invalid phone number format' })
+  @Matches(regex.celular, { message: 'invalid phone number format' })
   phone: string;
 
   @IsString()
@@ -22,7 +22,7 @@ export class RegisterDto implements IUserEntity {
 
   @IsString()
   @ApiProperty({ required: true, example: 'userPassword@2022' })
-  @Matches(regexBase.senhaForte, {
+  @Matches(regex.senhaForte, {
     message: 'invalid minimum format  password',
   })
   password: string;

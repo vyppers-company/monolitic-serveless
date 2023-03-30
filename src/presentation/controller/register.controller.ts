@@ -13,7 +13,7 @@ import { ILogged } from '../../domain/interfaces/others/logged.interface';
 import { RegisterDto } from '../dtos/register.dto';
 import { RegisterService } from '../../domain/usecases/register.service';
 import { Logged } from '../../shared/decorators/logged.decorator';
-import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
 
 @ApiTags('register')
 @Controller('register')

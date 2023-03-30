@@ -3,7 +3,7 @@ import {
   ConflictException,
   Injectable,
 } from '@nestjs/common';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
+import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
 import { IUserEntity } from '../entity/user.entity';
 import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
@@ -26,10 +26,8 @@ export class RegisterService implements IRegisterUseCase {
       $or: [
         {
           phone: hashedPhone,
-          role: dto.role,
         },
         {
-          role: dto.role,
           email: hashedEmail,
         },
       ],

@@ -68,7 +68,7 @@ export abstract class BaseAbstractRepository<T extends Document>
   async deleteById(id: any): Promise<void> {
     const model = await this.findOneById(id);
     if (model) {
-      await this.model.deleteById(id);
+      await this.model.deleteOne({ _id: model._id });
     }
   }
 

@@ -16,10 +16,10 @@ export class User extends Document implements IUserEntity {
   @Prop()
   name: string;
 
-  @Prop()
+  @Prop({ unique: true })
   phone: string;
 
-  @Prop()
+  @Prop({ unique: true })
   email: string;
 
   @Prop()

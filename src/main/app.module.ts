@@ -5,19 +5,44 @@ import { HealthcheckController } from '../presentation/controller/healthcheck.co
 import { RegisterController } from '../presentation/controller/register.controller';
 import { RegisterService } from '../domain/usecases/register.service';
 import { UserRepository } from '../data/mongoose/repositories/user.repository';
-import { UserSchema, User } from 'src/data/mongoose/model/user.schema';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
-import { AuthController } from 'src/presentation/controller/auth.controller';
-import { AuthService } from 'src/domain/usecases/auth.service';
+import { UserSchema, User } from '../data/mongoose/model/user.schema';
+import { CryptoAdapter } from '../infra/adapters/cryptoAdapter';
+import { AuthController } from '../presentation/controller/auth.controller';
+import { AuthService } from '../domain/usecases/auth.service';
+import { RecoveryController } from '../presentation/controller/recovery.controller';
+import { RecoveryService } from '../domain/usecases/recovery.service';
+import { CodeRepository } from '../data/mongoose/repositories/code.repository';
+import { Code, CodeSchema } from '../data/mongoose/model/code.schema';
+import { SendEmailAdapter } from '../infra/adapters/mailgun.adapter';
+import { SendSmsAdapter } from '../infra/adapters/blow-io.adapter';
+import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
       dbName: environment.mongodb.db,
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Code.name, schema: CodeSchema },
+    ]),
   ],
-  providers: [RegisterService, UserRepository, CryptoAdapter, AuthService],
-  controllers: [HealthcheckController, RegisterController, AuthController],
+  providers: [
+    RecoveryService,
+    RegisterService,
+    ChangePasswordService,
+    AuthService,
+    UserRepository,
+    CodeRepository,
+    CryptoAdapter,
+    SendEmailAdapter,
+    SendSmsAdapter,
+  ],
+  controllers: [
+    RecoveryController,
+    HealthcheckController,
+    RegisterController,
+    AuthController,
+  ],
 })
 export class AppModule {}

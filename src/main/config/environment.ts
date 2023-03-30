@@ -5,10 +5,18 @@ export const environment = {
   env: process.env.NODE_ENV || '',
   timeZone: process.env.TZ || '',
   port: process.env.PORT,
+  mail: {
+    domain: process.env.DOMAIN_NAME || '',
+    apiKey: process.env.MAILGUN_API_KEY || '',
+    from: process.env.FROM_MAIL || '',
+    expiration: parseInt(process.env.EXPIRATION) || 120000,
+  },
+  sms: {
+    apiUrl: process.env.SMS_API_URL || '',
+  },
   mongodb: {
     url: process.env.MONGODB_URL || '',
     db: process.env.MONGODB_NAME || '',
-    collection: process.env.MONGODB_COLLECTION_NAME || '',
   },
   cryptoData: {
     cipherString: process.env.CIPHER_STRING,

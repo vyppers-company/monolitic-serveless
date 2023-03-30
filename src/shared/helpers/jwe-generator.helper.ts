@@ -1,5 +1,5 @@
 import { scryptSync } from 'crypto';
-import { environment } from 'src/main/config/environment';
+import { environment } from '../../main/config/environment';
 import { EncryptJWT } from 'jose';
 export const generateToken = async (payload: { _id: string; role: string }) => {
   const {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
-import { Auth } from 'src/presentation/dtos/auth.dto';
-import regex from 'src/shared/helpers/regex';
+import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
+import { Auth } from '../../presentation/dtos/auth.dto';
+import regex from '../../shared/helpers/regex';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
 import { IAuthUseCase } from '../interfaces/usecases/auth.interface';
 import { generateToken } from '../../shared/helpers/jwe-generator.helper';
@@ -32,14 +32,14 @@ export class AuthService implements IAuthUseCase {
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (!findedOne) {
-      throw new UnauthorizedException('email ou senha inválidos');
+      throw new UnauthorizedException();
     }
 
     const correctPassword =
       findedOne.password === this.cryptoAdapter.encryptText(dto.password);
 
     if (!correctPassword) {
-      throw new UnauthorizedException('dados inválidos');
+      throw new UnauthorizedException();
     }
 
     const token = await generateToken({

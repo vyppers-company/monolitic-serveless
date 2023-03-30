@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { IUserEntity } from '../../../domain/entity/user.entity';
 import {
   BaseAbstractRepository,
   BaseModel,
@@ -13,5 +14,17 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
     private readonly user: BaseModel<UserDocument>,
   ) {
     super(user);
+  }
+
+  async updateOne(dto: IUserEntity, password: string) {
+    await this.user.updateOne(
+      { _id: dto._id },
+      {
+        $set: {
+          ...dto,
+          password,
+        },
+      },
+    );
   }
 }

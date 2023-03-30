@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, MaxLength, MinLength, Matches } from 'class-validator';
-import regex from 'src/shared/helpers/regex';
+import regex from '../../shared/helpers/regex';
 import { IAuth } from '../../domain/interfaces/others/auth.interface';
 
 export class Auth implements IAuth {
