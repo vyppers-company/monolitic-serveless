@@ -19,7 +19,7 @@ export class CodeRepository extends BaseAbstractRepository<CodeDocument> {
 
   async upsertOne(oldDto: ICodeEntity, newDto: ICodeEntity) {
     await this.code.updateOne(
-      oldDto,
+      { owner: oldDto?.owner },
       {
         $set: {
           ...newDto,
