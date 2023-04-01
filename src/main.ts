@@ -19,7 +19,7 @@ const setupSwagger = (app: INestApplication) => {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({ origin: ['https://frontend-finbot.herokuapp.com', '*'] });
   app.setGlobalPrefix('api/bffmsgatewayuser/');
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   setupSwagger(app);
