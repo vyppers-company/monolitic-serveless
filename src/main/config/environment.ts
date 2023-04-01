@@ -1,7 +1,6 @@
 import 'dotenv/config';
 
 export const environment = {
-  urlServer: process.env.URL_SERVER || '',
   env: process.env.NODE_ENV || '',
   timeZone: process.env.TZ || '',
   port: process.env.PORT,
