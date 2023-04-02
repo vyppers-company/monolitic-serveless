@@ -20,10 +20,16 @@ const setupSwagger = (app: INestApplication) => {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['https://frontend-finbot.herokuapp.com', 'http://localhost:5173/'],
+    origin: [
+      'https://frontend-finbot.herokuapp.com',
+      'http://localhost:5173',
+      '*',
+      'localhost',
+    ],
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   setupSwagger(app);
+  app.setGlobalPrefix('api/bffmsgatewayuser/');
   await app.listen(environment.port, () => {
     Logger.log('Listening at http://localhost:' + environment.port + '/');
   });
