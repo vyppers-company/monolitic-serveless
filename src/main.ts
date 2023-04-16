@@ -21,7 +21,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: [
-      'https://finbot-frontend-hml.herokuapp.com/',
+      'https://finbot-frontend.herokuapp.com/',
       'http://localhost:5173',
       '*',
       'localhost',
