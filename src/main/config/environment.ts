@@ -19,8 +19,8 @@ export const environment = {
   mongodb: {
     url: process.env.MONGODB_URL || '',
     collections: {
-      code: process.env.CODE || '',
-      user: process.env.USER || '',
+      code: process.env.MONGODB_COLLECTION_CODE || '',
+      user: process.env.MONGODB_COLLECTION_USER || '',
     },
   },
   cryptoData: {
