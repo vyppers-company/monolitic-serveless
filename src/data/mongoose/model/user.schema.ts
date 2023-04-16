@@ -3,12 +3,13 @@ import { Document } from 'mongoose';
 import { Role } from '../../../domain/interfaces/others/role.interface';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import { IUserEntity } from '../../../domain/entity/user.entity';
+import { environment } from 'src/main/config/environment';
 
 export type UserDocument = User & Document;
 
 @Schema({
   timestamps: { currentTime: correctDateNow },
-  collection: 'bff-ms-gateway-user',
+  collection: environment.mongodb.collections.user,
 })
 export class User extends Document implements IUserEntity {
   _id?: string;

@@ -20,7 +20,7 @@ import { ChangePasswordService } from 'src/domain/usecases/change-password.servi
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
-      dbName: environment.mongodb.db,
+      dbName: environment.app.serviceName,
     }),
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },

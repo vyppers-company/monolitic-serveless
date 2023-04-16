@@ -29,9 +29,8 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   setupSwagger(app);
-  app.setGlobalPrefix('api/bffmsgatewayuser/');
-  await app.listen(environment.port, () => {
-    Logger.log('Listening at http://localhost:' + environment.port + '/');
+  await app.listen(environment.app.port, () => {
+    Logger.log('Listening at http://localhost:' + environment.app.port + '/');
   });
 }
 //

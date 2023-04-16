@@ -1,9 +1,12 @@
 import 'dotenv/config';
 
 export const environment = {
-  env: process.env.NODE_ENV || '',
-  timeZone: process.env.TZ || '',
-  port: process.env.PORT,
+  app: {
+    env: process.env.NODE_ENV || '',
+    timeZone: process.env.TZ || '',
+    port: process.env.PORT || 3000,
+    serviceName: process.env.SERVICE_NAME || '',
+  },
   mail: {
     domain: process.env.DOMAIN_NAME || '',
     apiKey: process.env.MAILGUN_API_KEY || '',
@@ -15,7 +18,10 @@ export const environment = {
   },
   mongodb: {
     url: process.env.MONGODB_URL || '',
-    db: process.env.MONGODB_NAME || '',
+    collections: {
+      code: process.env.CODE || '',
+      user: process.env.USER || '',
+    },
   },
   cryptoData: {
     cipherString: process.env.CIPHER_STRING,
