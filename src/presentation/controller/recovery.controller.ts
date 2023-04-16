@@ -16,12 +16,12 @@ export class RecoveryController {
     this.logger = new Logger();
   }
 
-  @Post('generate-code')
+  @Post('v1/generate-code')
   async recoveryEmail(@Body() dto: RecoveryDto) {
     await this.recoveryService.send(dto);
   }
 
-  @Post('change-password')
+  @Post('v1/change-password')
   async changePassword(@Body() dto: ChangePasswordDto) {
     return await this.changePasswordService.change(dto);
   }

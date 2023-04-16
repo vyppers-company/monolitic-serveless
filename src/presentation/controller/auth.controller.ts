@@ -11,7 +11,7 @@ export class AuthController {
     this.logger = new Logger();
   }
 
-  @Post()
+  @Post('v1')
   async auth(@Body() dto: Auth) {
     return await this.authService.auth(dto);
   }
