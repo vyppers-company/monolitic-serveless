@@ -22,7 +22,10 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'https://finbot-frontend.herokuapp.com',
+      'https://finbot-frontend.herokuapp.com/',
       'http://localhost:5173',
+      'http://localhost:5174',
+      'http://localhost:5175',
       '*',
       'localhost',
     ],
