@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
 import { SendSmsAdapter } from '../../infra/adapters/blow-io.adapter';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
@@ -33,21 +33,11 @@ export class RecoveryService implements IRcoveryUseCase {
       finalDto['phone'] = this.cryptoAdapter.encryptText(dto.emailOrPhone);
     }
 
-    console.log(finalDto);
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (!findedOne) {
-      console.log('nao achou');
-      return;
+      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
     }
-    console.log({
-      cryptoParams: {
-        ...environment.cryptoData,
-      },
-      achou: true,
-      email: findedOne.email,
-      phone: findedOne.phone,
-    });
 
     const existentCode = await this.codeRecoveryRepository.findOne({
       owner: findedOne._id,
