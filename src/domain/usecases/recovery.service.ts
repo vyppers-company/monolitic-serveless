@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
 import { SendSmsAdapter } from '../../infra/adapters/blow-io.adapter';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
@@ -26,20 +26,28 @@ export class RecoveryService implements IRcoveryUseCase {
     const finalDto = {};
 
     if (isEmail) {
-      const hashedEmail = this.cryptoAdapter.encryptText(dto.emailOrPhone);
-      finalDto['email'] = hashedEmail;
+      finalDto['email'] = this.cryptoAdapter.encryptText(dto.emailOrPhone);
     }
 
     if (isPhone) {
-      const hashedPhone = this.cryptoAdapter.encryptText(dto.emailOrPhone);
-      finalDto['phone'] = hashedPhone;
+      finalDto['phone'] = this.cryptoAdapter.encryptText(dto.emailOrPhone);
     }
 
+    console.log(finalDto);
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (!findedOne) {
-      throw new UnauthorizedException();
+      console.log('nao achou');
+      return;
     }
+    console.log({
+      cryptoParams: {
+        ...environment.cryptoData,
+      },
+      achou: true,
+      email: findedOne.email,
+      phone: findedOne.phone,
+    });
 
     const existentCode = await this.codeRecoveryRepository.findOne({
       owner: findedOne._id,
