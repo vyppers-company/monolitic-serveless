@@ -16,6 +16,9 @@ import { Code, CodeSchema } from '../data/mongoose/model/code.schema';
 import { SendEmailAdapter } from '../infra/adapters/mailgun.adapter';
 import { SendSmsAdapter } from '../infra/adapters/blow-io.adapter';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
+import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
+import { UserController } from 'src/presentation/controller/user.controller';
+import { UserService } from 'src/domain/usecases/user.service';
 
 @Module({
   imports: [
@@ -32,6 +35,8 @@ import { ChangePasswordService } from 'src/domain/usecases/change-password.servi
     RegisterService,
     ChangePasswordService,
     AuthService,
+    ValidateCodeService,
+    UserService,
     UserRepository,
     CodeRepository,
     CryptoAdapter,
@@ -43,6 +48,7 @@ import { ChangePasswordService } from 'src/domain/usecases/change-password.servi
     HealthcheckController,
     RegisterController,
     AuthController,
+    UserController,
   ],
 })
 export class AppModule {}

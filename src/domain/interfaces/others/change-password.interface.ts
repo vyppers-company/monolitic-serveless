@@ -1,6 +1,5 @@
 export interface IChangePasswordDto {
-  code: string;
-  emailOrPhone: string;
+  tokenCode: string;
   newPassword: string;
   confirmNewPassword: string;
 }

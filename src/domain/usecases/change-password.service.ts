@@ -1,15 +1,14 @@
 import {
   ConflictException,
   Injectable,
-  NotFoundException,
-  UnauthorizedException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
-import regex from '../../shared/helpers/regex';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
 import { IChangePasswordDto } from '../interfaces/others/change-password.interface';
 import { IChangePasswordService } from '../interfaces/usecases/change-password.interface';
+import { decryptData } from 'src/shared/helpers/jwe-generator.helper';
 
 @Injectable()
 export class ChangePasswordService implements IChangePasswordService {
@@ -19,39 +18,20 @@ export class ChangePasswordService implements IChangePasswordService {
     private readonly cryptoAdapter: CryptoAdapter,
   ) {}
   async change(dto: IChangePasswordDto) {
-    const isEmail = regex.email.test(dto.emailOrPhone);
-    const isPhone = regex.celular.test(dto.emailOrPhone);
-
-    const finalDto = {};
-
-    if (isEmail) {
-      const hashedEmail = this.cryptoAdapter.encryptText(dto.emailOrPhone);
-      finalDto['email'] = hashedEmail;
-    }
-
-    if (isPhone) {
-      const hashedPhone = this.cryptoAdapter.encryptText(dto.emailOrPhone);
-      finalDto['phone'] = hashedPhone;
-    }
-
-    const findedOne = await this.userRepository.findOne(finalDto);
-
-    if (!findedOne) {
-      throw new NotFoundException();
-    }
-
     if (dto.newPassword !== dto.confirmNewPassword) {
       throw new ConflictException();
     }
+    const decryptedCode = await decryptData(dto.tokenCode);
 
     const code = await this.codeRecoveryRepository.findOne({
-      code: dto.code,
-      owner: findedOne._id,
+      _id: decryptedCode?._id,
     });
 
     if (!code) {
-      throw new UnauthorizedException();
+      throw new UnprocessableEntityException();
     }
+
+    const findedOne = await this.userRepository.findOne({ _id: code.owner });
 
     const hashedPassword = this.cryptoAdapter.encryptText(dto.newPassword);
 

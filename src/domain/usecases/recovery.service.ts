@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { UnprocessableEntityException, Injectable } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
 import { SendSmsAdapter } from '../../infra/adapters/blow-io.adapter';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
@@ -36,7 +36,7 @@ export class RecoveryService implements IRcoveryUseCase {
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (!findedOne) {
-      throw new HttpException('Not Found', HttpStatus.NOT_FOUND);
+      throw new UnprocessableEntityException();
     }
 
     const existentCode = await this.codeRecoveryRepository.findOne({
