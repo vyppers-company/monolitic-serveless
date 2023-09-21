@@ -9,7 +9,7 @@ export class SendSmsAdapter implements ISendRecoveryCode {
         environment.sms.apiUrl,
         {
           to: `+55${to}`,
-          message: `Finbot: Não compartilhe, Seu código de recuperação de senha ${code}`,
+          message: `Xfans: Não compartilhe, Seu código de recuperação de senha ${code}`,
         },
         {
           headers: {
