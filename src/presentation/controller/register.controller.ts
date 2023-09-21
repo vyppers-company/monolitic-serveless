@@ -3,17 +3,17 @@ import {
   Controller,
   Logger,
   Post,
-  UseGuards,
+  //UseGuards,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { /* ApiBearerAuth,  */ ApiBody, ApiTags } from '@nestjs/swagger';
 import { Role } from '../../domain/interfaces/others/role.interface';
-import { ILogged } from '../../domain/interfaces/others/logged.interface';
+/* import { ILogged } from '../../domain/interfaces/others/logged.interface'; */
 
 import { RegisterDto } from '../dtos/register.dto';
 import { RegisterService } from '../../domain/usecases/register.service';
-import { Logged } from '../../shared/decorators/logged.decorator';
-import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard';
+/* import { Logged } from '../../shared/decorators/logged.decorator';
+import { JwtAuthGuard } from '../../shared/guards/jwt-auth.guard'; */
 
 @ApiTags('register')
 @Controller('register')
@@ -23,7 +23,7 @@ export class RegisterController {
     this.logger = new Logger();
   }
 
-  @Post('v1/customer')
+  @Post('v1/user')
   @ApiBody({ type: RegisterDto })
   async customer(@Body() dto: RegisterDto) {
     if (dto.role !== Role.CUSTOMERS) {
@@ -32,7 +32,7 @@ export class RegisterController {
     return await this.registerService.register(dto);
   }
 
-  @ApiBearerAuth()
+  /*  @ApiBearerAuth()
   @Post('v1/employee')
   @UseGuards(JwtAuthGuard)
   @ApiBody({ type: RegisterDto })
@@ -52,5 +52,5 @@ export class RegisterController {
       throw new UnauthorizedException();
     }
     return await this.registerService.register(dto);
-  }
+  } */
 }

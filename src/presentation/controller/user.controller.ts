@@ -13,7 +13,7 @@ export class UserController {
     this.logger = new Logger();
   }
 
-  @Get('v1/personal-data')
+  @Get('v1/profile')
   async auth(@Logged() logged: ILogged) {
     if (logged.role !== Role.CUSTOMERS) {
       return await this.userService.getPersonalData(logged);
