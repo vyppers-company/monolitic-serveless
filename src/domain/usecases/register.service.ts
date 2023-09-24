@@ -16,10 +16,6 @@ export class RegisterService implements IRegisterUseCase {
   ) {}
 
   async register(dto: IUserEntity) {
-    if (!dto.role) {
-      throw new BadRequestException();
-    }
-
     const hashedPhone = this.cryptoAdapter.encryptText(dto.phone);
     const hashedEmail = this.cryptoAdapter.encryptText(dto.email);
     const findedOne = await this.userRepository.findOne({

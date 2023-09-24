@@ -1,6 +1,5 @@
-import { Role } from '../../domain/interfaces/others/role.interface';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsString, Matches } from 'class-validator';
+import { IsEmail, IsString, Matches } from 'class-validator';
 import regex from '../../shared/helpers/regex';
 import { Match } from '../../shared/decorators/match.decorator';
 import { IUserEntity } from '../../domain/entity/user.entity';
@@ -31,13 +30,6 @@ export class RegisterDto implements IUserEntity {
   @Match('password')
   @ApiProperty({ required: true, example: 'userPassword@2022' })
   passwordConfirm: string;
-
-  @IsEnum(Role)
-  @ApiProperty({
-    enum: ['CUSTOMER', 'PROFESSIONAL', 'EMPLOYES', 'ADMIN'],
-    required: true,
-  })
-  role: Role;
 }
 
 export class RegisterDtoCandidates {}

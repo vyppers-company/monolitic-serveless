@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { Role } from '../../../domain/interfaces/others/role.interface';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import { IUserEntity } from '../../../domain/entity/user.entity';
 import { environment } from 'src/main/config/environment';
@@ -25,9 +24,6 @@ export class User extends Document implements IUserEntity {
 
   @Prop()
   password: string;
-
-  @Prop({ type: 'string', enum: Role })
-  role: Role;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

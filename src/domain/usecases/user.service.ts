@@ -7,8 +7,8 @@ export class UserService implements IUserService {
   constructor(private readonly userRepository: UserRepository) {}
   async getPersonalData(
     logged: ILogged,
-  ): Promise<Pick<IUserEntity, 'email' | 'phone' | 'role'>> {
+  ): Promise<Pick<IUserEntity, 'email' | 'phone'>> {
     const user = await this.userRepository.findOne({ _id: logged._id });
-    return { email: user.email, phone: user.phone, role: user.role };
+    return { email: user.email, phone: user.phone };
   }
 }

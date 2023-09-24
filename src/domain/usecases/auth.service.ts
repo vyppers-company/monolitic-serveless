@@ -44,7 +44,6 @@ export class AuthService implements IAuthUseCase {
 
     const token = await generateToken({
       _id: String(findedOne._id),
-      role: findedOne.role,
     });
 
     return { token };

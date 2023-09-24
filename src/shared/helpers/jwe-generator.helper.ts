@@ -2,10 +2,7 @@ import { scryptSync } from 'crypto';
 import { environment } from '../../main/config/environment';
 import { EncryptJWT, jwtDecrypt } from 'jose';
 import { UnauthorizedException } from '@nestjs/common';
-export const generateToken = async (payload: {
-  _id: string;
-  role?: string | null;
-}) => {
+export const generateToken = async (payload: { _id: string }) => {
   const {
     keyLength,
     keyPass,

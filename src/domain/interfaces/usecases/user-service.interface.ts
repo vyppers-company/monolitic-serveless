@@ -4,5 +4,5 @@ import { ILogged } from '../others/logged.interface';
 export interface IUserService {
   getPersonalData: (
     logged: ILogged,
-  ) => Promise<Pick<IUserEntity, 'email' | 'phone' | 'role'>>;
+  ) => Promise<Pick<IUserEntity, 'email' | 'phone'>>;
 }
