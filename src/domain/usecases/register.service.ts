@@ -1,12 +1,9 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
 import { IUserEntity } from '../entity/user.entity';
 import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
+import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class RegisterService implements IRegisterUseCase {
@@ -16,8 +13,15 @@ export class RegisterService implements IRegisterUseCase {
   ) {}
 
   async register(dto: IUserEntity) {
-    const hashedPhone = this.cryptoAdapter.encryptText(dto.phone);
-    const hashedEmail = this.cryptoAdapter.encryptText(dto.email);
+    const hashedPhone = this.cryptoAdapter.encryptText(
+      dto.phone,
+      ICryptoType.USER,
+    );
+    const hashedEmail = this.cryptoAdapter.encryptText(
+      dto.email,
+      ICryptoType.USER,
+    );
+
     const findedOne = await this.userRepository.findOne({
       $or: [
         {
@@ -26,6 +30,9 @@ export class RegisterService implements IRegisterUseCase {
         {
           email: hashedEmail,
         },
+        {
+          profileId: dto.profileId,
+        },
       ],
     });
 
@@ -33,8 +40,14 @@ export class RegisterService implements IRegisterUseCase {
       throw new ConflictException();
     }
 
-    const hashedPassword = this.cryptoAdapter.encryptText(dto.password);
-    const hashedName = this.cryptoAdapter.encryptText(dto.name);
+    const hashedPassword = this.cryptoAdapter.encryptText(
+      dto.password,
+      ICryptoType.USER,
+    );
+    const hashedName = this.cryptoAdapter.encryptText(
+      dto.name,
+      ICryptoType.USER,
+    );
 
     const newDto = {
       ...dto,

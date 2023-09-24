@@ -4,4 +4,5 @@ export interface IUserEntity {
   password: string;
   phone: string;
   email: string;
+  profileId: string;
 }

@@ -1,13 +1,19 @@
-import { ICrypto } from '../../domain/interfaces/adapters/crypto.interface';
+import {
+  ICrypto,
+  ICryptoType,
+} from '../../domain/interfaces/adapters/crypto.interface';
 import { Buffer } from 'node:buffer';
 import { environment } from '../../main/config/environment';
 import { createCipheriv, scryptSync } from 'crypto';
 import { createDecipheriv } from 'node:crypto';
 
 export class CryptoAdapter implements ICrypto {
-  encryptText(text: string): string {
+  encryptText(text: string, type: ICryptoType): string {
     try {
-      const keyPass = environment.cryptoData.keyPass;
+      const keyPass =
+        type === ICryptoType.CODE
+          ? environment.cryptoData.keyPassCode
+          : environment.cryptoData.keyPassUser;
       const keySalt = environment.cryptoData.keySalt;
       const keyLength = environment.cryptoData.keyLength;
       const cipherString = environment.cryptoData.cipherString;
@@ -23,11 +29,15 @@ export class CryptoAdapter implements ICrypto {
       throw error;
     }
   }
-  decryptText(encryptedText: string): string {
+  decryptText(encryptedText: string, type: ICryptoType): string {
     try {
+      const keyPass =
+        type === ICryptoType.CODE
+          ? environment.cryptoData.keyPassCode
+          : environment.cryptoData.keyPassUser;
       const algorithm = environment.cryptoData.cipherString;
       const key = scryptSync(
-        environment.cryptoData.keyPass,
+        keyPass,
         environment.cryptoData.keySalt,
         environment.cryptoData.keyLength,
       );

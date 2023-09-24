@@ -2,7 +2,6 @@ import {
   createParamDecorator,
   ExecutionContext,
   UnauthorizedException,
-  InternalServerErrorException,
 } from '@nestjs/common';
 import { environment } from '../../main/config/environment';
 import { scryptSync } from 'node:crypto';
@@ -12,7 +11,6 @@ export const Logged = createParamDecorator(
   async (data: unknown, context: ExecutionContext): Promise<any> => {
     try {
       const request = context.switchToHttp().getRequest();
-      console.log(request.headers.authorization);
       if (
         !request.headers.authorization ||
         request.headers.authorization === undefined
@@ -24,10 +22,9 @@ export const Logged = createParamDecorator(
         (request.headers.authorization || '').split(' ')[1] || '';
 
       const {
-        cryptoData: { keyPass, keySalt, keyLength },
+        cryptoData: { keyPassUser, keySalt, keyLength },
       } = environment;
-
-      const key = scryptSync(keyPass, keySalt, keyLength);
+      const key = scryptSync(keyPassUser, keySalt, keyLength);
       const decrypted = await jwtDecrypt(authorization, key);
 
       if (!decrypted?.payload) {
@@ -36,7 +33,7 @@ export const Logged = createParamDecorator(
 
       return decrypted.payload;
     } catch (err) {
-      throw new InternalServerErrorException();
+      throw new UnauthorizedException();
     }
   },
 );

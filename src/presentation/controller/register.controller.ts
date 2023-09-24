@@ -1,10 +1,9 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
 import { RegisterDto } from '../dtos/register.dto';
 import { RegisterService } from '../../domain/usecases/register.service';
 
-@ApiTags('register')
 @Controller('register')
 export class RegisterController {
   private logger: Logger;
@@ -12,6 +11,7 @@ export class RegisterController {
     this.logger = new Logger();
   }
 
+  @ApiTags('register')
   @Post('v1/user')
   @ApiBody({ type: RegisterDto })
   async customer(@Body() dto: RegisterDto) {

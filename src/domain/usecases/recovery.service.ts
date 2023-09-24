@@ -9,6 +9,7 @@ import { generateCode } from '../../shared/utils/generateRandomicCode';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
 import { IRecoveryDto } from '../interfaces/others/recovery.interface';
 import { IRcoveryUseCase } from '../interfaces/usecases/send-email.interface';
+import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class RecoveryService implements IRcoveryUseCase {
@@ -26,11 +27,17 @@ export class RecoveryService implements IRcoveryUseCase {
     const finalDto = {};
 
     if (isEmail) {
-      finalDto['email'] = this.cryptoAdapter.encryptText(dto.emailOrPhone);
+      finalDto['email'] = this.cryptoAdapter.encryptText(
+        dto.emailOrPhone,
+        ICryptoType.USER,
+      );
     }
 
     if (isPhone) {
-      finalDto['phone'] = this.cryptoAdapter.encryptText(dto.emailOrPhone);
+      finalDto['phone'] = this.cryptoAdapter.encryptText(
+        dto.emailOrPhone,
+        ICryptoType.USER,
+      );
     }
 
     const findedOne = await this.userRepository.findOne(finalDto);

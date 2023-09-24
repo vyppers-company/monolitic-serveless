@@ -25,7 +25,8 @@ export const environment = {
   },
   cryptoData: {
     cipherString: process.env.CIPHER_STRING,
-    keyPass: process.env.KEY_PASS,
+    keyPassUser: process.env.KEY_PASS_USER,
+    keyPassCode: process.env.KEY_PASS_CODE,
     keySalt: process.env.KEY_SALT,
     keyLength: Number(process.env.KEY_LENGTH),
     bufferSize: Number(process.env.BUFFER_SIZE),

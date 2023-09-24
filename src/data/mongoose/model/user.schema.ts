@@ -24,6 +24,9 @@ export class User extends Document implements IUserEntity {
 
   @Prop()
   password: string;
+
+  @Prop({ unique: true })
+  profileId: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

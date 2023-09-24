@@ -6,8 +6,13 @@ import { IUserEntity } from '../../domain/entity/user.entity';
 
 export class RegisterDto implements IUserEntity {
   @IsString()
-  @ApiProperty({ required: true, example: 'Juliana' })
+  @ApiProperty({ required: true, example: 'Maria eugenia' })
   name: string;
+
+  @IsString()
+  @ApiProperty({ required: true, example: '@paulorr.io' })
+  @Matches(regex.profileId, { message: 'invalid profileId format' })
+  profileId: string;
 
   @IsString()
   @ApiProperty({ required: true, example: '13996063278' })

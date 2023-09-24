@@ -6,10 +6,7 @@ import { environment } from './main/config/environment';
 
 const setupSwagger = (app: INestApplication) => {
   const options = new DocumentBuilder()
-    .setTitle(`Xfans - ${environment.app.serviceName}`)
-    .setDescription(
-      'Este microserviço registra usuários do tipo: cliente, parceiros homologados, admins e funcionários da empresa',
-    )
+    .setTitle(`vyppers - ${environment.app.serviceName}`)
     .setVersion('1.0.0')
     .addBearerAuth()
     .build();
@@ -21,8 +18,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: [
-      'https://xfans-frontend.herokuapp.com',
-      'https://xfans-frontend.herokuapp.com/',
+      'https://vyppers-frontend.herokuapp.com',
+      'https://vyppers-frontend.herokuapp.com/',
       'http://localhost:5173',
       'http://localhost:5174',
       'http://localhost:5175',

@@ -9,6 +9,7 @@ import { UserRepository } from '../../data/mongoose/repositories/user.repository
 import { IChangePasswordDto } from '../interfaces/others/change-password.interface';
 import { IChangePasswordService } from '../interfaces/usecases/change-password.interface';
 import { decryptData } from 'src/shared/helpers/jwe-generator.helper';
+import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class ChangePasswordService implements IChangePasswordService {
@@ -21,7 +22,7 @@ export class ChangePasswordService implements IChangePasswordService {
     if (dto.newPassword !== dto.confirmNewPassword) {
       throw new ConflictException();
     }
-    const decryptedCode = await decryptData(dto.tokenCode);
+    const decryptedCode = await decryptData(dto.tokenCode, ICryptoType.CODE);
 
     const code = await this.codeRecoveryRepository.findOne({
       _id: decryptedCode?._id,
@@ -33,7 +34,10 @@ export class ChangePasswordService implements IChangePasswordService {
 
     const findedOne = await this.userRepository.findOne({ _id: code.owner });
 
-    const hashedPassword = this.cryptoAdapter.encryptText(dto.newPassword);
+    const hashedPassword = this.cryptoAdapter.encryptText(
+      dto.newPassword,
+      ICryptoType.USER,
+    );
 
     await this.userRepository.updateOne(findedOne, hashedPassword);
 

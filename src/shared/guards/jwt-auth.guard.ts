@@ -2,7 +2,6 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
-  InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { environment } from '../../main/config/environment';
@@ -24,10 +23,10 @@ export class JwtAuthGuard implements CanActivate {
         (request.headers.authorization || '').split(' ')[1] || '';
 
       const {
-        cryptoData: { keyPass, keySalt, keyLength },
+        cryptoData: { keyPassUser, keySalt, keyLength },
       } = environment;
 
-      const key = scryptSync(keyPass, keySalt, keyLength);
+      const key = scryptSync(keyPassUser, keySalt, keyLength);
       const decrypted = await jwtDecrypt(authorization, key);
 
       if (!decrypted.payload) {
@@ -35,7 +34,7 @@ export class JwtAuthGuard implements CanActivate {
       }
       return true;
     } catch (err) {
-      throw new InternalServerErrorException();
+      throw new UnauthorizedException();
     }
   }
 }

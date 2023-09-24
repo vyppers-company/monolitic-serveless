@@ -19,7 +19,7 @@ import { ChangePasswordService } from 'src/domain/usecases/change-password.servi
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
 import { UserController } from 'src/presentation/controller/user.controller';
 import { UserService } from 'src/domain/usecases/user.service';
-
+import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-id.service';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -42,6 +42,7 @@ import { UserService } from 'src/domain/usecases/user.service';
     CryptoAdapter,
     SendEmailAdapter,
     SendSmsAdapter,
+    ValidateProfileIdService,
   ],
   controllers: [
     RecoveryController,

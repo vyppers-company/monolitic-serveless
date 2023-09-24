@@ -14,6 +14,6 @@ export class Auth implements IAuth {
   @IsString()
   @MinLength(8)
   @MaxLength(50)
-  @ApiProperty({ required: true, example: 'byteme12' })
+  @ApiProperty({ required: true, example: 'vyppers@2024' })
   password: string;
 }

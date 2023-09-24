@@ -3,6 +3,7 @@ import { CodeRepository } from '../../data/mongoose/repositories/code.repository
 import { ICode, ITokenCode } from '../interfaces/others/recovery.interface';
 import { generateToken } from 'src/shared/helpers/jwe-generator.helper';
 import { IValidateCode } from '../interfaces/usecases/validate-code.interface';
+import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class ValidateCodeService implements IValidateCode {
@@ -16,7 +17,7 @@ export class ValidateCodeService implements IValidateCode {
       throw new UnprocessableEntityException();
     }
 
-    const tokenCode = await generateToken({ _id: code._id });
+    const tokenCode = await generateToken({ _id: code._id }, ICryptoType.CODE);
     return { tokenCode };
   }
 }
