@@ -7,6 +7,12 @@ export const environment = {
     port: process.env.PORT || 3000,
     serviceName: process.env.SERVICE_NAME || '',
   },
+  google: {
+    clientID: process.env.GOOGLE_AUTH_CLIENT_ID || '',
+    clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET || '',
+    callbackUrl: process.env.GOOGLE_AUTH_CALLBACK_URL || '',
+    scope: Array.from(process.env.GOOGLE_AUTH_SCOPE.split(',')) || [],
+  },
   mail: {
     domain: process.env.DOMAIN_NAME || '',
     apiKey: process.env.MAILGUN_API_KEY || '',

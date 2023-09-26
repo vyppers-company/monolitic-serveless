@@ -8,6 +8,7 @@ export const generateToken = async (
     _id: string;
     profileId?: string;
     email?: string;
+    status?: string;
   },
   type: ICryptoType,
 ) => {

@@ -20,6 +20,7 @@ import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
 import { UserController } from 'src/presentation/controller/user.controller';
 import { UserService } from 'src/domain/usecases/user.service';
 import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-id.service';
+import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -31,6 +32,7 @@ import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-i
     ]),
   ],
   providers: [
+    GoogleAuthStrategy,
     RecoveryService,
     RegisterService,
     ChangePasswordService,

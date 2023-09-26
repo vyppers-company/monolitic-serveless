@@ -17,16 +17,22 @@ export class User extends Document implements IUserEntity {
   name: string;
 
   @Prop({ unique: true })
-  phone: string;
+  phone?: string;
 
   @Prop({ unique: true })
-  email: string;
+  email?: string;
 
   @Prop()
-  password: string;
+  password?: string;
 
   @Prop({ unique: true })
-  profileId: string;
+  profileId?: string;
+
+  @Prop()
+  profileImage?: string;
+
+  @Prop({ default: false })
+  activated?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
