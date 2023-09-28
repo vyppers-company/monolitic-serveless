@@ -15,7 +15,7 @@ const getAge = (date: string) => {
   if (mNow < mBorn || (mNow === mNow && dNow < dBorn)) {
     age--;
   }
-  return age < 15 ? false : true;
+  return age < 17 ? false : true;
 };
 
 export { getAge };
