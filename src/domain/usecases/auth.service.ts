@@ -98,7 +98,6 @@ export class AuthService implements IAuthUseCase {
       ICryptoType.USER,
     );
 
-    delete user.phone;
     await this.userRepository.create({
       ...user,
       name: hashedName,

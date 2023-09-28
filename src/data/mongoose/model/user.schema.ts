@@ -19,7 +19,7 @@ export class User extends Document implements IAccess {
   @Prop({ unique: true })
   phone?: string;
 
-  @Prop({ unique: true })
+  @Prop()
   email?: string;
 
   @Prop()
