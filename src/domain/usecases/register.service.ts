@@ -1,9 +1,14 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
-import { IUserEntity } from '../entity/user.entity';
+import { IAccess } from '../entity/user.entity';
 import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
+import { getAge } from 'src/shared/utils/getAge';
 
 @Injectable()
 export class RegisterService implements IRegisterUseCase {
@@ -12,7 +17,11 @@ export class RegisterService implements IRegisterUseCase {
     private readonly cryptoAdapter: CryptoAdapter,
   ) {}
 
-  async register(dto: IUserEntity) {
+  async register(dto: IAccess) {
+    if (!dto.termsAndConditions) {
+      throw new UnauthorizedException('the value needs to be TRUE');
+    }
+
     const hashedPhone = this.cryptoAdapter.encryptText(
       dto.phone,
       ICryptoType.USER,
@@ -37,7 +46,14 @@ export class RegisterService implements IRegisterUseCase {
     });
 
     if (findedOne) {
-      throw new ConflictException();
+      throw new ConflictException(
+        'some data is already registered in our database',
+      );
+    }
+    const age = getAge(dto.birthday);
+
+    if (!age) {
+      throw new ConflictException('you need to have 16 years old');
     }
 
     const hashedPassword = this.cryptoAdapter.encryptText(

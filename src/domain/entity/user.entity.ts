@@ -1,4 +1,4 @@
-export interface IUserEntity {
+export interface IAccess {
   _id?: string;
   name: string;
   password?: string;
@@ -7,4 +7,9 @@ export interface IUserEntity {
   profileId?: string;
   profileImage?: string;
   activated?: boolean;
+  _idProfile?: string;
+  birthday?: string;
+  gender?: string;
+  oauth2Partner?: string;
+  termsAndConditions: boolean;
 }

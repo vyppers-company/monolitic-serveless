@@ -7,11 +7,19 @@ export const environment = {
     port: process.env.PORT || 3000,
     serviceName: process.env.SERVICE_NAME || '',
   },
-  google: {
-    clientID: process.env.GOOGLE_AUTH_CLIENT_ID || '',
-    clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET || '',
-    callbackUrl: process.env.GOOGLE_AUTH_CALLBACK_URL || '',
-    scope: Array.from(process.env.GOOGLE_AUTH_SCOPE.split(',')) || [],
+  oauth: {
+    google: {
+      clientID: process.env.GOOGLE_AUTH_CLIENT_ID || '',
+      clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET || '',
+      callbackUrl: process.env.GOOGLE_AUTH_CALLBACK_URL || '',
+      scope: Array.from(process.env.GOOGLE_AUTH_SCOPE.split(',')) || [],
+    },
+    facebook: {
+      clientID: process.env.FACEBOOK_AUTH_CLIENT_ID || '',
+      clientSecret: process.env.FACEBOOK_AUTH_CLIENT_SECRET || '',
+      callbackUrl: process.env.FACEBOOK_AUTH_CALLBACK_URL || '',
+      fields: Array.from(process.env.FACEBOOK_AUTH_FIELDS.split(',')) || [],
+    },
   },
   mail: {
     domain: process.env.DOMAIN_NAME || '',

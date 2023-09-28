@@ -5,21 +5,15 @@ import {
   Logger,
   Post,
   Req,
-  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../dtos/auth.dto';
 import { AuthService } from '../../domain/usecases/auth.service';
-import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
+import { GoogleAuthStrategy } from '../../domain/usecases/google-strategy.service';
 import { Request } from 'express';
-import { GoogleOAuthGuard } from 'src/shared/guards/google.guard';
-
-interface IProfile {
-  email: string;
-  name: string;
-  profileImage: string;
-}
+import { AuthGuard } from '@nestjs/passport';
+import { IAccess } from 'src/domain/entity/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -42,16 +36,34 @@ export class AuthController {
     summary:
       'chamar dentro de um iframe, regra: se nao tiver ele cria, porem depois precisa completar alguns dados (A DEFINIR)',
   })
-  @UseGuards(GoogleOAuthGuard)
+  @UseGuards(AuthGuard('google'))
   async authGoogle() {
     return;
   }
 
   @Get('v1/google/redirect')
   @ApiOperation({ summary: 'nao chamar, que chama é o google como callback' })
-  @UseGuards(GoogleOAuthGuard)
+  @UseGuards(AuthGuard('google'))
   async authGoogleRedirect(@Req() request: Request) {
-    const user = request.user as IProfile;
-    return this.google.login(user);
+    const user = request.user as IAccess;
+    return this.authService.loginOauth20(user);
+  }
+
+  @Get('v1/facebook')
+  @ApiOperation({
+    summary:
+      'chamar dentro de um iframe, regra: se nao tiver ele cria, porem depois precisa completar alguns dados (A DEFINIR)',
+  })
+  @UseGuards(AuthGuard('facebook'))
+  async authFacebook() {
+    return;
+  }
+
+  @Get('v1/facebook/redirect')
+  @ApiOperation({ summary: 'nao chamar, que chama é o facebook como callback' })
+  @UseGuards(AuthGuard('facebook'))
+  async authFacebookRedirect(@Req() request: Request) {
+    const user = request.user as IAccess;
+    return this.authService.loginOauth20(user);
   }
 }

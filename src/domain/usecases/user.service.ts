@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
-import { IUserEntity } from '../entity/user.entity';
+import { IAccess } from '../entity/user.entity';
 import { ILogged } from '../interfaces/others/logged.interface';
 import { IUserService } from '../interfaces/usecases/user-service.interface';
 import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
@@ -14,12 +14,13 @@ export class UserService implements IUserService {
   ) {}
   async getPersonalData(
     logged: ILogged,
-  ): Promise<Pick<IUserEntity, 'email' | 'phone' | 'profileId'>> {
+  ): Promise<Pick<IAccess, 'email' | 'phone' | 'profileId' | '_idProfile'>> {
     const user = await this.userRepository.findOne({ _id: logged._id });
     return {
       email: this.cryptoAdapter.decryptText(user.email, ICryptoType.USER),
       phone: this.cryptoAdapter.decryptText(user.phone, ICryptoType.USER),
-      profileId: user.profileId,
+      profileId: user.profileId || null,
+      _idProfile: user._idProfile || null,
     };
   }
 }

@@ -21,6 +21,7 @@ import { UserController } from 'src/presentation/controller/user.controller';
 import { UserService } from 'src/domain/usecases/user.service';
 import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-id.service';
 import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
+import { FacebookAuthStrategy } from 'src/domain/usecases/facebook-strategy.service';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -32,6 +33,7 @@ import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service'
     ]),
   ],
   providers: [
+    FacebookAuthStrategy,
     GoogleAuthStrategy,
     RecoveryService,
     RegisterService,

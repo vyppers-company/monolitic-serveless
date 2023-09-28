@@ -2,29 +2,19 @@ import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { environment } from 'src/main/config/environment';
-import { UnauthorizedException } from '@nestjs/common';
-import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
-import { generateToken } from 'src/shared/helpers/jwe-generator.helper';
-
-interface IProfile {
-  email: string;
-  name: string;
-  profileImage: string;
-}
+import axios from 'axios';
+import { IAccess } from '../entity/user.entity';
 
 @Injectable()
 export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(
-    private readonly cryptoAdapter: CryptoAdapter,
-    private readonly userRepository: UserRepository,
-  ) {
+  constructor() {
     super({
-      clientID: environment.google.clientID,
-      clientSecret: environment.google.clientSecret,
-      callbackURL: environment.google.callbackUrl,
-      scope: environment.google.scope,
+      clientID: environment.oauth.google.clientID,
+      clientSecret: environment.oauth.google.clientSecret,
+      callbackURL: environment.oauth.google.callbackUrl,
+      scope: environment.oauth.google.scope,
     });
   }
   async validate(
@@ -33,59 +23,42 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    const { name, emails, photos } = profile;
-    const user: IProfile = {
-      email: emails[0].value,
-      name: `${name.givenName} ${name.familyName}`,
-      profileImage: photos[0].value,
+    const {
+      _json: { email, name, picture },
+    } = profile;
+    const user: IAccess = {
+      email,
+      name,
+      profileImage: picture,
+      oauth2Partner: 'google',
+      termsAndConditions: true,
     };
-    done(null, user);
-  }
-  async login(user?: IProfile) {
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-    const hashedEmail = this.cryptoAdapter.encryptText(
-      user.email,
-      ICryptoType.USER,
-    );
-    const findedOne = await this.userRepository.findOne({ email: hashedEmail });
 
-    if (findedOne) {
-      const token = await generateToken(
-        {
-          _id: String(findedOne._id),
-          email: String(findedOne.email),
-          profileId: String(findedOne.profileId),
-        },
-        ICryptoType.USER,
-      );
-      return { token };
-    }
-
-    const hashedName = this.cryptoAdapter.encryptText(
-      user.name,
-      ICryptoType.USER,
-    );
-
-    await this.userRepository.create({
-      name: hashedName,
-      email: hashedEmail,
-      profileImage: user.profileImage,
-    });
-
-    const newOne = await this.userRepository.findOne({ email: hashedEmail });
-
-    const token = await generateToken(
+    const { data } = await axios.get(
+      'https://people.googleapis.com/v1/people/me?personFields=genders,birthdays',
       {
-        _id: String(newOne._id),
-        email: String(newOne.email),
-        profileId: null,
-        status: 'GOOGLE_MISSING_SOME_DATA',
+        headers: {
+          Authorization: `Bearer ${_accessToken}`,
+        },
       },
-      ICryptoType.USER,
     );
 
-    return { token };
+    const formattedBirthday = data?.birthdays.length
+      ? `${data.birthdays[1].date.year}-${
+          data.birthdays[1].date.month < 10
+            ? `0${data.birthdays[1].date.month}`
+            : data.birthdays[1].date.month
+        }-${
+          data.birthdays[1].date.day < 10
+            ? `0${data.birthdays[1].date.day}`
+            : data.birthdays[1].date.day
+        }T03:01:00Z`
+      : null;
+
+    done(null, {
+      ...user,
+      birthday: formattedBirthday,
+      gender: data?.genders ? data.genders[0].value : null,
+    });
   }
 }

@@ -1,5 +1,5 @@
-import { IUserEntity } from '../../entity/user.entity';
+import { IAccess } from '../../entity/user.entity';
 
 export interface IRegisterUseCase {
-  register: (dto: IUserEntity) => Promise<void>;
+  register: (dto: IAccess) => Promise<void>;
 }

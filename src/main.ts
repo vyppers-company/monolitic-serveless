@@ -20,6 +20,7 @@ async function bootstrap() {
     origin: [
       'https://vyppers-frontend.herokuapp.com',
       'https://vyppers-frontend.herokuapp.com/',
+      'https://vyppers-frontend-db46cb7d8330.herokuapp.com/',
       'http://localhost:5173',
       'http://localhost:5174',
       'http://localhost:5175',
