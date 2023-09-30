@@ -43,17 +43,18 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
       },
     );
 
-    const formattedBirthday = data?.birthdays.length
-      ? `${data.birthdays[1].date.year}-${
-          data.birthdays[1].date.month < 10
-            ? `0${data.birthdays[1].date.month}`
-            : data.birthdays[1].date.month
-        }-${
-          data.birthdays[1].date.day < 10
-            ? `0${data.birthdays[1].date.day}`
-            : data.birthdays[1].date.day
-        }T03:01:00Z`
-      : null;
+    const formattedBirthday =
+      data?.birthdays.length === 2
+        ? `${data.birthdays[1].date.year}-${
+            data.birthdays[1].date.month < 10
+              ? `0${data.birthdays[1].date.month}`
+              : data.birthdays[1].date.month
+          }-${
+            data.birthdays[1].date.day < 10
+              ? `0${data.birthdays[1].date.day}`
+              : data.birthdays[1].date.day
+          }T03:01:00Z`
+        : null;
 
     done(null, {
       ...user,

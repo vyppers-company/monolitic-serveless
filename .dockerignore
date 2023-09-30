@@ -1,0 +1,33 @@
+# Arquivos de versionamento (por exemplo, .git, .svn, .hg)
+.git
+.svn
+.hg
+
+# Diretórios e arquivos relacionados a pacotes gerenciadores de dependência
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Arquivos temporários
+*.swp
+*~
+.DS_Store
+
+# Logs e arquivos de saída
+logs
+*.log
+
+# Arquivos de configuração específicos de IDEs
+.idea/
+.vscode/
+
+# Arquivos de build e cache
+/build
+/dist
+
+# Arquivos de teste e diretórios
+__tests__
+test
+tests
