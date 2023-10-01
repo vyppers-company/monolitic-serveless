@@ -16,10 +16,10 @@ export class User extends Document implements IAccess {
   @Prop()
   name: string;
 
-  @Prop({ unique: true })
+  @Prop()
   phone?: string;
 
-  @Prop()
+  @Prop({ unique: true })
   email?: string;
 
   @Prop()
