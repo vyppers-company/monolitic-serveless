@@ -25,7 +25,7 @@ export class User extends Document implements IAccess {
   @Prop()
   password?: string;
 
-  @Prop({ unique: true })
+  @Prop({ unique: false })
   profileId?: string;
 
   @Prop()
