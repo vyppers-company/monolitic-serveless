@@ -11,7 +11,7 @@ import { IAuthUseCase } from '../interfaces/usecases/auth.interface';
 import { generateToken } from '../../shared/helpers/jwe-generator.helper';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { getAge } from 'src/shared/utils/getAge';
-import { IAccess } from '../entity/user.entity';
+import { IProfile } from '../entity/user.entity';
 @Injectable()
 export class AuthService implements IAuthUseCase {
   constructor(
@@ -66,7 +66,7 @@ export class AuthService implements IAuthUseCase {
 
     return { token };
   }
-  async loginOauth20(user?: IAccess) {
+  async loginOauth20(user?: IProfile) {
     if (!user) {
       throw new UnauthorizedException();
     }

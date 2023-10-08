@@ -1,7 +1,7 @@
 import { Strategy } from 'passport-facebook';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { IAccess } from '../entity/user.entity';
+import { IProfile } from '../entity/user.entity';
 import { environment } from 'src/main/config/environment';
 
 @Injectable()
@@ -40,7 +40,7 @@ export class FacebookAuthStrategy extends PassportStrategy(
       ? `${splitedDate[2]}-${splitedDate[1]}-${splitedDate[0]}T03:01:00Z`
       : null;
 
-    const user: IAccess = {
+    const user: IProfile = {
       email,
       name,
       profileImage: url,

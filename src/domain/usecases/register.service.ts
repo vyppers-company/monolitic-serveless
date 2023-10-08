@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
-import { IAccess } from '../entity/user.entity';
+import { IProfile } from '../entity/user.entity';
 import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { getAge } from 'src/shared/utils/getAge';
@@ -17,7 +17,7 @@ export class RegisterService implements IRegisterUseCase {
     private readonly cryptoAdapter: CryptoAdapter,
   ) {}
 
-  async register(dto: IAccess) {
+  async register(dto: IProfile) {
     if (!dto.termsAndConditions) {
       throw new UnauthorizedException('the value needs to be TRUE');
     }

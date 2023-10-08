@@ -18,10 +18,11 @@ import { SendSmsAdapter } from '../infra/adapters/blow-io.adapter';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
 import { UserController } from 'src/presentation/controller/user.controller';
-import { UserService } from 'src/domain/usecases/user.service';
 import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-id.service';
 import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
 import { FacebookAuthStrategy } from 'src/domain/usecases/facebook-strategy.service';
+import { SESAdapter } from 'src/infra/adapters/ses.adapter';
+
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -40,11 +41,11 @@ import { FacebookAuthStrategy } from 'src/domain/usecases/facebook-strategy.serv
     ChangePasswordService,
     AuthService,
     ValidateCodeService,
-    UserService,
     UserRepository,
     CodeRepository,
     CryptoAdapter,
     SendEmailAdapter,
+    SESAdapter,
     SendSmsAdapter,
     ValidateProfileIdService,
   ],

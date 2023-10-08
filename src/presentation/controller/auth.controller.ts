@@ -13,7 +13,7 @@ import { AuthService } from '../../domain/usecases/auth.service';
 import { GoogleAuthStrategy } from '../../domain/usecases/google-strategy.service';
 import { Request } from 'express';
 import { AuthGuard } from '@nestjs/passport';
-import { IAccess } from 'src/domain/entity/user.entity';
+import { IProfile } from 'src/domain/entity/user.entity';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -45,7 +45,7 @@ export class AuthController {
   @ApiOperation({ summary: 'nao chamar, que chama é o google como callback' })
   @UseGuards(AuthGuard('google'))
   async authGoogleRedirect(@Req() request: Request) {
-    const user = request.user as IAccess;
+    const user = request.user as IProfile;
     return this.authService.loginOauth20(user);
   }
 
@@ -63,7 +63,7 @@ export class AuthController {
   @ApiOperation({ summary: 'nao chamar, que chama é o facebook como callback' })
   @UseGuards(AuthGuard('facebook'))
   async authFacebookRedirect(@Req() request: Request) {
-    const user = request.user as IAccess;
+    const user = request.user as IProfile;
     return this.authService.loginOauth20(user);
   }
 }

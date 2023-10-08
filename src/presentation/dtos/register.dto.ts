@@ -11,9 +11,9 @@ import {
 } from 'class-validator';
 import regex from '../../shared/helpers/regex';
 import { Match } from '../../shared/decorators/match.decorator';
-import { IAccess } from '../../domain/entity/user.entity';
+import { IProfile } from '../../domain/entity/user.entity';
 
-export class RegisterDto implements IAccess {
+export class RegisterDto implements IProfile {
   @IsString()
   @ApiProperty({ required: true, example: 'Maria eugenia' })
   name: string;

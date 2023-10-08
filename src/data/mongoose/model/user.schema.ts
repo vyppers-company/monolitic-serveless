@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
-import { IAccess } from '../../../domain/entity/user.entity';
+import { IProfile } from '../../../domain/entity/user.entity';
 import { environment } from 'src/main/config/environment';
 
 export type UserDocument = User & Document;
@@ -10,7 +10,7 @@ export type UserDocument = User & Document;
   timestamps: { currentTime: correctDateNow },
   collection: environment.mongodb.collections.user,
 })
-export class User extends Document implements IAccess {
+export class User extends Document implements IProfile {
   _id?: string;
 
   @Prop()

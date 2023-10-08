@@ -10,6 +10,7 @@ import { UserRepository } from '../../data/mongoose/repositories/user.repository
 import { IRecoveryDto } from '../interfaces/others/recovery.interface';
 import { IRcoveryUseCase } from '../interfaces/usecases/send-email.interface';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
+import { SESAdapter } from 'src/infra/adapters/ses.adapter';
 
 @Injectable()
 export class RecoveryService implements IRcoveryUseCase {
@@ -17,8 +18,9 @@ export class RecoveryService implements IRcoveryUseCase {
     private readonly userRepository: UserRepository,
     private readonly codeRecoveryRepository: CodeRepository,
     private readonly cryptoAdapter: CryptoAdapter,
-    private readonly sendEmailAdapter: SendEmailAdapter,
-    private readonly sendSmsAdapter: SendSmsAdapter,
+    /*     private readonly sendEmailAdapter: SendEmailAdapter,
+     */ private readonly sendSmsAdapter: SendSmsAdapter,
+    private readonly sesAdapter: SESAdapter,
   ) {}
   async send(dto: IRecoveryDto) {
     const isEmail = regex.email.test(dto.emailOrPhone);
@@ -60,7 +62,7 @@ export class RecoveryService implements IRcoveryUseCase {
       });
 
       if (isEmail) {
-        this.sendEmailAdapter.send(dto.emailOrPhone, code.formated);
+        this.sesAdapter.sendEmailCode(dto.emailOrPhone, code.formated);
       }
       if (isPhone) {
         this.sendSmsAdapter.send(dto.emailOrPhone, code.formated);

@@ -2,10 +2,8 @@ import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { environment } from 'src/main/config/environment';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
-import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import axios from 'axios';
-import { IAccess } from '../entity/user.entity';
+import { IProfile } from '../entity/user.entity';
 
 @Injectable()
 export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
@@ -26,7 +24,7 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
     const {
       _json: { email, name, picture },
     } = profile;
-    const user: IAccess = {
+    const user: IProfile = {
       email,
       name,
       profileImage: picture,
