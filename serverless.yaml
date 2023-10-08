@@ -1,0 +1,50 @@
+service: lambda
+useDotenv: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-warmup
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: dev
+  apiGateway:
+      shouldStartNameWithService: true
+  environment:
+      TZ: America/Sao_Paulo
+      NODE_ENV: development
+      PORT: 4001
+      SERVICE_NAME: monolitic-vyppers-serverless
+
+functions:
+  warmup:
+      default:
+        enabled: true
+  monolitic-vyppers-serverless:
+    handler: dist/lambda.handler
+    timeout: 20   
+    events:
+      - http:
+          method: ANY
+          path: '{proxy+}'
+
+custom:
+  warmup:
+    officeHoursWarmer:
+      enabled: true
+      events:
+        - schedule: cron(0/5 8-17 ? * MON-FRI *)
+      concurrency: 10
+      verbose: true
+      logRetentionInDays: 10
+    outOfOfficeHoursWarmer:
+      enabled: true
+      events:
+        - schedule: cron(0/5 0-7 ? * MON-FRI *)
+        - schedule: cron(0/5 18-23 ? * MON-FRI *)
+        - schedule: cron(0/5 * ? * SAT-SUN *)
+      concurrency: 1
+      verbose: false
+    testWarmer:
+      enabled: false

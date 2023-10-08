@@ -3,7 +3,7 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { environment } from '../../main/config/environment';
+import { environment } from '../../main/config/environment/environment';
 import { scryptSync } from 'node:crypto';
 import { jwtDecrypt } from 'jose';
 

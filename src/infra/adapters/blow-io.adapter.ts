@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { InternalServerErrorException } from '@nestjs/common';
 import { ISendRecoveryCode } from '../../domain/interfaces/adapters/send-recovery-code.interface';
-import { environment } from '../../main/config/environment';
+import { environment } from '../../main/config/environment/environment';
 export class SendSmsAdapter implements ISendRecoveryCode {
   async send(to: string, code: string) {
     try {

@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import { IProfile } from '../../../domain/entity/user.entity';
-import { environment } from 'src/main/config/environment';
+import { environment } from 'src/main/config/environment/environment';
 
 export type UserDocument = User & Document;
 

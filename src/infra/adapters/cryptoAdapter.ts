@@ -3,7 +3,7 @@ import {
   ICryptoType,
 } from '../../domain/interfaces/adapters/crypto.interface';
 import { Buffer } from 'node:buffer';
-import { environment } from '../../main/config/environment';
+import { environment } from '../../main/config/environment/environment';
 import { createCipheriv, scryptSync } from 'crypto';
 import { createDecipheriv } from 'node:crypto';
 

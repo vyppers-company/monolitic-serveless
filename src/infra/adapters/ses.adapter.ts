@@ -1,6 +1,6 @@
 import { ISendEmailAdapter } from 'src/domain/interfaces/adapters/send-email.interface';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import { environment } from 'src/main/config/environment';
+import { environment } from 'src/main/config/environment/environment';
 
 const ses = new SESClient({
   region: environment.aws.region,

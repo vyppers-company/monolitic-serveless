@@ -1,0 +1,7 @@
+export enum TYPEUPLOAD {
+  PROFILE = 'PROFILE',
+  FEED = 'FEED',
+  STORY = 'STORY',
+  DOCUMENT = 'DOCUMENT',
+  SHORT = 'SHORT',
+}

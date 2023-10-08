@@ -3,7 +3,7 @@ import { CodeRepository } from '../../data/mongoose/repositories/code.repository
 import { SendSmsAdapter } from '../../infra/adapters/blow-io.adapter';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { SendEmailAdapter } from '../../infra/adapters/mailgun.adapter';
-import { environment } from '../../main/config/environment';
+import { environment } from '../../main/config/environment/environment';
 import regex from '../../shared/helpers/regex';
 import { generateCode } from '../../shared/utils/generateRandomicCode';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';

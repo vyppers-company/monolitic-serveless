@@ -6,6 +6,7 @@ export const environment = {
     timeZone: process.env.TZ || '',
     port: process.env.PORT || 3000,
     serviceName: process.env.SERVICE_NAME || '',
+    cors: Array.from(process.env.ORIGINS.split(',')) || [],
   },
   oauth: {
     google: {
@@ -35,12 +36,20 @@ export const environment = {
     collections: {
       code: process.env.MONGODB_COLLECTION_CODE || '',
       user: process.env.MONGODB_COLLECTION_USER || '',
+      content: process.env.MONGODB_COLLECTION_CONTENT || '',
     },
   },
   aws: {
     clientId: process.env.AWS_CLIENT_ID || '',
     secretKey: process.env.AWS_SECRET_KEY || '',
     region: process.env.AWS_REGION,
+  },
+  storage: {
+    client_email: process.env.CLIENT_EMAIL || '',
+    private_key: process.env.PRIVATE_KEY || '',
+    bucket: {
+      name: process.env.BUCKET_NAME || '',
+    },
   },
   cryptoData: {
     cipherString: process.env.CIPHER_STRING,

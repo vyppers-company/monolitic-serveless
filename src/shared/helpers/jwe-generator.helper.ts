@@ -1,5 +1,5 @@
 import { scryptSync } from 'crypto';
-import { environment } from '../../main/config/environment';
+import { environment } from '../../main/config/environment/environment';
 import { EncryptJWT, jwtDecrypt } from 'jose';
 import { UnauthorizedException } from '@nestjs/common';
 import { ICryptoType } from 'src/domain/interfaces/adapters/crypto.interface';

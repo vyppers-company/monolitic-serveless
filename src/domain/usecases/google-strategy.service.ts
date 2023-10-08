@@ -1,7 +1,7 @@
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { environment } from 'src/main/config/environment';
+import { environment } from 'src/main/config/environment/environment';
 import axios from 'axios';
 import { IProfile } from '../entity/user.entity';
 

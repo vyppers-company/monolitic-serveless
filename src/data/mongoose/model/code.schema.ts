@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import { ICodeEntity } from '../../../domain/entity/code.entity';
-import { environment } from 'src/main/config/environment';
+import { environment } from 'src/main/config/environment/environment';
 
 export type CodeDocument = Code & Document;
 

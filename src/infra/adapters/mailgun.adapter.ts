@@ -1,6 +1,6 @@
 import { ISendRecoveryCode } from '../../domain/interfaces/adapters/send-recovery-code.interface';
-import * as mailgun from 'mailgun-js';
-import { environment } from '../../main/config/environment';
+import mailgun from 'mailgun-js';
+import { environment } from '../../main/config/environment/environment';
 import { InternalServerErrorException } from '@nestjs/common/exceptions/internal-server-error.exception';
 export class SendEmailAdapter implements ISendRecoveryCode {
   send(to: string, code: string) {

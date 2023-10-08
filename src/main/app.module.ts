@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { environment } from './config/environment';
+import { environment } from './config/environment/environment';
 import { HealthcheckController } from '../presentation/controller/healthcheck.controller';
 import { RegisterController } from '../presentation/controller/register.controller';
 import { RegisterService } from '../domain/usecases/register.service';
@@ -22,6 +22,17 @@ import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-i
 import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
 import { FacebookAuthStrategy } from 'src/domain/usecases/facebook-strategy.service';
 import { SESAdapter } from 'src/infra/adapters/ses.adapter';
+import { GoogleStorageMulter } from 'src/shared/helpers/google-storage-multer';
+import { CreateContentService } from 'src/domain/usecases/create-content.service';
+import { DeleteContentService } from 'src/domain/usecases/delete-content.service';
+import { EditContentService } from 'src/domain/usecases/edit-content.service';
+import { GetContentService } from 'src/domain/usecases/get-content.service';
+import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
+import { Content, ContentSchema } from 'src/data/mongoose/model/content.schema';
+import { GetProfileService } from 'src/domain/usecases/get-profile.service';
+import { ContentController } from 'src/presentation/controller/content.controller';
+import { UploadController } from 'src/presentation/controller/uploads.controller';
+import { S3Service } from 'src/domain/usecases/s3-upload.service';
 
 @Module({
   imports: [
@@ -31,9 +42,20 @@ import { SESAdapter } from 'src/infra/adapters/ses.adapter';
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Code.name, schema: CodeSchema },
+      { name: Content.name, schema: ContentSchema },
     ]),
   ],
   providers: [
+    {
+      provide: 'UPLOAD',
+      useFactory: () => {
+        return new GoogleStorageMulter({
+          bucketName: environment.storage.bucket.name,
+          client_email: environment.storage.client_email,
+          private_key: environment.storage.private_key.replace(/\\n/g, '\n'),
+        });
+      },
+    },
     FacebookAuthStrategy,
     GoogleAuthStrategy,
     RecoveryService,
@@ -48,6 +70,13 @@ import { SESAdapter } from 'src/infra/adapters/ses.adapter';
     SESAdapter,
     SendSmsAdapter,
     ValidateProfileIdService,
+    CreateContentService,
+    DeleteContentService,
+    EditContentService,
+    GetContentService,
+    ContentRepository,
+    GetProfileService,
+    S3Service,
   ],
   controllers: [
     RecoveryController,
@@ -55,6 +84,8 @@ import { SESAdapter } from 'src/infra/adapters/ses.adapter';
     RegisterController,
     AuthController,
     UserController,
+    ContentController,
+    UploadController,
   ],
 })
 export class AppModule {}
