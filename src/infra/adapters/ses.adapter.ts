@@ -1,11 +1,12 @@
 import { ISendEmailAdapter } from 'src/domain/interfaces/adapters/send-email.interface';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
+import { environment } from 'src/main/config/environment';
 
 const ses = new SESClient({
-  region: 'sa-east-1',
+  region: environment.aws.region,
   credentials: {
-    accessKeyId: 'AKIAUGGA4HKC7LI42C6O',
-    secretAccessKey: '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',
+    accessKeyId: environment.aws.clientId,
+    secretAccessKey: environment.aws.secretKey,
   },
 });
 

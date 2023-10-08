@@ -37,6 +37,11 @@ export const environment = {
       user: process.env.MONGODB_COLLECTION_USER || '',
     },
   },
+  aws: {
+    clientId: process.env.AWS_CLIENT_ID || '',
+    secretKey: process.env.AWS_SECRET_KEY || '',
+    region: process.env.AWS_REGION,
+  },
   cryptoData: {
     cipherString: process.env.CIPHER_STRING,
     keyPassUser: process.env.KEY_PASS_USER,
