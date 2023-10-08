@@ -1,5 +1,5 @@
 import { PaginateResult } from 'mongoose';
-import { IContentEntity, ITypeContent } from 'src/app/domain/entities/contents';
+import { IContentEntity, ITypeContent } from 'src/domain/entity/contents';
 
 export interface IContentsUseCase {
   getContents: (

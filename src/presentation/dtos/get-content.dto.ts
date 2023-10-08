@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum } from 'class-validator';
-import { ITypeContent } from 'src/app/domain/entities/contents';
+import { ITypeContent } from 'src/domain/entity/contents';
 
 export class TypeQueryDto {
   @IsEnum(ITypeContent, {
