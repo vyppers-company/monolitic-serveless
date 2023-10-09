@@ -6,8 +6,9 @@ export enum ITypeContent {
 }
 
 export interface IComment {
-  owner: string;
+  _id: string;
   text: string;
+  createdAt: Date;
 }
 
 export interface IContentEntity {
@@ -16,9 +17,11 @@ export interface IContentEntity {
   owner?: string;
   contents?: string[];
   comments?: IComment[];
-  gifters?: string[];
+  giftersId?: string[];
   likersId?: string[];
-  settings?: Record<string, any>;
+  payed?: boolean;
+  allowPreview?: boolean;
+  allowComments?: boolean;
   canEdit?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

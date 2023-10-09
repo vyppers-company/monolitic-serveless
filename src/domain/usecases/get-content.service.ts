@@ -43,10 +43,9 @@ export class GetContentService implements IContentsUseCase {
     return {
       comments: content.comments,
       contents: content.contents,
-      gifters: content.gifters,
+      giftersId: content.giftersId,
       likersId: content.likersId,
       owner: content.owner,
-      settings: content.settings,
       text: content.text,
       type: content.type,
       canEdit: profileId === myId ? true : false,

@@ -22,11 +22,6 @@ export class CreateContentService implements ICreateContentUseCase {
     await this.contentRepositoru.create({
       ...dto,
       owner,
-      comments: [],
-      likersId: [],
-      settings: {
-        allowComments: true,
-      },
     });
   }
 }

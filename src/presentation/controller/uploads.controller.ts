@@ -50,27 +50,6 @@ export class UploadController {
     description: 'midia',
     type: CreateUpload,
   })
-  @UseInterceptors(createPostMediasFileInterceptor())
-  async profileImage(@UploadedFiles() file: any) {
-    if (!file.file) {
-      throw new BadRequestException('Midia é obrigátoria');
-    }
-    return { path: file.file[0].path };
-  }
-
-  @Patch('v2/upload/s3')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiQuery({
-    name: 'type',
-    required: true,
-    enum: TYPEUPLOAD,
-  })
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    description: 'midia',
-    type: CreateUpload,
-  })
   @UseInterceptors(FileInterceptor('file'))
   async profileImageV2(@UploadedFiles() file: Express.Multer.File) {
     if (!file) {
@@ -81,18 +60,6 @@ export class UploadController {
   }
 
   @Delete('v1/delete')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
-  @ApiBody({
-    description: 'midia',
-    type: DeleteUpload,
-  })
-  async DeleteMidia(@Body() body: DeleteUpload) {
-    const url = body.url.split('?')[0];
-    await this.googleStorageMulter.removeByUrl(url);
-  }
-
-  @Delete('v2/delete/s3')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiBody({

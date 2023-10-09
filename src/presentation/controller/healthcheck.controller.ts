@@ -2,7 +2,7 @@ import { Controller, Get, Logger } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('healthcheck')
-@Controller('/')
+@Controller('/healthcheck')
 export class HealthcheckController {
   private logger: Logger;
   constructor() {

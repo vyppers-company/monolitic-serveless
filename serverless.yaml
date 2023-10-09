@@ -4,30 +4,138 @@ useDotenv: true
 plugins:
   - serverless-offline
   - serverless-plugin-warmup
+  - serverless-dotenv-plugin
 
 provider:
   name: aws
   runtime: nodejs18.x
   stage: dev
+  region: sa-east-1
+  logs:
+    restApi: True
   apiGateway:
-      shouldStartNameWithService: true
-  environment:
-      TZ: America/Sao_Paulo
-      NODE_ENV: development
-      PORT: 4001
-      SERVICE_NAME: monolitic-vyppers-serverless
+    integration: lambda      
+    shouldStartNameWithService: true
+    binaryMediaTypes:
+      - '*/*'
+
+package:
+  individually: true
 
 functions:
   warmup:
       default:
         enabled: true
-  monolitic-vyppers-serverless:
+  create-account:
     handler: dist/lambda.handler
-    timeout: 20   
+    timeout: 200   
     events:
       - http:
-          method: ANY
-          path: '{proxy+}'
+          method: POST
+          path: 'register/v1/user'
+  auth-common:
+    handler: dist/lambda.handler
+    timeout: 200
+    events:
+      - http:
+          method: POST
+          path: 'auth/v1/common'
+  auth-google:
+    handler: dist/lambda.handler
+    timeout: 200   
+    events:
+      - http:
+          method: GET
+          path: 'auth/v1/google'
+      - http:
+          method: GET
+          path: 'auth/v1/google/redirect'
+  auth-facebook:
+    handler: dist/lambda.handler
+    timeout: 200   
+    events:
+      - http:
+          method: GET
+          path: 'auth/v1/facebook'
+      - http:
+          method: GET
+          path: 'auth/v1/facebook/redirect'
+  recovery-account:
+    handler: dist/lambda.handler
+    timeout: 200   
+    events:
+      - http:
+          method: POST
+          path: 'recovery/v1/generate-code'
+      - http:
+          method: POST
+          path: 'recovery/v1/validate-code'
+      - http:
+          method: POST
+          path: 'recovery/v1/change-password'
+  midia:
+    handler: dist/lambda.handler
+    timeout: 200   
+    events:
+      - http:
+          method: PATCH
+          contentType: multipart/form-data
+          integration: lambda-proxy
+          path: 'midia/v1/upload'
+  user:
+    handler: dist/lambda.handler
+    timeout: 200   
+    events:
+      - http:
+          method: GET
+          path: 'user/v1/profile'
+      - http:
+          method: GET
+          path: 'user/v1/validate/profile'
+  content-managment:
+    handler: dist/lambda.handler
+    timeout: 200   
+    events:
+      - http:
+          method: POST
+          path: 'content/v1/create'
+      - http:
+          method: DELETE
+          path: 'content/v1/:contentId/delete'
+      - http:
+          method: PUT
+          path: 'content/v1/:contentId/edit'
+      - http:
+          method: GET
+          path: 'content/v1/all'
+      - http:
+          method: GET
+          path: 'content/v1/unique/:contentId/:profileId'
+      - http:
+          method: GET
+          path: 'content/v1/profile/picture'
+  swagger:
+    handler: dist/lambda.handler
+    timeout: 200   
+    events:
+      - http:
+          method: GET
+          path: 'swagger'
+      - http:
+          method: GET
+          path: 'swagger/swagger-ui.css'
+      - http:
+          method: GET
+          path: 'swagger/swagger-ui-bundle.js'
+      - http:
+          method: GET
+          path: 'swagger/swagger-ui-standalone-preset.js'
+      - http:
+          method: GET
+          path: 'swagger/swagger-ui-init.js'
+      - http:
+          method: GET
+          path: 'swagger/swagger-ui.css.map'
 
 custom:
   warmup:
@@ -37,7 +145,6 @@ custom:
         - schedule: cron(0/5 8-17 ? * MON-FRI *)
       concurrency: 10
       verbose: true
-      logRetentionInDays: 10
     outOfOfficeHoursWarmer:
       enabled: true
       events:

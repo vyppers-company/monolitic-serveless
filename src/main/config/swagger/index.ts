@@ -4,7 +4,7 @@ import { environment } from '../environment/environment';
 
 const setupSwagger = (app: INestApplication) => {
   const options = new DocumentBuilder()
-    .setTitle(`vyppers - ${environment.app.serviceName}`)
+    .setTitle(`${environment.app.serviceName}`)
     .setVersion('1.0.0')
     .addBearerAuth()
     .build();

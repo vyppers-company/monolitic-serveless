@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { S3, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { environment } from 'src/main/config/environment/environment';
+import * as mime from 'mime-types';
+import { randomUUID } from 'node:crypto';
 
 const s3 = new S3({
   region: environment.aws.region,
@@ -13,10 +15,12 @@ const s3 = new S3({
 @Injectable()
 export class S3Service {
   async uploadFile(file: Express.Multer.File) {
+    const fileExtName = mime.extension(file.mimetype);
+    const randomName = randomUUID();
     return await s3.send(
       new PutObjectCommand({
         Bucket: environment.storage.bucket.name,
-        Key: '',
+        Key: `${randomName}.${fileExtName}`,
         Body: file.stream,
         ACL: 'public-read',
         ContentType: file.mimetype,

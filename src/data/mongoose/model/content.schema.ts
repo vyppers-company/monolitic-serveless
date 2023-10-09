@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import {
-  IComment,
   IContentEntity,
+  IComment,
   ITypeContent,
 } from 'src/domain/entity/contents';
 import { environment } from 'src/main/config/environment/environment';
@@ -16,6 +16,9 @@ export type ContentDocument = Content & Document;
 })
 export class Content extends Document implements IContentEntity {
   _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+
   @Prop()
   text?: string;
   @Prop({ enum: ITypeContent })
@@ -25,15 +28,17 @@ export class Content extends Document implements IContentEntity {
   @Prop()
   contents?: string[];
   @Prop()
-  gifters?: string[];
+  giftersId?: string[];
   @Prop()
   comments?: IComment[];
   @Prop()
   likersId?: string[];
-  @Prop({ type: Object })
-  settings?: Record<string, any>;
-  createdAt?: Date;
-  updatedAt?: Date;
+  @Prop({ default: false })
+  payed?: boolean;
+  @Prop({ default: false })
+  allowPreview?: boolean;
+  @Prop({ default: true })
+  allowComments?: boolean;
 }
 
 export const ContentSchema = SchemaFactory.createForClass(Content);
