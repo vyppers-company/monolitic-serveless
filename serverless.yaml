@@ -1,4 +1,4 @@
-service: lambda
+service: lambdas-dev
 useDotenv: true
 
 plugins:
@@ -14,7 +14,6 @@ provider:
   logs:
     restApi: True
   apiGateway:
-    integration: lambda      
     shouldStartNameWithService: true
     binaryMediaTypes:
       - '*/*'
@@ -23,9 +22,9 @@ package:
   individually: true
 
 functions:
-  warmup:
-      default:
-        enabled: true
+#  warmup:
+#      default:
+#        enabled: true
   create-account:
     handler: dist/lambda.handler
     timeout: 200   
@@ -79,7 +78,6 @@ functions:
     events:
       - http:
           method: PATCH
-          contentType: multipart/form-data
           integration: lambda-proxy
           path: 'midia/v1/upload'
   user:
@@ -101,16 +99,16 @@ functions:
           path: 'content/v1/create'
       - http:
           method: DELETE
-          path: 'content/v1/:contentId/delete'
+          path: 'content/v1/{contentId}/delete'
       - http:
           method: PUT
-          path: 'content/v1/:contentId/edit'
+          path: 'content/v1/{contentId}/edit'
       - http:
           method: GET
           path: 'content/v1/all'
       - http:
           method: GET
-          path: 'content/v1/unique/:contentId/:profileId'
+          path: 'content/v1/unique/{contentId}/{profileId}'
       - http:
           method: GET
           path: 'content/v1/profile/picture'
@@ -137,21 +135,21 @@ functions:
           method: GET
           path: 'swagger/swagger-ui.css.map'
 
-custom:
-  warmup:
-    officeHoursWarmer:
-      enabled: true
-      events:
-        - schedule: cron(0/5 8-17 ? * MON-FRI *)
-      concurrency: 10
-      verbose: true
-    outOfOfficeHoursWarmer:
-      enabled: true
-      events:
-        - schedule: cron(0/5 0-7 ? * MON-FRI *)
-        - schedule: cron(0/5 18-23 ? * MON-FRI *)
-        - schedule: cron(0/5 * ? * SAT-SUN *)
-      concurrency: 1
-      verbose: false
-    testWarmer:
-      enabled: false
+#custom:
+#  warmup:
+#    officeHoursWarmer:
+#      enabled: true
+#      events:
+#        - schedule: cron(0/5 8-17 ? * MON-FRI *)
+#      concurrency: 10
+#      verbose: true
+#    outOfOfficeHoursWarmer:
+#      enabled: true
+#      events:
+#        - schedule: cron(0/5 0-7 ? * MON-FRI *)
+#        - schedule: cron(0/5 18-23 ? * MON-FRI *)
+#        - schedule: cron(0/5 * ? * SAT-SUN *)
+#      concurrency: 1
+#      verbose: false
+#    testWarmer:
+#      enabled: false

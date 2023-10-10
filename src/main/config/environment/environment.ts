@@ -40,9 +40,9 @@ export const environment = {
     },
   },
   aws: {
-    clientId: process.env.AWS_CLIENT_ID || '',
-    secretKey: process.env.AWS_SECRET_KEY || '',
-    region: process.env.AWS_REGION,
+    clientId: process.env.AWS_CLIENT_ID_INTERNAL || '',
+    secretKey: process.env.AWS_SECRET_KEY_INTERNAL || '',
+    region: process.env.AWS_REGION_INTERNAL,
   },
   storage: {
     client_email: process.env.CLIENT_EMAIL || '',
