@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import { Express } from 'express';
 export const generateFileName = (
   _: Express.Request,
-  file: Express.Multer.File,
+  file: any,
   callback: (error: Error | null, filename: string) => void,
 ): void => {
   const fileExtName = mime.extension(file.mimetype);
