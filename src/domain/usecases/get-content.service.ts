@@ -18,6 +18,13 @@ export class GetContentService implements IContentsUseCase {
       {
         offset,
         limit,
+        populate: [
+          {
+            path: 'owner',
+            model: 'User',
+            select: 'profileImage profileId name',
+          },
+        ],
       },
       {
         owner: profileId || myId,

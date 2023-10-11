@@ -14,26 +14,26 @@ const s3 = new S3({
 
 @Injectable()
 export class S3Service {
-  async uploadFile(file: Express.Multer.File) {
+  async uploadFile(file: any, type: string, owner: string) {
     const fileExtName = mime.extension(file.mimetype);
     const randomName = randomUUID();
-    return await s3.send(
+    await s3.send(
       new PutObjectCommand({
-        Bucket: environment.storage.bucket.name,
-        Key: `${randomName}.${fileExtName}`,
-        Body: file.stream,
+        Bucket: environment.aws.midias,
+        Key: `${owner}/${type}/${randomName}.${fileExtName}`,
+        Body: file.buffer,
         ACL: 'public-read',
         ContentType: file.mimetype,
-        ContentDisposition: 'inline',
       }),
     );
+    return `${environment.aws.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`;
   }
   async deleteObject(url: string) {
+    const key = url.split('/');
     return await s3.send(
       new DeleteObjectCommand({
-        Bucket: environment.storage.bucket.name,
-        BypassGovernanceRetention: false,
-        Key: url,
+        Bucket: environment.aws.midias,
+        Key: `${key[3]}/${key[4]}/${key[5]}`,
       }),
     );
   }

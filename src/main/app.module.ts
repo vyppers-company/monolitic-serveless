@@ -13,7 +13,6 @@ import { RecoveryController } from '../presentation/controller/recovery.controll
 import { RecoveryService } from '../domain/usecases/recovery.service';
 import { CodeRepository } from '../data/mongoose/repositories/code.repository';
 import { Code, CodeSchema } from '../data/mongoose/model/code.schema';
-import { SendEmailAdapter } from '../infra/adapters/mailgun.adapter';
 import { SendSmsAdapter } from '../infra/adapters/blow-io.adapter';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
@@ -22,7 +21,6 @@ import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-i
 import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
 import { FacebookAuthStrategy } from 'src/domain/usecases/facebook-strategy.service';
 import { SESAdapter } from 'src/infra/adapters/ses.adapter';
-import { GoogleStorageMulter } from 'src/shared/helpers/google-storage-multer';
 import { CreateContentService } from 'src/domain/usecases/create-content.service';
 import { DeleteContentService } from 'src/domain/usecases/delete-content.service';
 import { EditContentService } from 'src/domain/usecases/edit-content.service';
@@ -46,16 +44,6 @@ import { S3Service } from 'src/domain/usecases/s3-upload.service';
     ]),
   ],
   providers: [
-    {
-      provide: 'UPLOAD',
-      useFactory: () => {
-        return new GoogleStorageMulter({
-          bucketName: environment.storage.bucket.name,
-          client_email: environment.storage.client_email,
-          private_key: environment.storage.private_key.replace(/\\n/g, '\n'),
-        });
-      },
-    },
     FacebookAuthStrategy,
     GoogleAuthStrategy,
     RecoveryService,
@@ -66,7 +54,6 @@ import { S3Service } from 'src/domain/usecases/s3-upload.service';
     UserRepository,
     CodeRepository,
     CryptoAdapter,
-    SendEmailAdapter,
     SESAdapter,
     SendSmsAdapter,
     ValidateProfileIdService,

@@ -6,7 +6,6 @@ import { setupSwagger } from 'src/main/config/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import * as mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import logger from '@vendia/serverless-express/src/logger';
 
 async function bootstrapLambda(): Promise<Handler> {
   mongoose.plugin(mongoosePaginate);
@@ -15,20 +14,7 @@ async function bootstrapLambda(): Promise<Handler> {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.init();
   const expressApp = app.getHttpAdapter().getInstance();
-  return serverlessExpress({
-    app: expressApp,
-    binarySettings: {
-      contentTypes: [
-        'image/jpeg',
-        'image/gif',
-        'image/png',
-        'image/x-icon',
-        'multipart/form-data',
-      ],
-      isBinary: true,
-    },
-    log: logger({ level: 'info' }),
-  });
+  return serverlessExpress({app: expressApp});
 }
 
 export { bootstrapLambda };

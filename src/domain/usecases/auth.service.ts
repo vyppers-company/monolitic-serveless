@@ -93,14 +93,8 @@ export class AuthService implements IAuthUseCase {
       throw new ConflictException('you need to have 16 years old');
     }
 
-    const hashedName = this.cryptoAdapter.encryptText(
-      user.name,
-      ICryptoType.USER,
-    );
-
     await this.userRepository.create({
       ...user,
-      name: hashedName,
       email: hashedEmail,
     });
 

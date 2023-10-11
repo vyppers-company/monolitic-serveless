@@ -1,4 +1,4 @@
-service: lambdas-dev
+service: functions
 useDotenv: true
 
 plugins:
@@ -11,6 +11,7 @@ provider:
   runtime: nodejs18.x
   stage: dev
   region: sa-east-1
+  timeout: 200
   logs:
     restApi: True
   apiGateway:
@@ -19,12 +20,11 @@ provider:
       - '*/*'
 
 package:
-  individually: true
+  individually: true 
+  patterns:
+    - '!node_modules/**'
 
 functions:
-#  warmup:
-#      default:
-#        enabled: true
   create-account:
     handler: dist/lambda.handler
     timeout: 200   
@@ -72,14 +72,6 @@ functions:
       - http:
           method: POST
           path: 'recovery/v1/change-password'
-  midia:
-    handler: dist/lambda.handler
-    timeout: 200   
-    events:
-      - http:
-          method: PATCH
-          integration: lambda-proxy
-          path: 'midia/v1/upload'
   user:
     handler: dist/lambda.handler
     timeout: 200   
@@ -134,22 +126,3 @@ functions:
       - http:
           method: GET
           path: 'swagger/swagger-ui.css.map'
-
-#custom:
-#  warmup:
-#    officeHoursWarmer:
-#      enabled: true
-#      events:
-#        - schedule: cron(0/5 8-17 ? * MON-FRI *)
-#      concurrency: 10
-#      verbose: true
-#    outOfOfficeHoursWarmer:
-#      enabled: true
-#      events:
-#        - schedule: cron(0/5 0-7 ? * MON-FRI *)
-#        - schedule: cron(0/5 18-23 ? * MON-FRI *)
-#        - schedule: cron(0/5 * ? * SAT-SUN *)
-#      concurrency: 1
-#      verbose: false
-#    testWarmer:
-#      enabled: false

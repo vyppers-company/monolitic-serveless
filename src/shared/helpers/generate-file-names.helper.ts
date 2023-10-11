@@ -1,6 +1,6 @@
 import * as mime from 'mime-types';
 import { randomUUID } from 'node:crypto';
-
+import { Express } from 'express';
 export const generateFileName = (
   _: Express.Request,
   file: Express.Multer.File,

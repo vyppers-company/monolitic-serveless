@@ -2,7 +2,6 @@ import { UnprocessableEntityException, Injectable } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
 import { SendSmsAdapter } from '../../infra/adapters/blow-io.adapter';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
-import { SendEmailAdapter } from '../../infra/adapters/mailgun.adapter';
 import { environment } from '../../main/config/environment/environment';
 import regex from '../../shared/helpers/regex';
 import { generateCode } from '../../shared/utils/generateRandomicCode';
@@ -18,8 +17,7 @@ export class RecoveryService implements IRcoveryUseCase {
     private readonly userRepository: UserRepository,
     private readonly codeRecoveryRepository: CodeRepository,
     private readonly cryptoAdapter: CryptoAdapter,
-    /*     private readonly sendEmailAdapter: SendEmailAdapter,
-     */ private readonly sendSmsAdapter: SendSmsAdapter,
+    private readonly sendSmsAdapter: SendSmsAdapter,
     private readonly sesAdapter: SESAdapter,
   ) {}
   async send(dto: IRecoveryDto) {

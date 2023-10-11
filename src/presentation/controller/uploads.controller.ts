@@ -7,8 +7,8 @@ import {
   BadRequestException,
   Logger,
   Delete,
-  Inject,
   Body,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,19 +21,16 @@ import { DeleteUpload } from '../dtos/delete-upload';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { TYPEUPLOAD } from 'src/domain/interfaces/others/type-upload.enum';
 import { CreateUpload } from '../dtos/file-upload.dto';
-import { GoogleStorageMulter } from 'src/shared/helpers/google-storage-multer';
-import createPostMediasFileInterceptor from 'src/shared/helpers/create-post-media.helper';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { S3Service } from 'src/domain/usecases/s3-upload.service';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { Logged } from 'src/shared/decorators/logged.decorator';
+import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 
 @ApiTags('upload-general')
 @Controller('midia')
 export class UploadController {
   logger: Logger;
-  constructor(
-    @Inject('UPLOAD') private readonly googleStorageMulter: GoogleStorageMulter,
-    private readonly s3Service: S3Service,
-  ) {
+  constructor(private readonly s3Service: S3Service) {
     this.logger = new Logger();
   }
 
@@ -50,12 +47,20 @@ export class UploadController {
     description: 'midia',
     type: CreateUpload,
   })
-  @UseInterceptors(FileInterceptor('file'))
-  async profileImageV2(@UploadedFiles() file: Express.Multer.File) {
-    if (!file) {
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'file', maxCount: 1 }]))
+  async profileImageV2(
+    @UploadedFiles() file,
+    @Query('type') type: string,
+    @Logged() userLogged: ILogged,
+  ) {
+    if (!file?.file.length) {
       throw new BadRequestException('Midia é obrigátoria');
     }
-    const path = await this.s3Service.uploadFile(file);
+    const path = await this.s3Service.uploadFile(
+      file.file[0],
+      type,
+      userLogged._id,
+    );
     return { path };
   }
 
