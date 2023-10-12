@@ -15,13 +15,12 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
   ) {
     super(user);
   }
-
-  async updateOne(dto: IProfile, password: string) {
+  async updateOnePassword(dto: IProfile, password: string) {
     await this.user.updateOne(
       { _id: dto?._id },
       {
         $set: {
-          password,
+          password: password,
         },
       },
     );

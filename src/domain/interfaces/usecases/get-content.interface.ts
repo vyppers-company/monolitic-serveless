@@ -14,7 +14,5 @@ export interface IContentsUseCase {
     myId: string,
     contentId: string,
   ) => Promise<IContentEntity>;
-  getProfileImage: (
-    owner: string,
-  ) => Promise<Pick<IContentEntity, 'contents' | 'type'>>;
+  getProfileImage: (owner: string) => Promise<Pick<IContentEntity, 'owner'>>;
 }

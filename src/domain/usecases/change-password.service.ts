@@ -39,7 +39,7 @@ export class ChangePasswordService implements IChangePasswordService {
       ICryptoType.USER,
     );
 
-    await this.userRepository.updateOne(findedOne, hashedPassword);
+    await this.userRepository.updateOnePassword(findedOne, hashedPassword);
 
     await this.codeRecoveryRepository.deleteById(code._id);
   }

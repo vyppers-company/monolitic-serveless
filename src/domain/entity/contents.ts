@@ -12,6 +12,7 @@ export interface IComment {
 }
 
 export interface IContentEntity {
+  _id?: string;
   text?: string;
   type?: ITypeContent;
   owner?: string;

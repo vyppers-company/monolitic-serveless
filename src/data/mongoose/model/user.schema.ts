@@ -17,6 +17,9 @@ export class User extends Document implements IProfile {
   name: string;
 
   @Prop()
+  bio?: string;
+
+  @Prop()
   phone?: string;
 
   @Prop({ unique: true })
@@ -28,9 +31,6 @@ export class User extends Document implements IProfile {
   @Prop({ unique: false })
   profileId?: string;
 
-  @Prop()
-  profileImage?: string;
-
   @Prop({ default: false })
   activated?: boolean;
 
@@ -39,9 +39,6 @@ export class User extends Document implements IProfile {
 
   @Prop()
   gender?: string;
-
-  @Prop()
-  _idProfile?: string;
 
   @Prop()
   oauth2Partner?: string;

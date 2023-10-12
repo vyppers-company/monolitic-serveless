@@ -42,10 +42,22 @@ export class GetContentService implements IContentsUseCase {
     myId: string,
     contentId: string,
   ): Promise<IContentEntity> {
-    const content = await this.contentRepository.findOne({
-      owner: profileId,
-      _id: contentId,
-    });
+    const content = await this.contentRepository.findOne(
+      {
+        owner: profileId,
+        _id: contentId,
+      },
+      null,
+      {
+        populate: [
+          {
+            path: 'owner',
+            model: 'User',
+            select: 'profileImage profileId name',
+          },
+        ],
+      },
+    );
 
     return {
       comments: content.comments,
@@ -60,12 +72,15 @@ export class GetContentService implements IContentsUseCase {
       updatedAt: content.updatedAt,
     };
   }
-  async getProfileImage(
-    owner: string,
-  ): Promise<Pick<IContentEntity, 'contents' | 'type'>> {
-    return await this.contentRepository.findOne({
+  async getProfileImage(owner: string): Promise<IContentEntity> {
+    const content = await this.contentRepository.findOne({
       owner,
       type: ITypeContent.PROFILE,
     });
+    return {
+      _id: String(content._id),
+      owner: content.owner,
+      contents: content.contents,
+    };
   }
 }

@@ -12,11 +12,19 @@ import { generateToken } from '../../shared/helpers/jwe-generator.helper';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { getAge } from 'src/shared/utils/getAge';
 import { IProfile } from '../entity/user.entity';
+import { CreateContentService } from './create-content.service';
+import { getImageFromExternalUrl } from 'src/shared/helpers/get-image-from-external-url';
+import { S3Service } from './s3-upload.service';
+import { ITypeContent } from '../entity/contents';
+import { GetContentService } from './get-content.service';
 @Injectable()
 export class AuthService implements IAuthUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly cryptoAdapter: CryptoAdapter,
+    private readonly s3: S3Service,
+    private readonly contentCreate: CreateContentService,
+    private readonly contentGet: GetContentService,
   ) {}
 
   async auth(dto: Auth) {
@@ -92,6 +100,7 @@ export class AuthService implements IAuthUseCase {
     if (!age) {
       throw new ConflictException('you need to have 16 years old');
     }
+    const image = await getImageFromExternalUrl(user.profileImage);
 
     await this.userRepository.create({
       ...user,
@@ -99,6 +108,20 @@ export class AuthService implements IAuthUseCase {
     });
 
     const newOne = await this.userRepository.findOne({ email: hashedEmail });
+
+    const urlS3 = await this.s3.uploadFile(
+      { buffer: image, mimetype: 'image/png' },
+      'PROFILE',
+      String(newOne._id),
+    );
+
+    await this.contentCreate.create(
+      {
+        type: ITypeContent.PROFILE,
+        contents: [urlS3],
+      },
+      String(newOne._id),
+    );
 
     const token = await generateToken(
       {

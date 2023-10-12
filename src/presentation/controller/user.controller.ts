@@ -18,7 +18,7 @@ export class UserController {
   }
 
   @ApiTags('profile')
-  @Get('v1/info')
+  @Get('v1/info/home')
   @ApiBearerAuth()
   async getProfile(@Logged() logged: ILogged) {
     return await this.getProfileService.getPersonalData(logged);

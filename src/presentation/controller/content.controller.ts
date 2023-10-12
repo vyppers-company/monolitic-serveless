@@ -115,9 +115,9 @@ export class ContentController {
     );
   }
 
-  @Get('v1/profile/picture')
+  /* @Get('v1/profile/picture')
   @ApiBearerAuth()
   async getProfilePhoto(@Logged() userLogged: ILogged) {
     return await this.getService.getProfileImage(userLogged._id);
-  }
+  } */
 }
