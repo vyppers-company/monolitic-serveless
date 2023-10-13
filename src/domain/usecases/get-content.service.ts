@@ -107,10 +107,12 @@ export class GetContentService implements IContentsUseCase {
       owner,
       type: ITypeContent.PROFILE,
     });
-    return {
-      _id: String(content._id),
-      owner: content.owner,
-      contents: content.contents,
-    };
+    return content
+      ? {
+          _id: String(content._id),
+          owner: content.owner,
+          contents: content.contents,
+        }
+      : null;
   }
 }
