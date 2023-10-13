@@ -1,4 +1,4 @@
-service: functions
+service: mono-sls
 useDotenv: true
 
 plugins:
@@ -18,29 +18,46 @@ provider:
     shouldStartNameWithService: true
     binaryMediaTypes:
       - '*/*'
+  ecr:
+    images:
+      monolitic-vyppers-serverless:
+        path: .
 
 package:
   individually: true 
-  patterns:
-    - '!node_modules/**'
 
 functions:
   create-account:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200   
     events:
       - http:
           method: POST
           path: 'register/v1/user'
   auth-common:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200
     events:
       - http:
           method: POST
           path: 'auth/v1/common'
   auth-google:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200   
     events:
       - http:
@@ -50,7 +67,12 @@ functions:
           method: GET
           path: 'auth/v1/google/redirect'
   auth-facebook:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200   
     events:
       - http:
@@ -60,7 +82,12 @@ functions:
           method: GET
           path: 'auth/v1/facebook/redirect'
   recovery-account:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200   
     events:
       - http:
@@ -73,7 +100,12 @@ functions:
           method: POST
           path: 'recovery/v1/change-password'
   user:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200   
     events:
       - http:
@@ -83,7 +115,12 @@ functions:
           method: GET
           path: 'user/v1/validate/profile'
   content-managment:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200   
     events:
       - http:
@@ -100,12 +137,17 @@ functions:
           path: 'content/v1/all'
       - http:
           method: GET
-          path: 'content/v1/unique/{contentId}/{profileId}'
+          path: 'content/v1/unique/{contentId}/{arroba}'
       - http:
           method: GET
           path: 'content/v1/profile/picture'
   swagger:
-    handler: dist/lambda.handler
+    image:
+      name: monolitic-vyppers-serverless
+      command:
+        - dist/lambda.handler
+      entryPoint:
+        - '/lambda-entrypoint.sh'
     timeout: 200   
     events:
       - http:

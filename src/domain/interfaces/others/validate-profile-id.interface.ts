@@ -1,3 +1,3 @@
-export interface IValidateProfileId {
-  profileId: string;
+export interface IValidateArroba {
+  arroba: string;
 }

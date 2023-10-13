@@ -20,7 +20,7 @@ export class ChangePasswordService implements IChangePasswordService {
   ) {}
   async change(dto: IChangePasswordDto) {
     if (dto.newPassword !== dto.confirmNewPassword) {
-      throw new ConflictException();
+      throw new ConflictException('password and confirmPassword are different');
     }
     const decryptedCode = await decryptData(dto.tokenCode, ICryptoType.CODE);
 

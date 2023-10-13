@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
-import { IValidateProfileId } from '../interfaces/usecases/validate-profile-id.interface';
+import { IValidateArroba } from '../interfaces/usecases/validate-profile-id.interface';
 
 @Injectable()
-export class ValidateProfileIdService implements IValidateProfileId {
+export class ValidateArrobaService implements IValidateArroba {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async validate(profileId: string): Promise<boolean> {
+  async validate(arroba: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
-      profileId: profileId,
+      arroba: arroba,
     });
 
     if (user) {

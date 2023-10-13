@@ -15,14 +15,17 @@ export interface IContentEntity {
   _id?: string;
   text?: string;
   type?: ITypeContent;
-  owner?: string;
+  owner?:
+    | string
+    | {
+        profileImage: string;
+        name: string;
+        _id: string;
+        arroba: string;
+      };
   contents?: string[];
-  comments?: IComment[];
-  giftersId?: string[];
   likersId?: string[];
   payed?: boolean;
-  allowPreview?: boolean;
-  allowComments?: boolean;
   canEdit?: boolean;
   createdAt?: Date;
   updatedAt?: Date;

@@ -17,7 +17,11 @@ export class ValidateCodeService implements IValidateCode {
       throw new UnprocessableEntityException();
     }
 
-    const tokenCode = await generateToken({ _id: code._id }, ICryptoType.CODE);
+    const tokenCode = await generateToken(
+      { _id: code._id },
+      ICryptoType.CODE,
+      '60s',
+    );
     return { tokenCode };
   }
 }

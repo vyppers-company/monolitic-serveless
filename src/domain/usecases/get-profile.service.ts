@@ -16,11 +16,11 @@ export class GetProfileService implements IGetProfileUseCase {
   async getPersonalData(
     logged: ILogged,
   ): Promise<
-    Pick<IProfile, 'bio' | '_id' | 'profileId' | 'name' | 'profileImage'>
+    Pick<IProfile, 'bio' | '_id' | 'arroba' | 'name' | 'profileImage'>
   > {
     const user = await this.userRepository.findOne(
       { _id: logged._id },
-      { name: 1, profileId: 1, bio: 1 },
+      { name: 1, arroba: 1, bio: 1 },
     );
     const content = await this.contentRepository.findOne({
       owner: user._id,
@@ -30,9 +30,9 @@ export class GetProfileService implements IGetProfileUseCase {
     return {
       _id: user._id,
       name: user.name,
-      profileId: user.profileId || null,
+      arroba: user.arroba || null,
       bio: user.bio || null,
-      profileImage: content.contents[0] || null,
+      profileImage: content?.contents[0] || null,
     };
   }
 }

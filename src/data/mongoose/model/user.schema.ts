@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
-import { IProfile } from '../../../domain/entity/user.entity';
+import { IProfile, ITYPEUSER } from '../../../domain/entity/user.entity';
 import { environment } from 'src/main/config/environment/environment';
 
 export type UserDocument = User & Document;
@@ -14,7 +14,7 @@ export class User extends Document implements IProfile {
   _id?: string;
 
   @Prop()
-  name: string;
+  name?: string;
 
   @Prop()
   bio?: string;
@@ -29,7 +29,7 @@ export class User extends Document implements IProfile {
   password?: string;
 
   @Prop({ unique: false })
-  profileId?: string;
+  arroba?: string;
 
   @Prop({ default: false })
   activated?: boolean;
@@ -44,7 +44,10 @@ export class User extends Document implements IProfile {
   oauth2Partner?: string;
 
   @Prop({ default: true })
-  termsAndConditions: boolean;
+  termsAndConditions?: boolean;
+
+  @Prop({ default: ITYPEUSER.REAL })
+  type: ITYPEUSER;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

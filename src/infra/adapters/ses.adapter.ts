@@ -1,6 +1,7 @@
 import { ISendEmailAdapter } from 'src/domain/interfaces/adapters/send-email.interface';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { environment } from 'src/main/config/environment/environment';
+import { IValidationCodeType } from 'src/domain/entity/code.entity';
 
 const ses = new SESClient({
   region: environment.aws.region,
@@ -11,7 +12,11 @@ const ses = new SESClient({
 });
 
 export class SESAdapter implements ISendEmailAdapter {
-  async sendEmailCode(to: string, code: string): Promise<void> {
+  async sendEmailCode(
+    to: string,
+    code: string,
+    type: IValidationCodeType,
+  ): Promise<void> {
     await ses.send(
       new SendEmailCommand({
         Source: 'customer.service@vyppers.com',
@@ -21,12 +26,19 @@ export class SESAdapter implements ISendEmailAdapter {
         Message: {
           Body: {
             Html: {
-              Data: `<h1>Aqui está seu codigo: ${code} de recuperação válido por 1 minuto e meio</h1>`,
+              Data:
+                type === IValidationCodeType.RECOVERY
+                  ? `<h1>Aqui está seu codigo: ${code} de recuperação válido por 1 minuto e meio</h1>`
+                  : `<h1>Seja bem vindo a Vyppers, estamos feliz de ter você por aqui.</h1><br>
+                     <h1>Aqui está seu codigo: ${code} de cadastro é válido por 1 minuto e meio</h1>`,
               Charset: 'utf-8',
             },
           },
           Subject: {
-            Data: 'Vyppers - MUDANÇA DE SENHA',
+            Data:
+              type === IValidationCodeType.RECOVERY
+                ? 'Vyppers - Mudança de Senha'
+                : 'Vyppers - Bem Vindo',
             Charset: 'utf-8',
           },
         },

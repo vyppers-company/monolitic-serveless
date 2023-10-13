@@ -4,9 +4,11 @@ import {
   IsDateString,
   IsEmail,
   IsISO8601,
+  IsOptional,
   IsString,
   IsUrl,
   Matches,
+  Validate,
   isISO8601,
 } from 'class-validator';
 import regex from '../../shared/helpers/regex';
@@ -19,9 +21,12 @@ export class RegisterDto implements IProfile {
   name: string;
 
   @IsString()
-  @ApiProperty({ required: true, example: '@paulorr.io' })
-  @Matches(regex.profileId, { message: 'invalid profileId format' })
-  profileId: string;
+  @ApiProperty({
+    required: true,
+    example: 'paulorr.io',
+    description: 'mandar sem @ no inicio',
+  })
+  arroba: string;
 
   @IsString()
   @ApiProperty({ required: true, example: '13996063278' })
@@ -56,6 +61,43 @@ export class RegisterDto implements IProfile {
   })
   @IsBoolean({ message: 'is required' })
   termsAndConditions: boolean;
+}
+
+export class RegisterDtoMinimal implements IProfile {
+  @IsString()
+  @ApiProperty({ required: false, example: '13996063278' })
+  @IsOptional()
+  @Matches(regex.celular, { message: 'invalid phone number format' })
+  phone?: string;
+
+  @IsEmail()
+  @IsOptional()
+  @ApiProperty({ required: false, example: 'email@email.com' })
+  email?: string;
+
+  @IsString()
+  @ApiProperty({ required: true, example: 'userPassword@2022' })
+  @Matches(regex.senhaForte, {
+    message: 'invalid minimum format  password',
+  })
+  password: string;
+
+  @IsString()
+  @Match('password')
+  @ApiProperty({ required: true, example: 'userPassword@2022' })
+  passwordConfirm: string;
+
+  @ApiProperty({
+    required: true,
+    example: true,
+    description: 'just allow if the value is true',
+  })
+  @IsBoolean({ message: 'is required' })
+  termsAndConditions: boolean;
+
+  @IsString()
+  @ApiProperty({ required: true, example: 'token_here' })
+  tokenCode: string;
 }
 
 export class RegisterDtoCandidates {}

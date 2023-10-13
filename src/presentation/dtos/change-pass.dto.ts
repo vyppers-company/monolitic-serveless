@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, Matches } from 'class-validator';
+import { IsEnum, IsString, Matches } from 'class-validator';
 import { IChangePasswordDto } from '../../domain/interfaces/others/change-password.interface';
 import { Match } from '../../shared/decorators/match.decorator';
 import regex from '../../shared/helpers/regex';
+import { IValidationCodeType } from 'src/domain/entity/code.entity';
 
 export class ChangePasswordDto implements IChangePasswordDto {
   @IsString()
@@ -20,4 +21,12 @@ export class ChangePasswordDto implements IChangePasswordDto {
   @Match('newPassword')
   @ApiProperty({ required: true, example: 'userPassword@2022' })
   confirmNewPassword: string;
+
+  @IsEnum(IValidationCodeType)
+  @ApiProperty({
+    required: true,
+    enum: IValidationCodeType,
+    example: IValidationCodeType.RECOVERY,
+  })
+  type: IValidationCodeType;
 }

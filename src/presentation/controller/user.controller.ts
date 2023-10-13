@@ -1,8 +1,8 @@
 import { Controller, Logger, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-import { ProfileIdDto } from '../dtos/validate-profile-id';
-import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-id.service';
+import { ArrobaDto } from '../dtos/validate-profile-id';
+import { ValidateArrobaService } from 'src/domain/usecases/validate-profile-id.service';
 import { Logged } from 'src/shared/decorators/logged.decorator';
 import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 import { GetProfileService } from 'src/domain/usecases/get-profile.service';
@@ -11,7 +11,7 @@ import { GetProfileService } from 'src/domain/usecases/get-profile.service';
 export class UserController {
   private logger: Logger;
   constructor(
-    private readonly validateProfileIdService: ValidateProfileIdService,
+    private readonly validateArroba: ValidateArrobaService,
     private readonly getProfileService: GetProfileService,
   ) {
     this.logger = new Logger();
@@ -25,9 +25,9 @@ export class UserController {
   }
 
   @ApiTags('validate')
-  @Get('v1/validate/profile')
-  @ApiQuery({ name: 'profileId', required: true })
-  async validateProfileId(@Query() validate: ProfileIdDto) {
-    return await this.validateProfileIdService.validate(validate.profileId);
+  @Get('v1/validate/arroba')
+  @ApiQuery({ name: 'arroba', required: true })
+  async validateArrobaFs(@Query() validate: ArrobaDto) {
+    return await this.validateArroba.validate(validate.arroba);
   }
 }

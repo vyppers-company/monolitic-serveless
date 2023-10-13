@@ -5,6 +5,6 @@ export interface IGetProfileUseCase {
   getPersonalData: (
     logged: ILogged,
   ) => Promise<
-    Pick<IProfile, 'bio' | '_id' | 'profileId' | 'name' | 'profileImage'>
+    Pick<IProfile, 'bio' | '_id' | 'arroba' | 'name' | 'profileImage'>
   >;
 }

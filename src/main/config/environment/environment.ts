@@ -22,12 +22,6 @@ export const environment = {
       fields: Array.from(process.env.FACEBOOK_AUTH_FIELDS.split(',')) || [],
     },
   },
-  mail: {
-    domain: process.env.DOMAIN_NAME || '',
-    apiKey: process.env.MAILGUN_API_KEY || '',
-    from: process.env.FROM_MAIL || '',
-    expiration: parseInt(process.env.EXPIRATION) || 120000,
-  },
   sms: {
     apiUrl: process.env.SMS_API_URL || '',
   },
@@ -46,12 +40,8 @@ export const environment = {
     midias: process.env.AWS_BUCKET_NAME_INTERNAL || '',
     hostBucket: process.env.AWS_BUCKET_URL || '',
   },
-  storage: {
-    client_email: process.env.CLIENT_EMAIL || '',
-    private_key: process.env.PRIVATE_KEY || '',
-    bucket: {
-      name: process.env.BUCKET_NAME || '',
-    },
+  sendCode: {
+    expiration: Number(process.env.SEND_CODE_EXPIRATION) || 60,
   },
   cryptoData: {
     cipherString: process.env.CIPHER_STRING,

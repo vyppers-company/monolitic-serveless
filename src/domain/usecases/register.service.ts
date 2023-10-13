@@ -5,10 +5,11 @@ import {
 } from '@nestjs/common';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
-import { IProfile } from '../entity/user.entity';
 import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { getAge } from 'src/shared/utils/getAge';
+import { RegisterDto } from 'src/presentation/dtos/register.dto';
+import { ITYPEUSER } from '../entity/user.entity';
 
 @Injectable()
 export class RegisterService implements IRegisterUseCase {
@@ -17,7 +18,7 @@ export class RegisterService implements IRegisterUseCase {
     private readonly cryptoAdapter: CryptoAdapter,
   ) {}
 
-  async register(dto: IProfile) {
+  async register(dto: RegisterDto) {
     if (!dto.termsAndConditions) {
       throw new UnauthorizedException('the value needs to be TRUE');
     }
@@ -40,7 +41,7 @@ export class RegisterService implements IRegisterUseCase {
           email: hashedEmail,
         },
         {
-          profileId: dto.profileId,
+          arroba: dto.arroba,
         },
       ],
     });
@@ -60,18 +61,14 @@ export class RegisterService implements IRegisterUseCase {
       dto.password,
       ICryptoType.USER,
     );
-    const hashedName = this.cryptoAdapter.encryptText(
-      dto.name,
-      ICryptoType.USER,
-    );
 
     const newDto = {
       ...dto,
       password: hashedPassword,
-      name: hashedName,
       phone: hashedPhone,
       email: hashedEmail,
     };
-    await this.userRepository.create({ ...newDto });
+
+    await this.userRepository.create({ ...newDto, type: ITYPEUSER.REAL });
   }
 }

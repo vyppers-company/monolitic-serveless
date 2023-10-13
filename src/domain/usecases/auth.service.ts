@@ -11,12 +11,13 @@ import { IAuthUseCase } from '../interfaces/usecases/auth.interface';
 import { generateToken } from '../../shared/helpers/jwe-generator.helper';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { getAge } from 'src/shared/utils/getAge';
-import { IProfile } from '../entity/user.entity';
+import { IProfile, ITYPEUSER } from '../entity/user.entity';
 import { CreateContentService } from './create-content.service';
 import { getImageFromExternalUrl } from 'src/shared/helpers/get-image-from-external-url';
 import { S3Service } from './s3-upload.service';
 import { ITypeContent } from '../entity/contents';
 import { GetContentService } from './get-content.service';
+import { generateName } from 'src/shared/helpers/generator-names';
 @Injectable()
 export class AuthService implements IAuthUseCase {
   constructor(
@@ -67,7 +68,7 @@ export class AuthService implements IAuthUseCase {
       {
         _id: String(findedOne._id),
         email: String(findedOne.email),
-        profileId: String(findedOne.profileId),
+        arroba: String(findedOne.arroba),
       },
       ICryptoType.USER,
     );
@@ -89,7 +90,7 @@ export class AuthService implements IAuthUseCase {
         {
           _id: String(findedOne._id),
           email: String(findedOne.email),
-          profileId: String(findedOne.profileId),
+          arroba: String(findedOne.arroba),
         },
         ICryptoType.USER,
       );
@@ -105,6 +106,7 @@ export class AuthService implements IAuthUseCase {
     await this.userRepository.create({
       ...user,
       email: hashedEmail,
+      type: ITYPEUSER.REAL,
     });
 
     const newOne = await this.userRepository.findOne({ email: hashedEmail });
@@ -122,12 +124,13 @@ export class AuthService implements IAuthUseCase {
       },
       String(newOne._id),
     );
-
+    const checkAll = await this.userRepository.findAll();
+    const uniqueName = generateName(checkAll.map((us) => us.arroba));
     const token = await generateToken(
       {
         _id: String(newOne._id),
         email: String(newOne.email),
-        profileId: null,
+        arroba: uniqueName,
       },
       ICryptoType.USER,
     );

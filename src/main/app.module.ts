@@ -17,7 +17,7 @@ import { SendSmsAdapter } from '../infra/adapters/blow-io.adapter';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
 import { UserController } from 'src/presentation/controller/user.controller';
-import { ValidateProfileIdService } from 'src/domain/usecases/validate-profile-id.service';
+import { ValidateArrobaService } from 'src/domain/usecases/validate-profile-id.service';
 import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
 import { FacebookAuthStrategy } from 'src/domain/usecases/facebook-strategy.service';
 import { SESAdapter } from 'src/infra/adapters/ses.adapter';
@@ -31,6 +31,7 @@ import { GetProfileService } from 'src/domain/usecases/get-profile.service';
 import { ContentController } from 'src/presentation/controller/content.controller';
 import { UploadController } from 'src/presentation/controller/uploads.controller';
 import { S3Service } from 'src/domain/usecases/s3-upload.service';
+import { RegisterMinimalService } from 'src/domain/usecases/register-minimal.service';
 
 @Module({
   imports: [
@@ -56,9 +57,10 @@ import { S3Service } from 'src/domain/usecases/s3-upload.service';
     CryptoAdapter,
     SESAdapter,
     SendSmsAdapter,
-    ValidateProfileIdService,
+    ValidateArrobaService,
     CreateContentService,
     DeleteContentService,
+    RegisterMinimalService,
     EditContentService,
     GetContentService,
     ContentRepository,

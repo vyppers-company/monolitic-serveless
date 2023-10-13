@@ -3,13 +3,16 @@ import { environment } from '../../main/config/environment/environment';
 import { EncryptJWT, jwtDecrypt } from 'jose';
 import { UnauthorizedException } from '@nestjs/common';
 import { ICryptoType } from 'src/domain/interfaces/adapters/crypto.interface';
+import { IValidationCodeType } from 'src/domain/entity/code.entity';
 export const generateToken = async (
   payload: {
     _id: string;
-    profileId?: string;
+    arroba?: string;
     email?: string;
+    type?: IValidationCodeType;
   },
   type: ICryptoType,
+  expires?: number | string,
 ) => {
   const {
     keyLength,
@@ -23,7 +26,7 @@ export const generateToken = async (
   const key = scryptSync(keyPass, keySalt, keyLength);
   return new EncryptJWT(payload)
     .setProtectedHeader({ alg: algorithm, enc: encrypt })
-    .setExpirationTime(expiresIn)
+    .setExpirationTime(expires ? expires : expiresIn)
     .encrypt(key);
 };
 

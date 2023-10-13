@@ -1,3 +1,3 @@
-export interface IValidateProfileId {
-  validate(profileId: string): Promise<boolean>;
+export interface IValidateArroba {
+  validate(arroba: string): Promise<boolean>;
 }

@@ -101,10 +101,16 @@ export class ContentController {
     );
   }
 
-  @Get('v1/unique/:contentId/:profileId')
+  @Get('v1/unique/:contentId')
   @ApiBearerAuth()
+  @ApiQuery({
+    name: 'profileId',
+    required: false,
+    description:
+      'se nao passar o profileId significa que esta buscando um conteudo proprio',
+  })
   async getContentById(
-    @Param('profileId') profileId: string,
+    @Query('profileId') profileId: string,
     @Param('contentId') contentId: string,
     @Logged() userLogged: ILogged,
   ) {
