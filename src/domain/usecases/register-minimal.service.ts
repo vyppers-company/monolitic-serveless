@@ -89,6 +89,7 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
     this.userRepository
       .create({
         ...newDto,
+        profileImage: null,
         type: ITYPEUSER.USER,
         name: uniqueName,
         arroba: uniqueName,
