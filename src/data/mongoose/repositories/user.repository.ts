@@ -25,4 +25,14 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       },
     );
   }
+  async updateProfileImage(myId: any, profileImage: string) {
+    await this.user.updateOne(
+      { _id: myId },
+      {
+        $set: {
+          profileImage: profileImage,
+        },
+      },
+    );
+  }
 }

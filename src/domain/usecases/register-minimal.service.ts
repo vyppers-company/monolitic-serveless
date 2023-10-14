@@ -86,12 +86,14 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
     const checkAll = await this.userRepository.findAll();
     const uniqueName = generateName(checkAll.map((us) => us.arroba));
 
-    await this.userRepository.create({
-      ...newDto,
-      type: ITYPEUSER.REAL,
-      name: uniqueName,
-      arroba: uniqueName,
-    });
-    await this.codeRecoveryRepository.deleteById(code._id);
+    this.userRepository
+      .create({
+        ...newDto,
+        type: ITYPEUSER.USER,
+        name: uniqueName,
+        arroba: uniqueName,
+      })
+      .then();
+    this.codeRecoveryRepository.deleteById(code._id).then();
   }
 }

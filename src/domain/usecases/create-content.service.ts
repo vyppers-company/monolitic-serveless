@@ -12,7 +12,6 @@ export class CreateContentService implements ICreateContentUseCase {
     private readonly userrepo: UserRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
-    const user = await this.userrepo.findOne({ _id: owner });
     if (dto.text && dto.type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile content dont needs text');
     }
@@ -35,5 +34,12 @@ export class CreateContentService implements ICreateContentUseCase {
       ...dto,
       owner,
     });
+    if (dto.type === ITypeContent.PROFILE) {
+      const content = await this.contentRepositoru.findOne({
+        owner,
+        type: dto.type,
+      });
+      await this.userrepo.updateProfileImage(owner, content._id);
+    }
   }
 }

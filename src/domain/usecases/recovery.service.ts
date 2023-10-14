@@ -66,18 +66,18 @@ export class RecoveryService implements IRcoveryUseCase {
       });
 
       if (isEmail) {
-        this.sesAdapter.sendEmailCode(
-          dto.emailOrPhone,
-          code.formated,
-          IValidationCodeType.RECOVERY,
-        );
+        this.sesAdapter
+          .sendEmailCode(
+            dto.emailOrPhone,
+            code.formated,
+            IValidationCodeType.RECOVERY,
+          )
+          .then();
       }
       if (isPhone) {
-        this.sendSmsAdapter.send(
-          dto.emailOrPhone,
-          code.formated,
-          IValidationCodeType.RECOVERY,
-        );
+        this.sendSmsAdapter
+          .send(dto.emailOrPhone, code.formated, IValidationCodeType.RECOVERY)
+          .then();
       }
     }
   }

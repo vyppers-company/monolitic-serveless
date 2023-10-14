@@ -32,6 +32,9 @@ import { ContentController } from 'src/presentation/controller/content.controlle
 import { UploadController } from 'src/presentation/controller/uploads.controller';
 import { S3Service } from 'src/domain/usecases/s3-upload.service';
 import { RegisterMinimalService } from 'src/domain/usecases/register-minimal.service';
+import { MakeLikeService } from 'src/domain/usecases/make-like.service';
+import { ReactionsController } from 'src/presentation/controller/make-like.controller';
+import { FeedService } from 'src/domain/usecases/feed.service';
 
 @Module({
   imports: [
@@ -57,6 +60,7 @@ import { RegisterMinimalService } from 'src/domain/usecases/register-minimal.ser
     CryptoAdapter,
     SESAdapter,
     SendSmsAdapter,
+    MakeLikeService,
     ValidateArrobaService,
     CreateContentService,
     DeleteContentService,
@@ -66,6 +70,7 @@ import { RegisterMinimalService } from 'src/domain/usecases/register-minimal.ser
     ContentRepository,
     GetProfileService,
     S3Service,
+    FeedService,
   ],
   controllers: [
     RecoveryController,
@@ -75,6 +80,7 @@ import { RegisterMinimalService } from 'src/domain/usecases/register-minimal.ser
     UserController,
     ContentController,
     UploadController,
+    ReactionsController,
   ],
 })
 export class AppModule {}

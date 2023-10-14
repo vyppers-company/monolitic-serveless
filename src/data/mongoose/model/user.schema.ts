@@ -3,6 +3,8 @@ import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import { IProfile, ITYPEUSER } from '../../../domain/entity/user.entity';
 import { environment } from 'src/main/config/environment/environment';
+import { IContentEntity } from 'src/domain/entity/contents';
+import { Content } from './content.schema';
 
 export type UserDocument = User & Document;
 
@@ -46,8 +48,11 @@ export class User extends Document implements IProfile {
   @Prop({ default: true })
   termsAndConditions?: boolean;
 
-  @Prop({ default: ITYPEUSER.REAL })
+  @Prop({ default: ITYPEUSER.USER })
   type: ITYPEUSER;
+
+  @Prop()
+  profileImage?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

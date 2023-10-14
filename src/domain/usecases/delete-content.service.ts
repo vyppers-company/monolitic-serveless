@@ -21,6 +21,6 @@ export class DeleteContentService implements IDeleteContentUseCase {
     const contents = content.contents.map(
       async (cont) => await this.s3.deleteObject(cont),
     );
-    await Promise.all(contents);
+    Promise.all(contents).then();
   }
 }

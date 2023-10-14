@@ -69,6 +69,6 @@ export class RegisterService implements IRegisterUseCase {
       email: hashedEmail,
     };
 
-    await this.userRepository.create({ ...newDto, type: ITYPEUSER.REAL });
+    this.userRepository.create({ ...newDto, type: ITYPEUSER.USER }).then();
   }
 }

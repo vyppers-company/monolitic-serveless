@@ -14,7 +14,6 @@ export class GetContentService implements IContentsUseCase {
     limit: number,
     offset: number,
   ): Promise<PaginateResult<IContentEntity>> {
-    const profile = await this.getProfileImage(profileId || myId);
     const result = await this.contentRepository.findPaginated(
       {
         offset,
@@ -23,7 +22,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'arroba name',
+            select: 'arroba name profileImage',
           },
         ],
       },
@@ -51,7 +50,7 @@ export class GetContentService implements IContentsUseCase {
           _id: doc.owner._id,
           name: doc.owner.name,
           arroba: doc.owner.arroba,
-          profileImage: profile?.contents.length ? profile?.contents[0] : null,
+          profileImage: doc.owner.profileImage,
         },
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: doc.contents,
@@ -68,7 +67,6 @@ export class GetContentService implements IContentsUseCase {
     myId: string,
     contentId: string,
   ): Promise<IContentEntity> {
-    const profile = await this.getProfileImage(profileId || myId);
     const content: any = await this.contentRepository.findOne(
       {
         owner: profileId || myId,
@@ -80,7 +78,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'arroba name',
+            select: 'arroba name profileImage',
           },
         ],
       },
@@ -93,7 +91,7 @@ export class GetContentService implements IContentsUseCase {
         _id: content.owner._id,
         name: content.owner.name,
         arroba: content.owner.arroba,
-        profileImage: profile?.contents.length ? profile?.contents[0] : null,
+        profileImage: content.owner.profileImage,
       },
       text: content.text,
       type: content.type,

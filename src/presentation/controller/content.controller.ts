@@ -18,6 +18,7 @@ import { Logged } from 'src/shared/decorators/logged.decorator';
 import { EditContentDto } from '../dtos/edit-content.dto';
 import { ITypeContent } from 'src/domain/entity/contents';
 import { CreateContentService } from 'src/domain/usecases/create-content.service';
+import { FeedService } from 'src/domain/usecases/feed.service';
 
 @ApiTags('content')
 @Controller('content')
@@ -27,6 +28,7 @@ export class ContentController {
     private readonly deleteService: DeleteContentService,
     private readonly editService: EditContentService,
     private readonly getService: GetContentService,
+    private readonly feedService: FeedService,
   ) {}
 
   @Post('v1/create')
@@ -119,6 +121,24 @@ export class ContentController {
       userLogged._id,
       contentId,
     );
+  }
+
+  @Get('v1/feed/simple')
+  @ApiBearerAuth()
+  async GetFeed() {
+    return await this.feedService.feed(ITypeContent.FEED);
+  }
+
+  @Get('v1/story/simple')
+  @ApiBearerAuth()
+  async GetStory() {
+    return await this.feedService.feed(ITypeContent.STORY);
+  }
+
+  @Get('v1/shorts/simple')
+  @ApiBearerAuth()
+  async GetShorts() {
+    return await this.feedService.feed(ITypeContent.SHORTS);
   }
 
   /* @Get('v1/profile/picture')

@@ -1,7 +1,8 @@
 export enum ITYPEUSER {
-  REAL = 'REAL',
+  USER = 'USER',
   BOT = 'BOT',
   ADMIN = 'ADMIN',
+  CREATOR = 'CREATOR',
 }
 
 export interface IProfile {

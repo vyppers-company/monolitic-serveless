@@ -15,7 +15,7 @@ import { IProfile, ITYPEUSER } from '../entity/user.entity';
 import { CreateContentService } from './create-content.service';
 import { getImageFromExternalUrl } from 'src/shared/helpers/get-image-from-external-url';
 import { S3Service } from './s3-upload.service';
-import { ITypeContent } from '../entity/contents';
+import { IContentEntity, ITypeContent } from '../entity/contents';
 import { GetContentService } from './get-content.service';
 import { generateName } from 'src/shared/helpers/generator-names';
 @Injectable()
@@ -50,7 +50,11 @@ export class AuthService implements IAuthUseCase {
       finalDto['phone'] = hashedPhone;
     }
 
-    const findedOne = await this.userRepository.findOne(finalDto);
+    const findedOne = await this.userRepository.findOne(finalDto, null, {
+      populate: [
+        { path: 'profileImage', select: 'contents', model: 'Content' },
+      ],
+    });
 
     if (!findedOne) {
       throw new UnauthorizedException();
@@ -72,9 +76,21 @@ export class AuthService implements IAuthUseCase {
       },
       ICryptoType.USER,
     );
-
-    return { token };
+    const profileImageInstance = findedOne.profileImage as IContentEntity;
+    return {
+      token,
+      info: {
+        _id: findedOne._id,
+        name: findedOne.name,
+        arroba: findedOne.arroba,
+        profileImage: typeof profileImageInstance
+          ? profileImageInstance.contents[0]
+          : null,
+        bio: findedOne.bio || null,
+      },
+    };
   }
+
   async loginOauth20(user?: IProfile) {
     if (!user) {
       throw new UnauthorizedException();
@@ -83,7 +99,15 @@ export class AuthService implements IAuthUseCase {
       user.email,
       ICryptoType.USER,
     );
-    const findedOne = await this.userRepository.findOne({ email: hashedEmail });
+    const findedOne = await this.userRepository.findOne(
+      { email: hashedEmail },
+      null,
+      {
+        populate: [
+          { path: 'profileImage', select: 'contents', model: 'Content' },
+        ],
+      },
+    );
 
     if (findedOne) {
       const token = await generateToken(
@@ -94,19 +118,32 @@ export class AuthService implements IAuthUseCase {
         },
         ICryptoType.USER,
       );
-      return { token };
+      const profileImageInstance = findedOne.profileImage as IContentEntity;
+
+      return {
+        token,
+        info: {
+          _id: findedOne._id,
+          name: findedOne.name,
+          arroba: findedOne.arroba,
+          profileImage: typeof profileImageInstance
+            ? profileImageInstance.contents[0]
+            : null,
+          bio: findedOne.bio,
+        },
+      };
     }
     const age = user.birthday ? getAge(user.birthday) : null;
 
     if (!age) {
       throw new ConflictException('you need to have 16 years old');
     }
-    const image = await getImageFromExternalUrl(user.profileImage);
+    const image = await getImageFromExternalUrl(user.profileImage as string);
 
     await this.userRepository.create({
       ...user,
       email: hashedEmail,
-      type: ITYPEUSER.REAL,
+      type: ITYPEUSER.USER,
     });
 
     const newOne = await this.userRepository.findOne({ email: hashedEmail });
@@ -124,6 +161,11 @@ export class AuthService implements IAuthUseCase {
       },
       String(newOne._id),
     );
+    const contentProfile = await this.contentGet.getProfileImage(newOne._id);
+    await this.userRepository.updateProfileImage(
+      newOne._id,
+      contentProfile._id,
+    );
     const checkAll = await this.userRepository.findAll();
     const uniqueName = generateName(checkAll.map((us) => us.arroba));
     const token = await generateToken(
@@ -135,6 +177,15 @@ export class AuthService implements IAuthUseCase {
       ICryptoType.USER,
     );
 
-    return { token };
+    return {
+      token,
+      info: {
+        _id: findedOne._id,
+        name: findedOne.name,
+        arroba: findedOne.arroba,
+        profileImage: urlS3 ? urlS3 : null,
+        bio: findedOne.bio,
+      },
+    };
   }
 }

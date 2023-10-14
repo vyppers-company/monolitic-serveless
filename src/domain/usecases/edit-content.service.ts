@@ -14,6 +14,6 @@ export class EditContentService implements IEditContentUseCase {
     if (!content) {
       throw new NotFoundException();
     }
-    await this.contentRepository.updateOne(dto);
+    this.contentRepository.updateOne(dto).then();
   }
 }

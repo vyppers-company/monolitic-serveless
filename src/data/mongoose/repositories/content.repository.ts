@@ -20,6 +20,17 @@ export class ContentRepository extends BaseAbstractRepository<ContentDocument> {
     await this.content.deleteMany({ owner, type });
   }
 
+  async makeLike(contentId: string, likers: Content['likersId']) {
+    await this.content.updateOne(
+      { _id: contentId },
+      {
+        $set: {
+          likersId: likers,
+        },
+      },
+    );
+  }
+
   async updateOne(dto: IEditContentDto) {
     await this.content.updateOne(
       { _id: dto.contentId, owner: dto.owner },
