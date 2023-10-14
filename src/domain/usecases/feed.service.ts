@@ -8,7 +8,18 @@ import { IContentEntity, ITypeContent } from '../entity/contents';
 export class FeedService implements IFeedUseCase {
   constructor(private readonly contentrepository: ContentRepository) {}
   async feed(type: ITypeContent): Promise<PaginateResult<IContentEntity[]>> {
-    const response = await this.contentrepository.findPaginated({}, { type });
+    const response = await this.contentrepository.findPaginated(
+      {
+        populate: [
+          {
+            path: 'owner',
+            model: 'User',
+            select: 'arroba name profileImage',
+          },
+        ],
+      },
+      { type },
+    );
     return response;
   }
 }
