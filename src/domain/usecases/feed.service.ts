@@ -48,7 +48,7 @@ export class FeedService implements IFeedUseCase {
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,
         }))
-        .sort((a, b) => b.createdAt.now() - a.createdAt.now()),
+        .sort((a, b) => b.createdAt - a.createdAt),
     };
   }
 }

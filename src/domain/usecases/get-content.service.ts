@@ -60,7 +60,7 @@ export class GetContentService implements IContentsUseCase {
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,
         }))
-        .sort((a, b) => b.createdAt.now() - a.createdAt.now()),
+        .sort((a, b) => b.createdAt - a.createdAt),
     };
   }
 
