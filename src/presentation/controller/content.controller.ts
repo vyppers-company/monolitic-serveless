@@ -125,20 +125,20 @@ export class ContentController {
 
   @Get('v1/feed/simple')
   @ApiBearerAuth()
-  async GetFeed() {
-    return await this.feedService.feed(ITypeContent.FEED);
+  async GetFeed(@Logged() userLogged: ILogged) {
+    return await this.feedService.feed(ITypeContent.FEED, userLogged._id);
   }
 
   @Get('v1/story/simple')
   @ApiBearerAuth()
-  async GetStory() {
-    return await this.feedService.feed(ITypeContent.STORY);
+  async GetStory(@Logged() userLogged: ILogged) {
+    return await this.feedService.feed(ITypeContent.STORY, userLogged._id);
   }
 
   @Get('v1/shorts/simple')
   @ApiBearerAuth()
-  async GetShorts() {
-    return await this.feedService.feed(ITypeContent.SHORTS);
+  async GetShorts(@Logged() userLogged: ILogged) {
+    return await this.feedService.feed(ITypeContent.SHORTS, userLogged._id);
   }
 
   /* @Get('v1/profile/picture')

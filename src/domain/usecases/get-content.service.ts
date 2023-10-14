@@ -43,22 +43,24 @@ export class GetContentService implements IContentsUseCase {
       hasNextPage: result.hasNextPage,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      docs: result.docs.map((doc: any) => ({
-        _id: doc._id,
-        type: doc.type,
-        owner: {
-          _id: doc.owner._id,
-          name: doc.owner.name,
-          arroba: doc.owner.arroba,
-          profileImage: doc.owner.profileImage,
-        },
-        canEdit: String(doc.owner._id) === String(myId) ? true : false,
-        contents: doc.contents,
-        likersId: doc.likersId,
-        payed: doc.payed,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      })),
+      docs: result.docs
+        .map((doc: any) => ({
+          _id: doc._id,
+          type: doc.type,
+          owner: {
+            _id: doc.owner._id,
+            name: doc.owner.name,
+            arroba: doc.owner.arroba,
+            profileImage: doc.owner.profileImage,
+          },
+          canEdit: String(doc.owner._id) === String(myId) ? true : false,
+          contents: doc.contents,
+          likersId: doc.likersId,
+          payed: doc.payed,
+          createdAt: doc.createdAt,
+          updatedAt: doc.updatedAt,
+        }))
+        .sort((a, b) => b.createdAt.now() - a.createdAt.now()),
     };
   }
 
