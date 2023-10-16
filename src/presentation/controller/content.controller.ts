@@ -87,19 +87,26 @@ export class ContentController {
     required: false,
     description: 'numero da pagina que deseja buscar. valo padrao 0',
   })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 0',
+  })
   async getContents(
     @Query('profileId') profileId: string,
     @Query('type') type: ITypeContent,
     @Query('limit') limit: number,
     @Query('offset') offset: number,
+    @Query('page') page: number,
     @Logged() userLogged: ILogged,
   ) {
     return await this.getService.getContents(
       profileId,
       userLogged._id,
       type,
-      limit || 10,
-      offset || 0,
+      limit,
+      page,
+      offset,
     );
   }
 
@@ -135,15 +142,22 @@ export class ContentController {
     required: false,
     description: 'numero da pagina que deseja buscar. valo padrao 0',
   })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 0',
+  })
   async GetFeed(
     @Logged() userLogged: ILogged,
     @Query('limit') limit: number,
     @Query('offset') offset: number,
+    @Query('page') page: number,
   ) {
     return await this.feedService.feed(
       ITypeContent.FEED,
       userLogged._id,
       limit,
+      page,
       offset,
     );
   }
@@ -160,15 +174,22 @@ export class ContentController {
     required: false,
     description: 'numero da pagina que deseja buscar. valo padrao 0',
   })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 0',
+  })
   async GetStory(
     @Logged() userLogged: ILogged,
     @Query('limit') limit: number,
     @Query('offset') offset: number,
+    @Query('page') page: number,
   ) {
     return await this.feedService.feed(
       ITypeContent.STORY,
       userLogged._id,
       limit,
+      page,
       offset,
     );
   }
@@ -185,15 +206,22 @@ export class ContentController {
     required: false,
     description: 'numero da pagina que deseja buscar. valo padrao 0',
   })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 0',
+  })
   async GetShorts(
     @Logged() userLogged: ILogged,
     @Query('limit') limit: number,
     @Query('offset') offset: number,
+    @Query('page') page: number,
   ) {
     return await this.feedService.feed(
       ITypeContent.SHORTS,
       userLogged._id,
       limit,
+      page,
       offset,
     );
   }

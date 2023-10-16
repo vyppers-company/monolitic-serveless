@@ -6,6 +6,7 @@ export interface IFeedUseCase {
     type: ITypeContent,
     myId: string,
     limit: number,
+    page: number,
     offset: number,
   ) => Promise<PaginateResult<IContentEntity[]>>;
 }

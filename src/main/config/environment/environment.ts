@@ -7,6 +7,7 @@ export const environment = {
     port: process.env.PORT || 3000,
     serviceName: process.env.SERVICE_NAME || '',
     cors: Array.from(process.env.ORIGINS.split(',')) || [],
+    waterMark: process.env.WATER_MARK || '',
   },
   oauth: {
     google: {

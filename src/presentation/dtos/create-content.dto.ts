@@ -1,10 +1,11 @@
-import { IsArray, IsBoolean, IsEnum, isURL, Validate } from 'class-validator';
+import { IsArray, IsBoolean, IsEnum, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IContentEntity, ITypeContent } from 'src/domain/entity/contents';
 
 export class CreateContentDto implements IContentEntity {
   @IsBoolean()
   @ApiProperty({ example: true, required: false })
+  @IsOptional()
   payed?: boolean;
 
   @IsEnum(ITypeContent, {

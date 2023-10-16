@@ -157,7 +157,7 @@ export class AuthService implements IAuthUseCase {
     await this.contentCreate.create(
       {
         type: ITypeContent.PROFILE,
-        contents: [urlS3],
+        contents: [urlS3[0]],
       },
       String(newOne._id),
     );

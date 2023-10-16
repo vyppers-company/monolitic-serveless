@@ -11,17 +11,27 @@ export class FeedService implements IFeedUseCase {
     type: ITypeContent,
     myId: string,
     limit: number,
+    page: number,
     offset: number,
   ): Promise<PaginateResult<any>> {
     const result = await this.contentRepository.findPaginated(
       {
-        offset: offset || 1,
+        sort: { _id: -1 },
         limit: limit || 10,
+        page: page || 1,
+        offset: offset || 0,
         populate: [
           {
             path: 'owner',
             model: 'User',
             select: 'arroba name profileImage',
+            populate: [
+              {
+                path: 'profileImage',
+                model: 'Content',
+                select: 'contents',
+              },
+            ],
           },
         ],
       },
@@ -38,24 +48,25 @@ export class FeedService implements IFeedUseCase {
       hasNextPage: result.hasNextPage,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      docs: result.docs
-        .map((doc: any) => ({
-          _id: doc._id,
-          type: doc.type,
-          owner: {
-            _id: doc.owner._id,
-            name: doc.owner.name,
-            arroba: doc.owner.arroba,
-            profileImage: doc.owner.profileImage,
-          },
-          canEdit: String(doc.owner._id) === String(myId) ? true : false,
-          contents: doc.contents,
-          likersId: doc.likersId,
-          payed: doc.payed,
-          createdAt: doc.createdAt,
-          updatedAt: doc.updatedAt,
-        }))
-        .sort((a, b) => b.createdAt - a.createdAt),
+      docs: result.docs.map((doc: any) => ({
+        _id: doc._id,
+        type: doc.type,
+        owner: {
+          _id: doc.owner._id,
+          name: doc.owner.name,
+          arroba: doc.owner.arroba,
+          profileImage: doc.owner.profileImage,
+        },
+        canEdit: String(doc.owner._id) === String(myId) ? true : false,
+        contents: doc.contents.filter((image: string) =>
+          doc.payed ? image.includes('-payed') : !image.includes('-payed'),
+        ),
+        likersId: doc.likersId,
+        payed: doc.payed || false,
+        text: doc.text,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      })),
     };
   }
 }

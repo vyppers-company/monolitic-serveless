@@ -12,6 +12,9 @@ export class CreateContentService implements ICreateContentUseCase {
     private readonly userrepo: UserRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
+    if (dto.payed && dto.type === ITypeContent.PROFILE) {
+      throw new BadRequestException('profile image dont need to be payed');
+    }
     if (!dto.contents.length && !dto.text) {
       throw new BadRequestException('at least text or content is required');
     }

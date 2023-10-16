@@ -12,17 +12,27 @@ export class GetContentService implements IContentsUseCase {
     myId: string,
     type: ITypeContent,
     limit: number,
+    page: number,
     offset: number,
   ): Promise<PaginateResult<IContentEntity>> {
     const result = await this.contentRepository.findPaginated(
       {
-        offset: offset || 1,
+        sort: { _id: -1 },
         limit: limit || 10,
+        page: page || 1,
+        offset: offset || 0,
         populate: [
           {
             path: 'owner',
             model: 'User',
             select: 'arroba name profileImage',
+            populate: [
+              {
+                path: 'profileImage',
+                model: 'Content',
+                select: 'contents',
+              },
+            ],
           },
         ],
       },
@@ -43,24 +53,25 @@ export class GetContentService implements IContentsUseCase {
       hasNextPage: result.hasNextPage,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      docs: result.docs
-        .map((doc: any) => ({
-          _id: doc._id,
-          type: doc.type,
-          owner: {
-            _id: doc.owner._id,
-            name: doc.owner.name,
-            arroba: doc.owner.arroba,
-            profileImage: doc.owner.profileImage,
-          },
-          canEdit: String(doc.owner._id) === String(myId) ? true : false,
-          contents: doc.contents,
-          likersId: doc.likersId,
-          payed: doc.payed,
-          createdAt: doc.createdAt,
-          updatedAt: doc.updatedAt,
-        }))
-        .sort((a, b) => b.createdAt - a.createdAt),
+      docs: result.docs.map((doc: any) => ({
+        _id: doc._id,
+        type: doc.type,
+        owner: {
+          _id: doc.owner._id,
+          name: doc.owner.name,
+          arroba: doc.owner.arroba,
+          profileImage: doc.owner.profileImage,
+        },
+        canEdit: String(doc.owner._id) === String(myId) ? true : false,
+        contents: doc.contents.filter((image: string) =>
+          doc.payed ? image.includes('-payed') : !image.includes('-payed'),
+        ),
+        likersId: doc.likersId,
+        payed: doc.payed || false,
+        text: doc.text,
+        createdAt: doc.createdAt,
+        updatedAt: doc.updatedAt,
+      })),
     };
   }
 
@@ -81,13 +92,22 @@ export class GetContentService implements IContentsUseCase {
             path: 'owner',
             model: 'User',
             select: 'arroba name profileImage',
+            populate: [
+              {
+                path: 'profileImage',
+                model: 'Content',
+                select: 'contents',
+              },
+            ],
           },
         ],
       },
     );
 
     return {
-      contents: content.contents,
+      contents: content.contents.filter((image: string) =>
+        content.payed ? image.includes('-payed') : !image.includes('-payed'),
+      ),
       likersId: content.likersId,
       owner: {
         _id: content.owner._id,
@@ -97,6 +117,7 @@ export class GetContentService implements IContentsUseCase {
       },
       text: content.text,
       type: content.type,
+      payed: content.payed || false,
       canEdit: String(content.owner._id) === String(myId) ? true : false,
       createdAt: content.createdAt,
       updatedAt: content.updatedAt,
