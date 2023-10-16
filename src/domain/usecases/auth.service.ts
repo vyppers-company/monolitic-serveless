@@ -126,7 +126,7 @@ export class AuthService implements IAuthUseCase {
           _id: findedOne._id,
           name: findedOne.name,
           arroba: findedOne.arroba,
-          profileImage: typeof profileImageInstance
+          profileImage: profileImageInstance
             ? profileImageInstance.contents[0]
             : null,
           bio: findedOne.bio,

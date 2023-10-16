@@ -12,6 +12,9 @@ export class CreateContentService implements ICreateContentUseCase {
     private readonly userrepo: UserRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
+    if (!dto.contents.length && !dto.text) {
+      throw new BadRequestException('at least text or content is required');
+    }
     if (dto.text && dto.type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile content dont needs text');
     }
@@ -32,6 +35,7 @@ export class CreateContentService implements ICreateContentUseCase {
 
     await this.contentRepositoru.create({
       ...dto,
+      payed: dto.payed || false,
       owner,
     });
     if (dto.type === ITypeContent.PROFILE) {
