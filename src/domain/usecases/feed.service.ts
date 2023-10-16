@@ -15,8 +15,8 @@ export class FeedService implements IFeedUseCase {
   ): Promise<PaginateResult<any>> {
     const result = await this.contentRepository.findPaginated(
       {
-        offset,
-        limit,
+        offset: offset || 1,
+        limit: limit || 10,
         populate: [
           {
             path: 'owner',

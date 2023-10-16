@@ -16,8 +16,8 @@ export class GetContentService implements IContentsUseCase {
   ): Promise<PaginateResult<IContentEntity>> {
     const result = await this.contentRepository.findPaginated(
       {
-        offset,
-        limit,
+        offset: offset || 1,
+        limit: limit || 10,
         populate: [
           {
             path: 'owner',
