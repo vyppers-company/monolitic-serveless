@@ -125,20 +125,77 @@ export class ContentController {
 
   @Get('v1/feed/simple')
   @ApiBearerAuth()
-  async GetFeed(@Logged() userLogged: ILogged) {
-    return await this.feedService.feed(ITypeContent.FEED, userLogged._id);
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 0',
+  })
+  async GetFeed(
+    @Logged() userLogged: ILogged,
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+  ) {
+    return await this.feedService.feed(
+      ITypeContent.FEED,
+      userLogged._id,
+      limit,
+      offset,
+    );
   }
 
   @Get('v1/story/simple')
   @ApiBearerAuth()
-  async GetStory(@Logged() userLogged: ILogged) {
-    return await this.feedService.feed(ITypeContent.STORY, userLogged._id);
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 0',
+  })
+  async GetStory(
+    @Logged() userLogged: ILogged,
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+  ) {
+    return await this.feedService.feed(
+      ITypeContent.STORY,
+      userLogged._id,
+      limit,
+      offset,
+    );
   }
 
   @Get('v1/shorts/simple')
   @ApiBearerAuth()
-  async GetShorts(@Logged() userLogged: ILogged) {
-    return await this.feedService.feed(ITypeContent.SHORTS, userLogged._id);
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'offset',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 0',
+  })
+  async GetShorts(
+    @Logged() userLogged: ILogged,
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+  ) {
+    return await this.feedService.feed(
+      ITypeContent.SHORTS,
+      userLogged._id,
+      limit,
+      offset,
+    );
   }
 
   /* @Get('v1/profile/picture')

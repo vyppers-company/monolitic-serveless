@@ -5,5 +5,7 @@ export interface IFeedUseCase {
   feed: (
     type: ITypeContent,
     myId: string,
+    limit: number,
+    offset: number,
   ) => Promise<PaginateResult<IContentEntity[]>>;
 }

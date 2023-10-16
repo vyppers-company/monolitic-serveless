@@ -7,9 +7,16 @@ import { ITypeContent } from '../entity/contents';
 @Injectable()
 export class FeedService implements IFeedUseCase {
   constructor(private readonly contentRepository: ContentRepository) {}
-  async feed(type: ITypeContent, myId: string): Promise<PaginateResult<any>> {
+  async feed(
+    type: ITypeContent,
+    myId: string,
+    limit: number,
+    offset: number,
+  ): Promise<PaginateResult<any>> {
     const result = await this.contentRepository.findPaginated(
       {
+        offset,
+        limit,
         populate: [
           {
             path: 'owner',
