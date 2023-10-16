@@ -4,14 +4,14 @@ const composite = async (file: Buffer, BufferWaterMark: Buffer) => {
   return sharp(file.buffer)
     .composite([
       {
-        input: await sharp(BufferWaterMark).resize(240, 80).toBuffer(),
+        input: await sharp(BufferWaterMark).resize(250, 90).toBuffer(),
         gravity: 'southeast',
       },
     ])
     .toBuffer();
 };
 const blur = async (file: Buffer) => {
-  return await sharp(file.buffer).blur(10).toBuffer();
+  return await sharp(file.buffer).blur(100).toBuffer();
 };
 
 export { composite, blur };
