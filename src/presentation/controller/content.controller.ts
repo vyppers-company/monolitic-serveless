@@ -138,27 +138,20 @@ export class ContentController {
     description: 'quantidade que deseja buscar. valor padrao 10',
   })
   @ApiQuery({
-    name: 'offset',
-    required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
-  })
-  @ApiQuery({
     name: 'page',
     required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
   })
   async GetFeed(
     @Logged() userLogged: ILogged,
-    @Query('limit') limit: number,
-    @Query('offset') offset: number,
-    @Query('page') page: number,
+    @Query('limit') limit?: number,
+    @Query('page') page?: number,
   ) {
     return await this.feedService.feed(
       ITypeContent.FEED,
       userLogged._id,
-      limit,
-      page,
-      offset,
+      limit || 10,
+      page || 1,
     );
   }
 
@@ -170,31 +163,24 @@ export class ContentController {
     description: 'quantidade que deseja buscar. valor padrao 10',
   })
   @ApiQuery({
-    name: 'offset',
-    required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
-  })
-  @ApiQuery({
     name: 'page',
     required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
   })
   async GetStory(
     @Logged() userLogged: ILogged,
-    @Query('limit') limit: number,
-    @Query('offset') offset: number,
-    @Query('page') page: number,
+    @Query('limit') limit?: number,
+    @Query('page') page?: number,
   ) {
     return await this.feedService.feed(
       ITypeContent.STORY,
       userLogged._id,
-      limit,
-      page,
-      offset,
+      limit || 10,
+      page || 1,
     );
   }
 
-  @Get('v1/shorts/simple')
+  @Get('v1/short/simple')
   @ApiBearerAuth()
   @ApiQuery({
     name: 'limit',
@@ -202,33 +188,20 @@ export class ContentController {
     description: 'quantidade que deseja buscar. valor padrao 10',
   })
   @ApiQuery({
-    name: 'offset',
-    required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
-  })
-  @ApiQuery({
     name: 'page',
     required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
   })
   async GetShorts(
     @Logged() userLogged: ILogged,
-    @Query('limit') limit: number,
-    @Query('offset') offset: number,
-    @Query('page') page: number,
+    @Query('limit') limit?: number,
+    @Query('page') page?: number,
   ) {
     return await this.feedService.feed(
       ITypeContent.SHORTS,
       userLogged._id,
-      limit,
-      page,
-      offset,
+      limit || 10,
+      page || 1,
     );
   }
-
-  /* @Get('v1/profile/picture')
-  @ApiBearerAuth()
-  async getProfilePhoto(@Logged() userLogged: ILogged) {
-    return await this.getService.getProfileImage(userLogged._id);
-  } */
 }

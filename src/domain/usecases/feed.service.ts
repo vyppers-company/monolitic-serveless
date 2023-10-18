@@ -12,14 +12,12 @@ export class FeedService implements IFeedUseCase {
     myId: string,
     limit: number,
     page: number,
-    offset: number,
   ): Promise<PaginateResult<any>> {
     const result = await this.contentRepository.findPaginated(
       {
         sort: { _id: -1 },
-        limit: limit || 10,
-        page: page || 1,
-        offset: offset || 0,
+        limit: Number(limit),
+        page: Number(page),
         populate: [
           {
             path: 'owner',
