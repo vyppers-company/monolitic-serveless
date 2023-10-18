@@ -35,6 +35,7 @@ import { RegisterMinimalService } from 'src/domain/usecases/register-minimal.ser
 import { MakeLikeService } from 'src/domain/usecases/make-like.service';
 import { ReactionsController } from 'src/presentation/controller/make-like.controller';
 import { FeedService } from 'src/domain/usecases/feed.service';
+import { UpdateProfileService } from 'src/domain/usecases/update-profile.service';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { FeedService } from 'src/domain/usecases/feed.service';
     CodeRepository,
     CryptoAdapter,
     SESAdapter,
+    UpdateProfileService,
     SendSmsAdapter,
     MakeLikeService,
     ValidateArrobaService,

@@ -5,6 +5,11 @@ export enum ITYPEUSER {
   CREATOR = 'CREATOR',
 }
 
+export enum IGender {
+  M = 'M',
+  F = 'F',
+}
+
 export interface IProfile {
   _id?: string;
   name?: string;
@@ -16,7 +21,7 @@ export interface IProfile {
   profileImage?: string;
   activated?: boolean;
   birthday?: string;
-  gender?: string;
+  gender?: IGender;
   oauth2Partner?: string;
   termsAndConditions?: boolean;
   type?: ITYPEUSER;

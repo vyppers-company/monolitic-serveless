@@ -1,10 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
-import { IProfile, ITYPEUSER } from '../../../domain/entity/user.entity';
+import {
+  IGender,
+  IProfile,
+  ITYPEUSER,
+} from '../../../domain/entity/user.entity';
 import { environment } from 'src/main/config/environment/environment';
-import { IContentEntity } from 'src/domain/entity/contents';
-import { Content } from './content.schema';
 
 export type UserDocument = User & Document;
 
@@ -40,7 +42,7 @@ export class User extends Document implements IProfile {
   birthday?: string;
 
   @Prop()
-  gender?: string;
+  gender?: IGender;
 
   @Prop()
   oauth2Partner?: string;

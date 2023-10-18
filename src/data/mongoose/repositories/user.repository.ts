@@ -6,6 +6,7 @@ import {
   BaseModel,
 } from '../helpers/base.abstract.repository';
 import { User, UserDocument } from '../model/user.schema';
+import { ProfileDto } from 'src/presentation/dtos/profile.dto';
 
 @Injectable()
 export class UserRepository extends BaseAbstractRepository<UserDocument> {
@@ -31,6 +32,17 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       {
         $set: {
           profileImage: profileImage,
+        },
+      },
+    );
+  }
+
+  async updateProfileData(myId: any, data: ProfileDto) {
+    await this.user.updateOne(
+      { _id: myId },
+      {
+        $set: {
+          ...data,
         },
       },
     );

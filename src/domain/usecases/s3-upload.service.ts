@@ -28,7 +28,10 @@ export class S3Service {
       new PutObjectCommand({
         Bucket: environment.aws.midias,
         Key: `${owner}/${type}/${randomName}.${fileExtName}`,
-        Body: await composite(file.buffer, BufferWaterMark),
+        Body:
+          type === ITypeContent.PROFILE
+            ? file.buffer
+            : await composite(file.buffer, BufferWaterMark),
         ACL: 'public-read',
         ContentType: file.mimetype,
       }),
