@@ -12,6 +12,11 @@ export class CreateContentService implements ICreateContentUseCase {
     private readonly userrepo: UserRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
+    if (dto.payed && dto.contents.length % 2 !== 1) {
+      throw new BadRequestException(
+        'if the content is payed, is required to send payed',
+      );
+    }
     if (dto.payed && dto.type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile image dont need to be payed');
     }
@@ -26,6 +31,17 @@ export class CreateContentService implements ICreateContentUseCase {
         'profile content dont needs more than 1 content',
       );
     }
+
+    const coount = dto.contents.filter((item) =>
+      item.includes('-payed'),
+    ).length;
+    const halfLength = dto.contents.length / 2;
+    if (coount >= halfLength) {
+      throw new BadRequestException(
+        'if the content is payed, is required to send payed',
+      );
+    }
+
     if (dto.type === ITypeContent.PROFILE) {
       const hasProfileImage = await this.contentRepositoru.findOne({
         owner,

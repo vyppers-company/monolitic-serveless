@@ -72,7 +72,7 @@ export class UploadController {
     type: DeleteUpload,
   })
   async DeleteMidiaV2(@Body() body: DeleteUpload) {
-    const url = body.url.split('?')[0];
-    await this.s3Service.deleteObject(url);
+    const urls = body.urls.map((url) => url.split('?')[0]);
+    await this.s3Service.deleteObject(urls);
   }
 }

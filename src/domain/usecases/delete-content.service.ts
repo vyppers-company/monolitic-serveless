@@ -22,9 +22,6 @@ export class DeleteContentService implements IDeleteContentUseCase {
       throw new ForbiddenException('this content doesnt belongs to this user');
     }
     await this.contentRepository.deleteById(dto.contentId);
-    const contents = content.contents.map(
-      async (cont) => await this.s3.deleteObject(cont),
-    );
-    Promise.all(contents).then();
+    await this.s3.deleteObject(content.contents);
   }
 }

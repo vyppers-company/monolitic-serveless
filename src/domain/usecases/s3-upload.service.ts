@@ -4,8 +4,7 @@ import { environment } from 'src/main/config/environment/environment';
 import * as mime from 'mime-types';
 import { randomUUID } from 'node:crypto';
 import { ITypeContent } from '../entity/contents';
-import { blur, composite } from 'src/shared/utils/sharp';
-import { getImageFromExternalUrl } from 'src/shared/helpers/get-image-from-external-url';
+import { blur } from 'src/shared/utils/sharp';
 
 const s3 = new S3({
   region: environment.aws.region,
@@ -18,9 +17,6 @@ const s3 = new S3({
 @Injectable()
 export class S3Service {
   async uploadFile(file: any, type: string, owner: string) {
-    const BufferWaterMark = await getImageFromExternalUrl(
-      environment.app.waterMark,
-    );
     const uploads: string[] = [];
     const fileExtName = mime.extension(file.mimetype);
     const randomName = randomUUID();
@@ -28,10 +24,7 @@ export class S3Service {
       new PutObjectCommand({
         Bucket: environment.aws.midias,
         Key: `${owner}/${type}/${randomName}.${fileExtName}`,
-        Body:
-          type === ITypeContent.PROFILE
-            ? file.buffer
-            : await composite(file.buffer, BufferWaterMark),
+        Body: file.buffer,
         ACL: 'public-read',
         ContentType: file.mimetype,
       }),
@@ -39,14 +32,14 @@ export class S3Service {
     uploads.push(
       `${environment.aws.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
     );
+
     if (type !== ITypeContent.PROFILE) {
       const randomNameBlur = randomUUID();
-
       await s3.send(
         new PutObjectCommand({
           Bucket: environment.aws.midias,
           Key: `${owner}/${type}/${randomNameBlur}-payed.${fileExtName}`,
-          Body: await composite(await blur(file.buffer), BufferWaterMark),
+          Body: await blur(file.buffer),
           ACL: 'public-read',
           ContentType: file.mimetype,
         }),
@@ -57,12 +50,17 @@ export class S3Service {
     }
     return uploads;
   }
-  async deleteObject(url: string) {
-    const key = url.split('/');
-    await s3.send(
-      new DeleteObjectCommand({
-        Bucket: environment.aws.midias,
-        Key: `${key[3]}/${key[4]}/${key[5]}`,
+
+  async deleteObject(urls: string[]) {
+    const keys = urls.map((url) => url.split('/'));
+    await Promise.all(
+      keys.map(async (key, index) => {
+        return await s3.send(
+          new DeleteObjectCommand({
+            Bucket: environment.aws.midias,
+            Key: `${key[index][3]}/${key[index][4]}/${key[index][5]}`,
+          }),
+        );
       }),
     );
     return;
