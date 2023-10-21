@@ -36,6 +36,8 @@ import { MakeLikeService } from 'src/domain/usecases/make-like.service';
 import { ReactionsController } from 'src/presentation/controller/make-like.controller';
 import { FeedService } from 'src/domain/usecases/feed.service';
 import { UpdateProfileService } from 'src/domain/usecases/update-profile.service';
+import { SearchController } from 'src/presentation/controller/search.controller';
+import { SearchUsersService } from 'src/domain/usecases/search.service';
 
 @Module({
   imports: [
@@ -73,8 +75,10 @@ import { UpdateProfileService } from 'src/domain/usecases/update-profile.service
     GetProfileService,
     S3Service,
     FeedService,
+    SearchUsersService,
   ],
   controllers: [
+    SearchController,
     RecoveryController,
     HealthcheckController,
     RegisterController,

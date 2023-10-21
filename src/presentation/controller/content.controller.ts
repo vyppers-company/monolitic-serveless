@@ -83,20 +83,14 @@ export class ContentController {
     description: 'quantidade que deseja buscar. valor padrao 10',
   })
   @ApiQuery({
-    name: 'offset',
-    required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
-  })
-  @ApiQuery({
     name: 'page',
     required: false,
-    description: 'numero da pagina que deseja buscar. valo padrao 0',
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
   })
   async getContents(
     @Query('profileId') profileId: string,
     @Query('type') type: ITypeContent,
     @Query('limit') limit: number,
-    @Query('offset') offset: number,
     @Query('page') page: number,
     @Logged() userLogged: ILogged,
   ) {
@@ -104,9 +98,8 @@ export class ContentController {
       profileId,
       userLogged._id,
       type,
-      limit,
-      page,
-      offset,
+      limit || 10,
+      page || 1,
     );
   }
 

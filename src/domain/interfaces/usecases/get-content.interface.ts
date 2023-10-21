@@ -8,7 +8,6 @@ export interface IContentsUseCase {
     type: ITypeContent,
     limit: number,
     page: number,
-    offset: number,
   ) => Promise<PaginateResult<IContentEntity>>;
   getContent: (
     profileId: string,
