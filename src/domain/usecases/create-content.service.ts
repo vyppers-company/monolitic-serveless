@@ -12,7 +12,11 @@ export class CreateContentService implements ICreateContentUseCase {
     private readonly userrepo: UserRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
-    if (dto.payed && dto.contents.length % 2 !== 1) {
+    if (
+      dto.payed &&
+      dto.contents.length % 2 !== 1 &&
+      dto.type !== ITypeContent.PROFILE
+    ) {
       throw new BadRequestException(
         'if the content is payed, is required to send payed',
       );

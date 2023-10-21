@@ -32,14 +32,15 @@ export class S3Service {
     uploads.push(
       `${environment.aws.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
     );
-
     if (type !== ITypeContent.PROFILE) {
       const randomNameBlur = randomUUID();
       await s3.send(
         new PutObjectCommand({
           Bucket: environment.aws.midias,
           Key: `${owner}/${type}/${randomNameBlur}-payed.${fileExtName}`,
-          Body: await blur(file.buffer),
+          Body: file.mimetype.includes('video')
+            ? file.buffer
+            : await blur(file.buffer),
           ACL: 'public-read',
           ContentType: file.mimetype,
         }),
