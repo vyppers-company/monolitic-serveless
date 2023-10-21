@@ -11,7 +11,7 @@ const composite = async (file: Buffer, BufferWaterMark: Buffer) => {
     .toBuffer();
 };
 const blur = async (file: Buffer) => {
-  return await sharp(file.buffer).blur(30).toBuffer();
+  return await sharp(file.buffer).blur(35).toBuffer();
 };
 
 export { composite, blur };
