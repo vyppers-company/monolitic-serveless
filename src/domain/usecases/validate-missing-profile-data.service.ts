@@ -19,6 +19,8 @@ export class ValidateMissingDataProfileService
     if (!user.profileImage) missingDatas.push('profileImage');
     if (!user.bio) missingDatas.push('bio');
     if (!user.interests.length) missingDatas.push('interests');
+    if (!user.paymentConfiguration) missingDatas.push('paymentConfiguration');
+    if (!user.planConfiguration) missingDatas.push('planConfiguration');
 
     return missingDatas;
   }

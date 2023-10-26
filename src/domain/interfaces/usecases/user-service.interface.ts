@@ -18,10 +18,7 @@ export interface IGetProfileUseCase {
       | 'phone'
       | 'interests'
       | 'paymentConfiguration'
-      | 'activated'
-      | 'fitToReceivePayment'
       | 'planConfiguration'
-      | 'type'
     >
   >;
 }

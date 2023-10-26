@@ -63,7 +63,10 @@ export class UserController {
     @Query() validate: ValidatevypperIDDto,
     @Logged() user: ILogged,
   ) {
-    return await this.validateData.validatevypperID(validate.vypperID, user._id);
+    return await this.validateData.validatevypperID(
+      validate.vypperID,
+      user._id,
+    );
   }
 
   /* @ApiTags('profile/validate')

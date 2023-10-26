@@ -29,16 +29,10 @@ export class GetProfileService implements IGetProfileUseCase {
       | 'phone'
       | 'interests'
       | 'paymentConfiguration'
-      | 'activated'
-      | 'fitToReceivePayment'
       | 'planConfiguration'
-      | 'type'
     >
   > {
-    const user = await this.userRepository.findOne(
-      { _id: logged._id },
-      { name: 1, vypperID: 1, bio: 1 },
-    );
+    const user = await this.userRepository.findOne({ _id: logged._id });
     const content = await this.contentRepository.findOne({
       owner: user._id,
       type: ITypeContent.PROFILE,
@@ -56,10 +50,7 @@ export class GetProfileService implements IGetProfileUseCase {
       phone: user.phone || null,
       interests: user.interests || [],
       paymentConfiguration: user.paymentConfiguration || null,
-      activated: user.activated || null,
-      fitToReceivePayment: user.fitToReceivePayment || null,
       planConfiguration: user.planConfiguration || null,
-      type: user.type || null,
     };
   }
 }
