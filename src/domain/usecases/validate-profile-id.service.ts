@@ -54,7 +54,7 @@ export class ValidateDataService implements IValidateDataUseCase {
         type: IValidationCodeType.CHANGE_EMAIL,
       });
 
-      await this.sesAdapter.sendEmailCode(email, 'body', 'subject');
+      /*   await this.sesAdapter.sendEmailCode(email, 'body', 'subject'); */
 
       return 'one email was sent';
     }
@@ -84,7 +84,7 @@ export class ValidateDataService implements IValidateDataUseCase {
         type: IValidationCodeType.CHANGE_PHONE,
       });
 
-      await this.sendSmsAdapter.send(phone, 'body-template');
+      /*  await this.sendSmsAdapter.send(phone, 'body-template'); */
 
       return 'one sms was sent';
     }
