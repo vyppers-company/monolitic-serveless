@@ -5,6 +5,23 @@ export interface IGetProfileUseCase {
   getPersonalData: (
     logged: ILogged,
   ) => Promise<
-    Pick<IProfile, 'bio' | '_id' | 'arroba' | 'name' | 'profileImage'>
+    Pick<
+      IProfile,
+      | 'bio'
+      | '_id'
+      | 'arroba'
+      | 'name'
+      | 'profileImage'
+      | 'gender'
+      | 'birthday'
+      | 'email'
+      | 'phone'
+      | 'interests'
+      | 'paymentConfiguration'
+      | 'activated'
+      | 'fitToReceivePayment'
+      | 'planConfiguration'
+      | 'type'
+    >
   >;
 }

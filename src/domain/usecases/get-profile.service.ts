@@ -16,7 +16,24 @@ export class GetProfileService implements IGetProfileUseCase {
   async getPersonalData(
     logged: ILogged,
   ): Promise<
-    Pick<IProfile, 'bio' | '_id' | 'arroba' | 'name' | 'profileImage'>
+    Pick<
+      IProfile,
+      | 'bio'
+      | '_id'
+      | 'arroba'
+      | 'name'
+      | 'profileImage'
+      | 'gender'
+      | 'birthday'
+      | 'email'
+      | 'phone'
+      | 'interests'
+      | 'paymentConfiguration'
+      | 'activated'
+      | 'fitToReceivePayment'
+      | 'planConfiguration'
+      | 'type'
+    >
   > {
     const user = await this.userRepository.findOne(
       { _id: logged._id },
@@ -33,6 +50,16 @@ export class GetProfileService implements IGetProfileUseCase {
       arroba: user.arroba || null,
       bio: user.bio || null,
       profileImage: content?.contents[0] || null,
+      gender: user.gender || null,
+      birthday: user.birthday || null,
+      email: user.email || null,
+      phone: user.phone || null,
+      interests: user.interests || [],
+      paymentConfiguration: user.paymentConfiguration || null,
+      activated: user.activated || null,
+      fitToReceivePayment: user.fitToReceivePayment || null,
+      planConfiguration: user.planConfiguration || null,
+      type: user.type || null,
     };
   }
 }
