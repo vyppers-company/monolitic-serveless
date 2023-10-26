@@ -20,6 +20,15 @@ export class User extends Document implements IProfile {
   @Prop()
   name?: string;
 
+  @Prop({ default: false })
+  fitToReceivePayment?: boolean;
+
+  @Prop()
+  paymentConfiguration?: string;
+
+  @Prop()
+  planConfiguration?: string;
+
   @Prop()
   bio?: string;
 
@@ -52,6 +61,9 @@ export class User extends Document implements IProfile {
 
   @Prop({ default: ITYPEUSER.USER })
   type: ITYPEUSER;
+
+  @Prop()
+  interests?: string[];
 
   @Prop()
   profileImage?: string;

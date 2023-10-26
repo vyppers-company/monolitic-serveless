@@ -17,7 +17,7 @@ import { SendSmsAdapter } from '../infra/adapters/blow-io.adapter';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
 import { UserController } from 'src/presentation/controller/user.controller';
-import { ValidateArrobaService } from 'src/domain/usecases/validate-profile-id.service';
+import { ValidateDataService } from 'src/domain/usecases/validate-profile-id.service';
 import { GoogleAuthStrategy } from 'src/domain/usecases/google-strategy.service';
 import { FacebookAuthStrategy } from 'src/domain/usecases/facebook-strategy.service';
 import { SESAdapter } from 'src/infra/adapters/ses.adapter';
@@ -38,6 +38,7 @@ import { FeedService } from 'src/domain/usecases/feed.service';
 import { UpdateProfileService } from 'src/domain/usecases/update-profile.service';
 import { SearchController } from 'src/presentation/controller/search.controller';
 import { SearchUsersService } from 'src/domain/usecases/search.service';
+import { ValidateMissingDataProfileService } from 'src/domain/usecases/validate-missing-profile-data.service';
 
 @Module({
   imports: [
@@ -65,7 +66,7 @@ import { SearchUsersService } from 'src/domain/usecases/search.service';
     UpdateProfileService,
     SendSmsAdapter,
     MakeLikeService,
-    ValidateArrobaService,
+    ValidateDataService,
     CreateContentService,
     DeleteContentService,
     RegisterMinimalService,
@@ -76,6 +77,7 @@ import { SearchUsersService } from 'src/domain/usecases/search.service';
     S3Service,
     FeedService,
     SearchUsersService,
+    ValidateMissingDataProfileService,
   ],
   controllers: [
     SearchController,

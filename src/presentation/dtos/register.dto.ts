@@ -1,15 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsBoolean,
-  IsDateString,
   IsEmail,
-  IsISO8601,
   IsOptional,
   IsString,
-  IsUrl,
   Matches,
-  Validate,
-  isISO8601,
 } from 'class-validator';
 import regex from '../../shared/helpers/regex';
 import { Match } from '../../shared/decorators/match.decorator';
