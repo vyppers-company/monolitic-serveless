@@ -1,4 +1,12 @@
-import { Controller, Logger, Get, Query, Put, Body } from '@nestjs/common';
+import {
+  Controller,
+  Logger,
+  Get,
+  Query,
+  Put,
+  Body,
+  Patch,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import {
@@ -81,7 +89,7 @@ export class UserController {
   } */
 
   @ApiTags('profile/update/common/data')
-  @Put('v1/update/profile')
+  @Patch('v1/update/profile')
   @ApiBearerAuth()
   @ApiBody({ type: ProfileDto })
   async updateCommonData(@Body() body: ProfileDto, @Logged() user: ILogged) {
