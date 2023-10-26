@@ -10,7 +10,7 @@ import {
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import {
-  ValidateArrobaDto,
+  ValidatevypperIDDto,
   ValidateEmailDto,
   ValidatePhoneDto,
 } from '../dtos/validate-profile-id';
@@ -49,21 +49,21 @@ export class UserController {
   }
 
   @ApiTags('profile/validate/opend')
-  @Get('v1/validate/arroba')
-  @ApiQuery({ name: 'arroba', required: true })
-  async validateArrobaFs(@Query() validate: ValidateArrobaDto) {
-    return await this.validateData.validateArroba(validate.arroba);
+  @Get('v1/validate/vypperID')
+  @ApiQuery({ name: 'vypperID', required: true })
+  async validatevypperIDFs(@Query() validate: ValidatevypperIDDto) {
+    return await this.validateData.validatevypperID(validate.vypperID);
   }
 
   @ApiTags('profile/validate')
-  @Get('v1/validate/arroba/logged')
+  @Get('v1/validate/vypperID/logged')
   @ApiBearerAuth()
-  @ApiQuery({ name: 'arroba', required: true })
-  async validateArrobaFsLogged(
-    @Query() validate: ValidateArrobaDto,
+  @ApiQuery({ name: 'vypperID', required: true })
+  async validatevypperIDFsLogged(
+    @Query() validate: ValidatevypperIDDto,
     @Logged() user: ILogged,
   ) {
-    return await this.validateData.validateArroba(validate.arroba, user._id);
+    return await this.validateData.validatevypperID(validate.vypperID, user._id);
   }
 
   /* @ApiTags('profile/validate')

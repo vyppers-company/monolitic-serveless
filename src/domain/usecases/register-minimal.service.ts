@@ -84,7 +84,7 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
     };
 
     const checkAll = await this.userRepository.findAll();
-    const uniqueName = generateName(checkAll.map((us) => us.arroba));
+    const uniqueName = generateName(checkAll.map((us) => us.vypperID));
 
     this.userRepository
       .create({
@@ -92,7 +92,7 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
         profileImage: null,
         type: ITYPEUSER.USER,
         name: uniqueName,
-        arroba: uniqueName,
+        vypperID: uniqueName,
       })
       .then();
     this.codeRecoveryRepository.deleteById(code._id).then();

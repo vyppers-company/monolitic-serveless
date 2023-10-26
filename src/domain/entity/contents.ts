@@ -21,7 +21,7 @@ export interface IContentEntity {
         profileImage: string;
         name: string;
         _id: string;
-        arroba: string;
+        vypperID: string;
       };
   contents?: string[];
   likersId?: string[];

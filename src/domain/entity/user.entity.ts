@@ -20,7 +20,7 @@ export interface IProfile {
   phone?: string;
   bio?: string;
   email?: string;
-  arroba?: string;
+  vypperID?: string;
   profileImage?: string;
   activated?: boolean;
   fitToReceivePayment?: boolean;

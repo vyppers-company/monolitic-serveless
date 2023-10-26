@@ -42,7 +42,7 @@ export class User extends Document implements IProfile {
   password?: string;
 
   @Prop({ unique: false })
-  arroba?: string;
+  vypperID?: string;
 
   @Prop({ default: false })
   activated?: boolean;

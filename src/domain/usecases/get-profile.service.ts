@@ -20,7 +20,7 @@ export class GetProfileService implements IGetProfileUseCase {
       IProfile,
       | 'bio'
       | '_id'
-      | 'arroba'
+      | 'vypperID'
       | 'name'
       | 'profileImage'
       | 'gender'
@@ -37,7 +37,7 @@ export class GetProfileService implements IGetProfileUseCase {
   > {
     const user = await this.userRepository.findOne(
       { _id: logged._id },
-      { name: 1, arroba: 1, bio: 1 },
+      { name: 1, vypperID: 1, bio: 1 },
     );
     const content = await this.contentRepository.findOne({
       owner: user._id,
@@ -47,7 +47,7 @@ export class GetProfileService implements IGetProfileUseCase {
     return {
       _id: user._id,
       name: user.name,
-      arroba: user.arroba || null,
+      vypperID: user.vypperID || null,
       bio: user.bio || null,
       profileImage: content?.contents[0] || null,
       gender: user.gender || null,

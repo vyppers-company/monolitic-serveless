@@ -72,7 +72,7 @@ export class AuthService implements IAuthUseCase {
       {
         _id: String(findedOne._id),
         email: String(findedOne.email),
-        arroba: String(findedOne.arroba),
+        vypperID: String(findedOne.vypperID),
       },
       ICryptoType.USER,
     );
@@ -82,7 +82,7 @@ export class AuthService implements IAuthUseCase {
       info: {
         _id: findedOne._id,
         name: findedOne.name,
-        arroba: findedOne.arroba,
+        vypperID: findedOne.vypperID,
         profileImage: profileImageInstance
           ? profileImageInstance.contents[0]
           : null,
@@ -114,7 +114,7 @@ export class AuthService implements IAuthUseCase {
         {
           _id: String(findedOne._id),
           email: String(findedOne.email),
-          arroba: String(findedOne.arroba),
+          vypperID: String(findedOne.vypperID),
         },
         ICryptoType.USER,
       );
@@ -125,7 +125,7 @@ export class AuthService implements IAuthUseCase {
         info: {
           _id: findedOne._id,
           name: findedOne.name,
-          arroba: findedOne.arroba,
+          vypperID: findedOne.vypperID,
           profileImage: profileImageInstance
             ? profileImageInstance.contents[0]
             : null,
@@ -167,12 +167,12 @@ export class AuthService implements IAuthUseCase {
       contentProfile._id,
     );
     const checkAll = await this.userRepository.findAll();
-    const uniqueName = generateName(checkAll.map((us) => us.arroba));
+    const uniqueName = generateName(checkAll.map((us) => us.vypperID));
     const token = await generateToken(
       {
         _id: String(newOne._id),
         email: String(newOne.email),
-        arroba: uniqueName,
+        vypperID: uniqueName,
       },
       ICryptoType.USER,
     );
@@ -182,7 +182,7 @@ export class AuthService implements IAuthUseCase {
       info: {
         _id: findedOne._id,
         name: findedOne.name,
-        arroba: findedOne.arroba,
+        vypperID: findedOne.vypperID,
         profileImage: urlS3 ? urlS3 : null,
         bio: findedOne.bio,
       },

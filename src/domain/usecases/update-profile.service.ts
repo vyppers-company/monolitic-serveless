@@ -17,9 +17,9 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
   ) {}
   async updateData(myId: string, dto: ProfileDto): Promise<void> {
     const user = await this.userRepository.findOne({ _id: myId });
-    if (dto.arroba && dto.arroba !== user.arroba) {
-      const result = await this.validate.validateArroba(dto.arroba);
-      if (!result) throw new BadRequestException('this arroba have been used');
+    if (dto.vypperID && dto.vypperID !== user.vypperID) {
+      const result = await this.validate.validatevypperID(dto.vypperID);
+      if (!result) throw new BadRequestException('this vypperID have been used');
     }
     const age = getAge(dto.birthday);
 

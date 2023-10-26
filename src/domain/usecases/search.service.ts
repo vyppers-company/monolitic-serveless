@@ -30,7 +30,7 @@ export class SearchUsersService implements ISearchUseCase {
             name: { $regex: value, $options: 'i' },
           },
           {
-            arroba: { $regex: value, $options: 'i' },
+            vypperID: { $regex: value, $options: 'i' },
           },
         ],
       },
@@ -47,7 +47,7 @@ export class SearchUsersService implements ISearchUseCase {
       prevPage: result.prevPage,
       nextPage: result.nextPage,
       docs: result.docs.map((doc: any) => ({
-        arroba: doc.arroba,
+        vypperID: doc.vypperID,
         name: doc.name,
         profileImage: doc.profileImage,
       })),

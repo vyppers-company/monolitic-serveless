@@ -25,7 +25,7 @@ export class SearchController {
   @ApiQuery({
     name: 'value',
     required: false,
-    description: 'valor da busca por nome ou arroba',
+    description: 'valor da busca por nome ou vypperID',
   })
   async selectExam(
     @Query('value') value: string,

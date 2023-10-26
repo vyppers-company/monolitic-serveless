@@ -41,7 +41,7 @@ export class RegisterService implements IRegisterUseCase {
           email: hashedEmail,
         },
         {
-          arroba: dto.arroba,
+          vypperID: dto.vypperID,
         },
       ],
     });

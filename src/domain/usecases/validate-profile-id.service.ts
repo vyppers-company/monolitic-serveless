@@ -17,9 +17,9 @@ export class ValidateDataService implements IValidateDataUseCase {
     private readonly sesAdapter: SESAdapter,
   ) {}
 
-  async validateArroba(arroba: string, myId?: string): Promise<boolean> {
+  async validatevypperID(vypperID: string, myId?: string): Promise<boolean> {
     const user = await this.userRepository.findOne({
-      arroba,
+      vypperID,
     });
 
     if (myId && user._id === myId) {

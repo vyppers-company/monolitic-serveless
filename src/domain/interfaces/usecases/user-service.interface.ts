@@ -9,7 +9,7 @@ export interface IGetProfileUseCase {
       IProfile,
       | 'bio'
       | '_id'
-      | 'arroba'
+      | 'vypperID'
       | 'name'
       | 'profileImage'
       | 'gender'

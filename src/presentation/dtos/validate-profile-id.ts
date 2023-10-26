@@ -3,9 +3,9 @@ import { IsEmail, IsString, Matches } from 'class-validator';
 import { IProfile } from 'src/domain/entity/user.entity';
 import regex from 'src/shared/helpers/regex';
 
-export class ValidateArrobaDto implements Pick<IProfile, 'arroba'> {
+export class ValidatevypperIDDto implements Pick<IProfile, 'vypperID'> {
   @IsString()
-  @Matches(regex.arroba, {
+  @Matches(regex.vypperID, {
     message: `O valor pode conter letras minúsculas (a-z).
   O valor pode começar com letras minúsculas (a-z).
   O valor pode começar com números (0-9).
@@ -20,7 +20,7 @@ export class ValidateArrobaDto implements Pick<IProfile, 'arroba'> {
     example: 'paulorr.io igual de instagram',
     description: 'mandar sem @ no inicio',
   })
-  arroba: string;
+  vypperID: string;
 }
 
 export class ValidateEmailDto implements Pick<IProfile, 'email'> {

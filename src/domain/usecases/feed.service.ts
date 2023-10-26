@@ -22,7 +22,7 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'arroba name profileImage',
+            select: 'vypperID name profileImage',
             populate: [
               {
                 path: 'profileImage',
@@ -52,7 +52,7 @@ export class FeedService implements IFeedUseCase {
         owner: {
           _id: doc.owner._id,
           name: doc.owner.name,
-          arroba: doc.owner.arroba,
+          vypperID: doc.owner.vypperID,
           profileImage: doc.owner.profileImage,
         },
         canEdit: String(doc.owner._id) === String(myId) ? true : false,

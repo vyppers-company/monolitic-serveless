@@ -23,7 +23,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'arroba name profileImage',
+            select: 'vypperID name profileImage',
             populate: [
               {
                 path: 'profileImage',
@@ -57,7 +57,7 @@ export class GetContentService implements IContentsUseCase {
         owner: {
           _id: doc.owner._id,
           name: doc.owner.name,
-          arroba: doc.owner.arroba,
+          vypperID: doc.owner.vypperID,
           profileImage: doc.owner.profileImage,
         },
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
@@ -89,7 +89,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'arroba name profileImage',
+            select: 'vypperID name profileImage',
             populate: [
               {
                 path: 'profileImage',
@@ -110,7 +110,7 @@ export class GetContentService implements IContentsUseCase {
       owner: {
         _id: content.owner._id,
         name: content.owner.name,
-        arroba: content.owner.arroba,
+        vypperID: content.owner.vypperID,
         profileImage: content.owner.profileImage,
       },
       text: content.text,
