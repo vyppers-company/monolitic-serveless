@@ -42,4 +42,5 @@ export interface IProfile {
   termsAndConditions?: boolean;
   type?: ITYPEUSER;
   interests?: ICategory;
+  bans?: string[];
 }

@@ -26,6 +26,17 @@ export class FeedService implements IFeedUseCase {
         ['caracteristics.gender']: { $in: user.interests.gender },
       });
     }
+
+    user.bans && user.bans.length
+      ? filterUsers.push({
+          _id: { $not: { $in: user.bans } },
+        })
+      : null;
+
+    filterUsers.push({
+      bans: { $not: { $in: [myId] } },
+    });
+
     const users = await this.userRepository.find(
       filterUsers.length ? { $and: filterUsers } : {},
       null,
@@ -57,7 +68,7 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage caracteristics',
+            select: 'vypperID name profileImage caracteristics bans',
             populate: [
               {
                 path: 'profileImage',
@@ -88,7 +99,6 @@ export class FeedService implements IFeedUseCase {
           _id: doc.owner._id,
           name: doc.owner.name,
           vypperID: doc.owner.vypperID,
-          profileImage: doc.owner.profileImage,
         },
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: doc.contents.filter((image: string) =>

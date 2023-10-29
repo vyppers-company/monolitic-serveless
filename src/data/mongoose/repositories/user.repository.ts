@@ -47,4 +47,26 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       },
     );
   }
+
+  async addBannedPerson(userId: string, myId: string) {
+    await this.user.updateOne(
+      { _id: myId },
+      {
+        $push: {
+          bans: userId,
+        },
+      },
+    );
+  }
+
+  async removeBannedPerson(userId: string, myId: string) {
+    await this.user.updateOne(
+      { _id: myId },
+      {
+        $pull: {
+          bans: userId,
+        },
+      },
+    );
+  }
 }

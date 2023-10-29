@@ -39,6 +39,8 @@ import { UpdateProfileService } from 'src/domain/usecases/update-profile.service
 import { SearchController } from 'src/presentation/controller/search.controller';
 import { SearchUsersService } from 'src/domain/usecases/search.service';
 import { ValidateMissingDataProfileService } from 'src/domain/usecases/validate-missing-profile-data.service';
+import { BanUserService } from 'src/domain/usecases/ban-user.service';
+import { BanUserController } from 'src/presentation/controller/ban-user.controller';
 
 @Module({
   imports: [
@@ -77,6 +79,7 @@ import { ValidateMissingDataProfileService } from 'src/domain/usecases/validate-
     S3Service,
     FeedService,
     SearchUsersService,
+    BanUserService,
     ValidateMissingDataProfileService,
   ],
   controllers: [
@@ -87,6 +90,7 @@ import { ValidateMissingDataProfileService } from 'src/domain/usecases/validate-
     AuthController,
     UserController,
     ContentController,
+    BanUserController,
     UploadController,
     ReactionsController,
   ],
