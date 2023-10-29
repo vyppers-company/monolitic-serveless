@@ -41,6 +41,8 @@ import { SearchUsersService } from 'src/domain/usecases/search.service';
 import { ValidateMissingDataProfileService } from 'src/domain/usecases/validate-missing-profile-data.service';
 import { BanUserService } from 'src/domain/usecases/ban-user.service';
 import { BanUserController } from 'src/presentation/controller/ban-user.controller';
+import { FollowersControllers } from 'src/presentation/controller/followers.controller';
+import { FollowService } from 'src/domain/usecases/follow.service';
 
 @Module({
   imports: [
@@ -80,10 +82,12 @@ import { BanUserController } from 'src/presentation/controller/ban-user.controll
     FeedService,
     SearchUsersService,
     BanUserService,
+    FollowService,
     ValidateMissingDataProfileService,
   ],
   controllers: [
     SearchController,
+    FollowersControllers,
     RecoveryController,
     HealthcheckController,
     RegisterController,

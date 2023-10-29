@@ -74,6 +74,9 @@ export class User extends Document implements IProfile {
 
   @Prop({ type: Array })
   bans?: string[];
+
+  @Prop({ type: Array })
+  followers?: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

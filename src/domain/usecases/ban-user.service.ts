@@ -63,6 +63,8 @@ export class BanUserService implements IBanUserUseCase {
       throw new ConflictException('you cant ban yourself');
     }
     await this.userRepository.addBannedPerson(userId, myId);
+    await this.userRepository.removeFollower(myId, userId);
+    await this.userRepository.removeFollower(userId, myId);
   }
   async unbanUser(userId: string, myId: string): Promise<void> {
     const user = await this.userRepository.findOne({ _id: myId });

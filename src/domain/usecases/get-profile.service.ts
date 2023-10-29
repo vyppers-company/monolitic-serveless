@@ -4,15 +4,17 @@ import {
   IProfileExt,
 } from '../interfaces/usecases/user-service.interface';
 import { Injectable } from '@nestjs/common';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
 import { ILogged } from '../interfaces/others/logged.interface';
-import { IProfile } from '../entity/user.entity';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IContentEntity } from '../entity/contents';
+import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
 
 @Injectable()
 export class GetProfileService implements IGetProfileUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly contentRepository: ContentRepository,
+  ) {}
   async getPersonalData(
     logged: ILogged,
   ): Promise<
@@ -31,6 +33,10 @@ export class GetProfileService implements IGetProfileUseCase {
       | 'planConfiguration'
       | 'caracteristics'
       | 'bansQtd'
+      | 'followersQtd'
+      | 'freeContents'
+      | 'payedContents'
+      | 'qtdLikes'
     >
   > {
     const user = await this.userRepository.findOne({ _id: logged._id }, null, {
@@ -38,7 +44,9 @@ export class GetProfileService implements IGetProfileUseCase {
         { path: 'profileImage', select: 'contents', model: 'Content' },
       ],
     });
+    const contents = await this.contentRepository.find({ owner: user._id });
     const content = user.profileImage as IContentEntity;
+
     return {
       _id: user._id,
       name: user.name,
@@ -52,7 +60,16 @@ export class GetProfileService implements IGetProfileUseCase {
       interests: user.interests || null,
       paymentConfiguration: user.paymentConfiguration || null,
       planConfiguration: user.planConfiguration || null,
-      bansQtd: user.bans.length,
+      bansQtd: user.bans ? user.bans.length : 0,
+      followersQtd: user.followers ? user.followers.length : 0,
+      qtdLikes: contents.length
+        ? contents.reduce((acc, curr) => {
+            acc.push(...curr.likersId);
+            return acc;
+          }, []).length
+        : 0,
+      payedContents: contents.filter((content) => content.payed).length,
+      freeContents: contents.filter((content) => !content.payed).length,
     };
   }
 }

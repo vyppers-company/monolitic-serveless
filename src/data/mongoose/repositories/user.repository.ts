@@ -69,4 +69,26 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       },
     );
   }
+
+  async addFollower(userId: string, myId: string) {
+    await this.user.updateOne(
+      { _id: userId },
+      {
+        $push: {
+          followers: myId,
+        },
+      },
+    );
+  }
+
+  async removeFollower(userId: string, myId: string) {
+    await this.user.updateOne(
+      { _id: userId },
+      {
+        $pull: {
+          followers: myId,
+        },
+      },
+    );
+  }
 }

@@ -43,4 +43,5 @@ export interface IProfile {
   type?: ITYPEUSER;
   interests?: ICategory;
   bans?: string[];
+  followers?: string[];
 }

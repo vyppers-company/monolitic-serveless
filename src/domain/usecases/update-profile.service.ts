@@ -9,12 +9,15 @@ import {
 import { ValidateDataService } from './validate-profile-id.service';
 import { getAge } from 'src/shared/utils/getAge';
 import { validateCPF } from 'src/shared/utils/validate-cpf';
+import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
+import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class UpdateProfileService implements IUpdateProfileUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly validate: ValidateDataService,
+    private readonly cryptoAdapter: CryptoAdapter,
   ) {}
   async updateData(myId: string, dto: ProfileDto): Promise<void> {
     if (dto.cpf) {
@@ -36,7 +39,10 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
       throw new ConflictException('you need to have 18 years old');
     }
 
-    await this.userRepository.updateProfileData(myId, dto);
+    await this.userRepository.updateProfileData(myId, {
+      ...dto,
+      cpf: this.cryptoAdapter.encryptText(dto.cpf, ICryptoType.USER),
+    });
   }
   updateEmail(myId: string, email: string): Promise<any> {
     return new Promise(null);

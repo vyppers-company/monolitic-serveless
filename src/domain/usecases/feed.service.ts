@@ -21,7 +21,11 @@ export class FeedService implements IFeedUseCase {
 
     const filterUsers = [];
 
-    if (user.interests && user.interests.gender) {
+    if (
+      user.interests &&
+      user.interests.gender &&
+      user.interests.gender.length
+    ) {
       filterUsers.push({
         ['caracteristics.gender']: { $in: user.interests.gender },
       });

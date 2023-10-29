@@ -3,6 +3,10 @@ import { ILogged } from '../../interfaces/others/logged.interface';
 
 export interface IProfileExt extends IProfile {
   bansQtd: number;
+  payedContents: number;
+  freeContents: number;
+  followersQtd: number;
+  qtdLikes: number;
 }
 
 export interface IGetProfileUseCase {
@@ -24,6 +28,10 @@ export interface IGetProfileUseCase {
       | 'planConfiguration'
       | 'caracteristics'
       | 'bansQtd'
+      | 'followersQtd'
+      | 'freeContents'
+      | 'payedContents'
+      | 'qtdLikes'
     >
   >;
 }
