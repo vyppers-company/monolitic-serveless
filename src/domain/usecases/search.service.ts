@@ -12,6 +12,7 @@ export class SearchUsersService implements ISearchUseCase {
   constructor(private readonly userRepository: UserRepository) {}
   async searchUser(
     queries: IQueriesSearchUser,
+    myId: string,
   ): Promise<PaginateResult<IProfile>> {
     const getCategories = ({
       value,
@@ -91,6 +92,17 @@ export class SearchUsersService implements ISearchUseCase {
         verified: { $eq: queries.verified === 'true' ? true : false },
       });
     }
+    const user = await this.userRepository.findOne({ _id: myId });
+
+    user.bans && user.bans.length
+      ? filters.push({
+          _id: { $not: { $in: user.bans } },
+        })
+      : null;
+
+    filters.push({
+      bans: { $not: { $in: [myId] } },
+    });
 
     const finalFilters = {};
     if (filters.length) {
@@ -123,6 +135,7 @@ export class SearchUsersService implements ISearchUseCase {
       prevPage: result.prevPage,
       nextPage: result.nextPage,
       docs: result.docs.map((doc: any) => ({
+        _id: doc._id,
         vypperID: doc.vypperID,
         name: doc.name,
         profileImage: doc.profileImage,

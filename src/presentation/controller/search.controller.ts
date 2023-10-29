@@ -90,7 +90,7 @@ export class SearchController {
     @Query() queries: SearchCategoryDto,
     @Logged() user: ILogged,
   ) {
-    return this.searchService.searchUser(queries);
+    return this.searchService.searchUser(queries, user._id);
   }
 
   @Get('v1/consult/filter')

@@ -12,5 +12,6 @@ export interface IQueriesSearchUser extends ICategory {
 export interface ISearchUseCase {
   searchUser: (
     queries: IQueriesSearchUser,
+    myId: string,
   ) => Promise<PaginateResult<IProfile>>;
 }
