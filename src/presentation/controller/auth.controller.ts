@@ -15,6 +15,7 @@ import { GoogleAuthStrategy } from '../../domain/usecases/google-strategy.servic
 import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { IProfile } from 'src/domain/entity/user.entity';
+import { environment } from 'src/main/config/environment/environment';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -50,9 +51,7 @@ export class AuthController {
     const data = await this.authService.loginOauth20(user);
     response.setHeader('token', data.token);
     response.setHeader('info', JSON.stringify(data.info));
-    response.redirect(
-      'https://vyppers-frontend-dev-b5731e40cfe1.herokuapp.com',
-    );
+    response.redirect(environment.oauth.redirectFrontUrl);
   }
 
   @Get('v1/facebook')
@@ -76,8 +75,6 @@ export class AuthController {
     const data = await this.authService.loginOauth20(user);
     response.setHeader('token', data.token);
     response.setHeader('info', JSON.stringify(data.info));
-    response.redirect(
-      'https://vyppers-frontend-dev-b5731e40cfe1.herokuapp.com',
-    );
+    response.redirect(environment.oauth.redirectFrontUrl);
   }
 }
