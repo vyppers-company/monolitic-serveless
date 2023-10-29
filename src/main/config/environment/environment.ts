@@ -10,6 +10,7 @@ export const environment = {
     waterMark: process.env.WATER_MARK || '',
   },
   oauth: {
+    redirectFrontUrl: process.env.REDIRECT_FRONTEND_URL || '',
     google: {
       clientID: process.env.GOOGLE_AUTH_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET || '',
