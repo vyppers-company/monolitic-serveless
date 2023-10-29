@@ -1,5 +1,8 @@
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
-import { IGetProfileUseCase } from '../interfaces/usecases/user-service.interface';
+import {
+  IGetProfileUseCase,
+  IProfileExt,
+} from '../interfaces/usecases/user-service.interface';
 import { Injectable } from '@nestjs/common';
 import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
 import { ILogged } from '../interfaces/others/logged.interface';
@@ -14,7 +17,7 @@ export class GetProfileService implements IGetProfileUseCase {
     logged: ILogged,
   ): Promise<
     Pick<
-      IProfile,
+      IProfileExt,
       | 'bio'
       | '_id'
       | 'vypperID'
@@ -27,6 +30,7 @@ export class GetProfileService implements IGetProfileUseCase {
       | 'paymentConfiguration'
       | 'planConfiguration'
       | 'caracteristics'
+      | 'bansQtd'
     >
   > {
     const user = await this.userRepository.findOne({ _id: logged._id }, null, {
@@ -48,6 +52,7 @@ export class GetProfileService implements IGetProfileUseCase {
       interests: user.interests || null,
       paymentConfiguration: user.paymentConfiguration || null,
       planConfiguration: user.planConfiguration || null,
+      bansQtd: user.bans.length,
     };
   }
 }
