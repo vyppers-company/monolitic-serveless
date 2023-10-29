@@ -51,6 +51,7 @@ export class AuthService implements IAuthUseCase {
     }
 
     const findedOne = await this.userRepository.findOne(finalDto, null, {
+      lean: true,
       populate: [
         { path: 'profileImage', select: 'contents', model: 'Content' },
       ],
@@ -80,7 +81,15 @@ export class AuthService implements IAuthUseCase {
     return {
       token,
       info: {
-        ...findedOne,
+        _id: findedOne._id,
+        name: findedOne.name || null,
+        vypperID: findedOne.vypperID || null,
+        verified: findedOne.verified || null,
+        bio: findedOne.bio || null,
+        birthday: findedOne.birthday || null,
+        caracteristics: findedOne.caracteristics || null,
+        interests: findedOne.interests || null,
+        bans: findedOne.bans || null,
         profileImage: profileImageInstance
           ? profileImageInstance.contents[0]
           : null,
@@ -100,6 +109,7 @@ export class AuthService implements IAuthUseCase {
       { email: hashedEmail },
       null,
       {
+        lean: true,
         populate: [
           { path: 'profileImage', select: 'contents', model: 'Content' },
         ],
@@ -120,7 +130,15 @@ export class AuthService implements IAuthUseCase {
       return {
         token,
         info: {
-          ...findedOne,
+          _id: findedOne._id,
+          name: findedOne.name || null,
+          vypperID: findedOne.vypperID || null,
+          verified: findedOne.verified || null,
+          bio: findedOne.bio || null,
+          birthday: findedOne.birthday || null,
+          caracteristics: findedOne.caracteristics || null,
+          interests: findedOne.interests || null,
+          bans: findedOne.bans || null,
           profileImage: profileImageInstance
             ? profileImageInstance.contents[0]
             : null,
@@ -140,7 +158,11 @@ export class AuthService implements IAuthUseCase {
       type: ITYPEUSER.USER,
     });
 
-    const newOne = await this.userRepository.findOne({ email: hashedEmail });
+    const newOne = await this.userRepository.findOne(
+      { email: hashedEmail },
+      null,
+      { lean: true },
+    );
 
     const urlS3 = await this.s3.uploadFile(
       { buffer: image, mimetype: 'image/png' },
@@ -174,8 +196,16 @@ export class AuthService implements IAuthUseCase {
     return {
       token,
       info: {
-        ...findedOne,
+        _id: findedOne._id,
+        name: findedOne.name || null,
         profileImage: urlS3 ? urlS3 : null,
+        vypperID: findedOne.vypperID || null,
+        verified: findedOne.verified || null,
+        bio: findedOne.bio || null,
+        birthday: findedOne.birthday || null,
+        caracteristics: findedOne.caracteristics || null,
+        interests: findedOne.interests || null,
+        bans: findedOne.bans || null,
       },
     };
   }
