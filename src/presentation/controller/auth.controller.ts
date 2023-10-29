@@ -5,13 +5,14 @@ import {
   Logger,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from '../dtos/auth.dto';
 import { AuthService } from '../../domain/usecases/auth.service';
 import { GoogleAuthStrategy } from '../../domain/usecases/google-strategy.service';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { AuthGuard } from '@nestjs/passport';
 import { IProfile } from 'src/domain/entity/user.entity';
 
@@ -44,9 +45,14 @@ export class AuthController {
   @Get('v1/google/redirect')
   @ApiOperation({ summary: 'nao chamar, que chama é o google como callback' })
   @UseGuards(AuthGuard('google'))
-  async authGoogleRedirect(@Req() request: Request) {
+  async authGoogleRedirect(@Req() request: Request, @Res() response: Response) {
     const user = request.user as IProfile;
-    return this.authService.loginOauth20(user);
+    const data = await this.authService.loginOauth20(user);
+    response.setHeader('token', data.token);
+    response.setHeader('info', JSON.stringify(data.info));
+    response.redirect(
+      'https://vyppers-frontend-dev-b5731e40cfe1.herokuapp.com',
+    );
   }
 
   @Get('v1/facebook')
@@ -62,8 +68,16 @@ export class AuthController {
   @Get('v1/facebook/redirect')
   @ApiOperation({ summary: 'nao chamar, que chama é o facebook como callback' })
   @UseGuards(AuthGuard('facebook'))
-  async authFacebookRedirect(@Req() request: Request) {
+  async authFacebookRedirect(
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
     const user = request.user as IProfile;
-    return this.authService.loginOauth20(user);
+    const data = await this.authService.loginOauth20(user);
+    response.setHeader('token', data.token);
+    response.setHeader('info', JSON.stringify(data.info));
+    response.redirect(
+      'https://vyppers-frontend-dev-b5731e40cfe1.herokuapp.com',
+    );
   }
 }
