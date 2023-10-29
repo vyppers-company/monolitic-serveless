@@ -50,6 +50,7 @@ export class FeedService implements IFeedUseCase {
     );
 
     const onwerIds = users.map((us) => String(us._id));
+    onwerIds.push(myId);
 
     const filterContents = [];
 
