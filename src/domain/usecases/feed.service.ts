@@ -99,6 +99,7 @@ export class FeedService implements IFeedUseCase {
           _id: doc.owner._id,
           name: doc.owner.name,
           vypperID: doc.owner.vypperID,
+          profileImage: doc.owner.profileImage,
         },
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: doc.contents.filter((image: string) =>
