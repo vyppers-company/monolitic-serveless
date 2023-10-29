@@ -14,7 +14,7 @@ export class CreateContentService implements ICreateContentUseCase {
   async create(dto: CreateContentDto, owner: string): Promise<any> {
     if (
       dto.payed &&
-      dto.contents.length % 2 !== 1 &&
+      dto.contents.length % 2 === 1 &&
       dto.type !== ITypeContent.PROFILE
     ) {
       throw new BadRequestException(
@@ -36,7 +36,7 @@ export class CreateContentService implements ICreateContentUseCase {
       );
     }
 
-    const coount = dto.contents.filter((item) =>
+    /*   const coount = dto.contents.filter((item) =>
       item.includes('-payed'),
     ).length;
     const halfLength = dto.contents.length / 2;
@@ -44,7 +44,7 @@ export class CreateContentService implements ICreateContentUseCase {
       throw new BadRequestException(
         'if the content is payed, is required to send payed',
       );
-    }
+    } */
 
     if (dto.type === ITypeContent.PROFILE) {
       const hasProfileImage = await this.contentRepositoru.findOne({
