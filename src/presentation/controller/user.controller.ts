@@ -9,11 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-import {
-  ValidatevypperIDDto,
-  ValidateEmailDto,
-  ValidatePhoneDto,
-} from '../dtos/validate-profile-id';
+import { ValidatevypperIDDto } from '../dtos/validate-profile-id';
 import { ValidateDataService } from 'src/domain/usecases/validate-profile-id.service';
 import { Logged } from 'src/shared/decorators/logged.decorator';
 import { ILogged } from 'src/domain/interfaces/others/logged.interface';
@@ -69,28 +65,6 @@ export class UserController {
     );
   }
 
-  /* @ApiTags('profile/validate')
-  @Get('v1/validate/email/logged')
-  @ApiBearerAuth()
-  @ApiQuery({ name: 'email', required: true })
-  async validateAEmail(
-    @Query() validate: ValidateEmailDto,
-    @Logged() user: ILogged,
-  ) {
-    return await this.validateData.validateEmail(validate.email, user._id);
-  }
-
-  @ApiTags('profile/validate')
-  @Get('v1/validate/phone/logged')
-  @ApiBearerAuth()
-  @ApiQuery({ name: 'phone', required: true })
-  async validatePhone(
-    @Query() validate: ValidatePhoneDto,
-    @Logged() user: ILogged,
-  ) {
-    return await this.validateData.validatePhone(validate.phone, user._id);
-  } */
-
   @ApiTags('profile/update/common/data')
   @Patch('v1/update/profile')
   @ApiBearerAuth()
@@ -98,60 +72,4 @@ export class UserController {
   async updateCommonData(@Body() body: ProfileDto, @Logged() user: ILogged) {
     await this.updateProfile.updateData(user._id, body);
   }
-  /* 
-  @ApiTags('profile/update/email')
-  @Put('v1/update/email')
-  @ApiQuery({ name: 'email', required: true })
-  @ApiBearerAuth()
-  async updateEmail(@Query() emailToken: string, @Logged() user: ILogged) {
-    await this.updateProfile.updateEmail(user._id, emailToken);
-  }
-
-  @ApiTags('profile/update/phone')
-  @Put('v1/update/phone')
-  @ApiQuery({ name: 'phone', required: true })
-  @ApiBearerAuth()
-  async updatePhone(@Query() phoneToken: string, @Logged() user: ILogged) {
-    await this.updateProfile.updatePhone(user._id, phoneToken);
-  }
- */
-  /*  @ApiTags('profile')
-  @Delete('v1/remove/phone')
-  @ApiBearerAuth()
-  async removeDevice(@Logged() user: ILogged) {
-    await this.updateProfile.removeDevice(user._id);
-  }
-
-  @ApiTags('profile')
-  @Delete('v1/remove/email')
-  @ApiBearerAuth()
-  async removeEmail(@Logged() user: ILogged) {
-    await this.updateProfile.removeEmail(user._id);
-  }
-
-  @ApiTags('profile')
-  @Delete('v1/delete/account')
-  @ApiBearerAuth()
-  async removeAccount(@Logged() user: ILogged) {
-    await this.updateProfile.removeAccount(user._id);
-  }
-
-  @ApiTags('profile')
-  @Delete('v1/freeze/account')
-  @ApiBearerAuth()
-  @ApiQuery({ name: 'phone', required: true })
-  async freezeAccount(@Logged() user: ILogged) {
-    await this.updateProfile.freezeAccount(user._id);
-  }
-
-  @ApiTags('profile')
-  @Post('v1/freeze-or-delete-account/reason')
-  @ApiBearerAuth()
-  @ApiQuery({ name: 'reason', required: true })
-  async reasonToFreezeOrDeleteAccount(
-    @Query('reason') reason: string,
-    @Logged() user: ILogged,
-  ) {
-    await this.updateProfile.reasonToFreezeOrDeleteAccount(user._id, reason);
-  } */
 }

@@ -1,5 +1,10 @@
 import { Controller, Get, Logger, Query } from '@nestjs/common';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SearchUsersService } from 'src/domain/usecases/search.service';
 import { SearchCategoryDto } from '../dtos/search-categories.dto';
 import {
@@ -9,6 +14,8 @@ import {
   ICategoryGender,
   ICategoryHair,
 } from 'src/domain/entity/category';
+import { ILogged } from 'src/domain/interfaces/others/logged.interface';
+import { Logged } from 'src/shared/decorators/logged.decorator';
 
 @ApiTags('search')
 @Controller('search')
@@ -79,7 +86,26 @@ export class SearchController {
     description: 'busca por etnia',
     enum: ICategoryEthnicity,
   })
-  async searchUser(@Query() queries: SearchCategoryDto) {
+  async searchUser(
+    @Query() queries: SearchCategoryDto,
+    @Logged() user: ILogged,
+  ) {
     return this.searchService.searchUser(queries);
+  }
+
+  @Get('v1/consult/filter')
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Retorna todas as possibilidades de filtro',
+  })
+  async getCategories(@Logged() user: ILogged) {
+    return {
+      biotype: ICategoryBiotype,
+      ethnicity: ICategoryEthnicity,
+      eyes: ICategoryEyes,
+      gender: ICategoryGender,
+      hair: ICategoryHair,
+      verified: [true, false],
+    };
   }
 }
