@@ -72,5 +72,6 @@ export class ProfileDto implements IProfile {
     example: '99323107000',
   })
   @IsString()
+  @IsOptional()
   cpf: string;
 }
