@@ -80,13 +80,10 @@ export class AuthService implements IAuthUseCase {
     return {
       token,
       info: {
-        _id: findedOne._id,
-        name: findedOne.name,
-        vypperID: findedOne.vypperID,
+        ...findedOne,
         profileImage: profileImageInstance
           ? profileImageInstance.contents[0]
           : null,
-        bio: findedOne.bio || null,
       },
     };
   }
@@ -123,13 +120,10 @@ export class AuthService implements IAuthUseCase {
       return {
         token,
         info: {
-          _id: findedOne._id,
-          name: findedOne.name,
-          vypperID: findedOne.vypperID,
+          ...findedOne,
           profileImage: profileImageInstance
             ? profileImageInstance.contents[0]
             : null,
-          bio: findedOne.bio,
         },
       };
     }
@@ -180,11 +174,8 @@ export class AuthService implements IAuthUseCase {
     return {
       token,
       info: {
-        _id: findedOne._id,
-        name: findedOne.name,
-        vypperID: findedOne.vypperID,
+        ...findedOne,
         profileImage: urlS3 ? urlS3 : null,
-        bio: findedOne.bio,
       },
     };
   }
