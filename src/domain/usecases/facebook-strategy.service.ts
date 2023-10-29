@@ -45,7 +45,13 @@ export class FacebookAuthStrategy extends PassportStrategy(
       name,
       profileImage: url,
       birthday: formattedBirthday,
-      gender,
+      caracteristics: {
+        gender: gender,
+        ethnicity: null,
+        biotype: null,
+        eyes: null,
+        hair: null,
+      },
       oauth2Partner: 'facebook',
       termsAndConditions: true,
     };

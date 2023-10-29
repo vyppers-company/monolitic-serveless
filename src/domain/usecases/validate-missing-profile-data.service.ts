@@ -8,17 +8,49 @@ export class ValidateMissingDataProfileService
 {
   constructor(private readonly userRepository: UserRepository) {}
   async validateMissingDatas(userId: string): Promise<string[]> {
-    const user = await this.userRepository.findOne({ _id: userId });
+    const result = await this.userRepository.findOne({ _id: userId }, null, {
+      lean: true,
+    });
+    const user = { ...result };
     const missingDatas = [];
+    const caracteristicsFields = [
+      'hair',
+      'eyes',
+      'ethnicity',
+      'biotype',
+      'gender',
+    ];
+    const interestsFields = ['gender'];
+
+    if (!user.caracteristics || !Object.keys(user.caracteristics).length) {
+      missingDatas.push('caracteristics');
+      user.caracteristics = {};
+    }
+
+    caracteristicsFields.forEach((field) => {
+      if (!user.caracteristics.hasOwnProperty(field)) {
+        missingDatas.push(`caracteristics.${field}`);
+      }
+    });
+
+    if (!user.interests || !Object.keys(user.interests).length) {
+      missingDatas.push('interests');
+      user.interests = {};
+    }
+    interestsFields.forEach((field) => {
+      if (!user.interests.hasOwnProperty(field)) {
+        missingDatas.push(`interests.${field}`);
+      }
+    });
 
     if (!user.name) missingDatas.push('name');
     if (!user.email) missingDatas.push('email');
     if (!user.phone) missingDatas.push('phone');
     if (!user.birthday) missingDatas.push('birthdate');
-    if (!user.gender) missingDatas.push('gender');
+    if (!user.verified) missingDatas.push('verified');
     if (!user.profileImage) missingDatas.push('profileImage');
     if (!user.bio) missingDatas.push('bio');
-    if (!user.interests.length) missingDatas.push('interests');
+    if (!user.cpf) missingDatas.push('cpf');
     if (!user.paymentConfiguration) missingDatas.push('paymentConfiguration');
     if (!user.planConfiguration) missingDatas.push('planConfiguration');
 

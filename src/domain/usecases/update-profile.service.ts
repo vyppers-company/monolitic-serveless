@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { ValidateDataService } from './validate-profile-id.service';
 import { getAge } from 'src/shared/utils/getAge';
+import { validateCPF } from 'src/shared/utils/validate-cpf';
 
 @Injectable()
 export class UpdateProfileService implements IUpdateProfileUseCase {
@@ -16,10 +17,18 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
     private readonly validate: ValidateDataService,
   ) {}
   async updateData(myId: string, dto: ProfileDto): Promise<void> {
+    if (dto.cpf) {
+      const isValid = validateCPF(dto.cpf);
+      if (!isValid) {
+        throw new BadRequestException('cpf invalid');
+      }
+    }
+
     const user = await this.userRepository.findOne({ _id: myId });
     if (dto.vypperID && dto.vypperID !== user.vypperID) {
       const result = await this.validate.validatevypperID(dto.vypperID);
-      if (!result) throw new BadRequestException('this vypperID have been used');
+      if (!result)
+        throw new BadRequestException('this vypperID have been used');
     }
     const age = getAge(dto.birthday);
 

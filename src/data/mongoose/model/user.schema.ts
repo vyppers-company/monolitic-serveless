@@ -2,11 +2,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import {
-  IGender,
+  ICaracteristicas,
   IProfile,
   ITYPEUSER,
 } from '../../../domain/entity/user.entity';
 import { environment } from 'src/main/config/environment/environment';
+import { ICategory } from 'src/domain/entity/category';
 
 export type UserDocument = User & Document;
 
@@ -22,6 +23,9 @@ export class User extends Document implements IProfile {
 
   @Prop({ default: false })
   fitToReceivePayment?: boolean;
+
+  @Prop()
+  cpf?: string;
 
   @Prop()
   paymentConfiguration?: string;
@@ -45,13 +49,13 @@ export class User extends Document implements IProfile {
   vypperID?: string;
 
   @Prop({ default: false })
-  activated?: boolean;
+  verified?: boolean;
 
   @Prop()
   birthday?: string;
 
-  @Prop()
-  gender?: IGender;
+  @Prop({ type: Object })
+  caracteristics?: ICaracteristicas;
 
   @Prop()
   oauth2Partner?: string;
@@ -62,8 +66,8 @@ export class User extends Document implements IProfile {
   @Prop({ default: ITYPEUSER.USER })
   type: ITYPEUSER;
 
-  @Prop()
-  interests?: string[];
+  @Prop({ type: Object })
+  interests?: ICategory;
 
   @Prop()
   profileImage?: string;

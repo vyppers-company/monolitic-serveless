@@ -12,13 +12,13 @@ export interface IGetProfileUseCase {
       | 'vypperID'
       | 'name'
       | 'profileImage'
-      | 'gender'
       | 'birthday'
       | 'email'
       | 'phone'
       | 'interests'
       | 'paymentConfiguration'
       | 'planConfiguration'
+      | 'caracteristics'
     >
   >;
 }

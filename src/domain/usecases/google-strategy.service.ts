@@ -30,6 +30,13 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
       profileImage: picture,
       oauth2Partner: 'google',
       termsAndConditions: true,
+      caracteristics: {
+        ethnicity: null,
+        biotype: null,
+        eyes: null,
+        gender: null,
+        hair: null,
+      },
     };
 
     const { data } = await axios.get(

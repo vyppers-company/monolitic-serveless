@@ -14,7 +14,7 @@ async function bootstrapLambda(): Promise<Handler> {
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.init();
   const expressApp = app.getHttpAdapter().getInstance();
-  return serverlessExpress({app: expressApp});
+  return serverlessExpress({ app: expressApp });
 }
 
 export { bootstrapLambda };

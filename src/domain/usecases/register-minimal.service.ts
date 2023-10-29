@@ -93,6 +93,13 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
         type: ITYPEUSER.USER,
         name: uniqueName,
         vypperID: uniqueName,
+        caracteristics: {
+          ethnicity: null,
+          biotype: null,
+          eyes: null,
+          gender: null,
+          hair: null,
+        },
       })
       .then();
     this.codeRecoveryRepository.deleteById(code._id).then();

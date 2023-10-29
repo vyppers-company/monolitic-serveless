@@ -5,14 +5,11 @@ import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
 import { ILogged } from '../interfaces/others/logged.interface';
 import { IProfile } from '../entity/user.entity';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
-import { ITypeContent } from '../entity/contents';
+import { IContentEntity } from '../entity/contents';
 
 @Injectable()
 export class GetProfileService implements IGetProfileUseCase {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly contentRepository: ContentRepository,
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
   async getPersonalData(
     logged: ILogged,
   ): Promise<
@@ -23,32 +20,32 @@ export class GetProfileService implements IGetProfileUseCase {
       | 'vypperID'
       | 'name'
       | 'profileImage'
-      | 'gender'
       | 'birthday'
       | 'email'
       | 'phone'
       | 'interests'
       | 'paymentConfiguration'
       | 'planConfiguration'
+      | 'caracteristics'
     >
   > {
-    const user = await this.userRepository.findOne({ _id: logged._id });
-    const content = await this.contentRepository.findOne({
-      owner: user._id,
-      type: ITypeContent.PROFILE,
+    const user = await this.userRepository.findOne({ _id: logged._id }, null, {
+      populate: [
+        { path: 'profileImage', select: 'contents', model: 'Content' },
+      ],
     });
-
+    const content = user.profileImage as IContentEntity;
     return {
       _id: user._id,
       name: user.name,
       vypperID: user.vypperID || null,
       bio: user.bio || null,
-      profileImage: content?.contents[0] || null,
-      gender: user.gender || null,
+      profileImage: content.contents[0],
+      caracteristics: user.caracteristics || null,
       birthday: user.birthday || null,
       email: user.email || null,
       phone: user.phone || null,
-      interests: user.interests || [],
+      interests: user.interests || null,
       paymentConfiguration: user.paymentConfiguration || null,
       planConfiguration: user.planConfiguration || null,
     };

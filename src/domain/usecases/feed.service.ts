@@ -3,16 +3,51 @@ import { IFeedUseCase } from '../interfaces/usecases/feed.interface';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { PaginateResult } from 'mongoose';
 import { ITypeContent } from '../entity/contents';
+import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 
 @Injectable()
 export class FeedService implements IFeedUseCase {
-  constructor(private readonly contentRepository: ContentRepository) {}
+  constructor(
+    private readonly contentRepository: ContentRepository,
+    private readonly userRepository: UserRepository,
+  ) {}
   async feed(
     type: ITypeContent,
     myId: string,
     limit: number,
     page: number,
   ): Promise<PaginateResult<any>> {
+    const user = await this.userRepository.findOne({ _id: myId });
+
+    const filterUsers = [];
+
+    if (user.interests && user.interests.gender) {
+      filterUsers.push({
+        ['caracteristics.gender']: { $in: user.interests.gender },
+      });
+    }
+    const users = await this.userRepository.find(
+      filterUsers.length ? { $and: filterUsers } : {},
+      null,
+      {
+        lean: true,
+      },
+    );
+
+    const onwerIds = users.map((us) => String(us._id));
+
+    const filterContents = [];
+
+    if (type) {
+      filterContents.push({ type: { $eq: type } });
+    }
+
+    if (onwerIds) {
+      filterContents.push({
+        owner: { $in: onwerIds },
+      });
+    }
+
     const result = await this.contentRepository.findPaginated(
       {
         sort: { _id: -1 },
@@ -22,7 +57,7 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage',
+            select: 'vypperID name profileImage caracteristics',
             populate: [
               {
                 path: 'profileImage',
@@ -33,7 +68,7 @@ export class FeedService implements IFeedUseCase {
           },
         ],
       },
-      { type },
+      { $and: filterContents },
     );
     return {
       totalDocs: result.totalDocs,

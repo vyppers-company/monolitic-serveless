@@ -1,6 +1,9 @@
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { IProfile } from '../entity/user.entity';
-import { ISearchUseCase } from '../interfaces/usecases/search.interface';
+import {
+  IQueriesSearchUser,
+  ISearchUseCase,
+} from '../interfaces/usecases/search.interface';
 import { PaginateResult } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 
@@ -8,14 +11,96 @@ import { Injectable } from '@nestjs/common';
 export class SearchUsersService implements ISearchUseCase {
   constructor(private readonly userRepository: UserRepository) {}
   async searchUser(
-    value: string,
-    limit: number,
-    page: number,
+    queries: IQueriesSearchUser,
   ): Promise<PaginateResult<IProfile>> {
+    const getCategories = ({
+      value,
+      limit,
+      page,
+      verified,
+      ...rest
+    }: IQueriesSearchUser) => {
+      const categories = { ...rest };
+      const obj = {};
+      if (categories.biotype) {
+        obj['caracteristics.biotype'] = {
+          $in:
+            typeof categories.biotype === 'string'
+              ? [categories.biotype]
+              : categories.biotype,
+        };
+      }
+      if (categories.ethnicity) {
+        obj[`caracteristics.ethnicity`] = {
+          $in:
+            typeof categories.ethnicity === 'string'
+              ? [categories.ethnicity]
+              : categories.ethnicity,
+        };
+      }
+      if (categories.eyes) {
+        obj['caracteristics.eyes'] = {
+          $in:
+            typeof categories.eyes === 'string'
+              ? [categories.eyes]
+              : categories.eyes,
+        };
+      }
+      if (categories.gender) {
+        obj['caracteristics.gender'] = {
+          $in:
+            typeof categories.gender === 'string'
+              ? [categories.gender]
+              : categories.gender,
+        };
+      }
+      if (categories.hair) {
+        obj['caracteristics.hair'] = {
+          $in:
+            typeof categories.hair === 'string'
+              ? [categories.hair]
+              : categories.hair,
+        };
+      }
+
+      return obj;
+    };
+
+    const filters = [];
+    const finalCategories = getCategories(queries);
+
+    if (Object.keys(finalCategories).length) {
+      filters.push(finalCategories);
+    }
+
+    if (queries.value) {
+      filters.push({
+        $or: [
+          {
+            name: { $regex: queries.value, $options: 'i' },
+          },
+          {
+            vypperID: { $regex: queries.value, $options: 'i' },
+          },
+        ],
+      });
+    }
+
+    if (queries.verified) {
+      filters.push({
+        verified: { $eq: queries.verified === 'true' ? true : false },
+      });
+    }
+
+    const finalFilters = {};
+    if (filters.length) {
+      finalFilters['$and'] = filters;
+    }
+
     const result = await this.userRepository.findPaginated(
       {
-        limit: Number(limit),
-        page: Number(page),
+        limit: Number(queries.limit) || 10,
+        page: Number(queries.page) || 1,
         populate: [
           {
             path: 'profileImage',
@@ -24,16 +109,7 @@ export class SearchUsersService implements ISearchUseCase {
           },
         ],
       },
-      {
-        $or: [
-          {
-            name: { $regex: value, $options: 'i' },
-          },
-          {
-            vypperID: { $regex: value, $options: 'i' },
-          },
-        ],
-      },
+      Object.keys(finalFilters).length ? finalFilters : null,
     );
     return {
       totalDocs: result.totalDocs,
