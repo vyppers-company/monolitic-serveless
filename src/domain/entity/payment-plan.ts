@@ -1,7 +1,6 @@
-export interface IPaymentPlan {
+export interface IPlanEntity {
+  owner?: string;
   price: number;
   name: string;
-  owner: string;
   description: string;
-  acceptFreemium: string;
 }

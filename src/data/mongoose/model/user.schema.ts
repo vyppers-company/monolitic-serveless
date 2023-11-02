@@ -30,8 +30,8 @@ export class User extends Document implements IProfile {
   @Prop()
   paymentConfiguration?: string;
 
-  @Prop()
-  planConfiguration?: string;
+  @Prop({ type: Array })
+  planConfiguration?: string[];
 
   @Prop()
   bio?: string;

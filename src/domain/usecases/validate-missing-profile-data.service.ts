@@ -52,7 +52,7 @@ export class ValidateMissingDataProfileService
     if (!user.bio) missingDatas.push('bio');
     if (!user.cpf) missingDatas.push('cpf');
     if (!user.paymentConfiguration) missingDatas.push('paymentConfiguration');
-    if (!user.planConfiguration) missingDatas.push('planConfiguration');
+    if (!user.planConfiguration.length) missingDatas.push('planConfiguration');
 
     return missingDatas;
   }

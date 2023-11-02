@@ -33,6 +33,7 @@ export const environment = {
       code: process.env.MONGODB_COLLECTION_CODE || '',
       user: process.env.MONGODB_COLLECTION_USER || '',
       content: process.env.MONGODB_COLLECTION_CONTENT || '',
+      plan: process.env.MONGODB_COLLECTION_PLAN || '',
     },
   },
   aws: {

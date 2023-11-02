@@ -43,6 +43,10 @@ import { BanUserService } from 'src/domain/usecases/ban-user.service';
 import { BanUserController } from 'src/presentation/controller/ban-user.controller';
 import { FollowersControllers } from 'src/presentation/controller/followers.controller';
 import { FollowService } from 'src/domain/usecases/follow.service';
+import { Plan, PlanSchema } from 'src/data/mongoose/model/plan.schema';
+import { PlanService } from 'src/domain/usecases/plan.service';
+import { PlanRepository } from 'src/data/mongoose/repositories/plan.repository';
+import { PlanController } from 'src/presentation/controller/plan.controller';
 
 @Module({
   imports: [
@@ -53,6 +57,7 @@ import { FollowService } from 'src/domain/usecases/follow.service';
       { name: User.name, schema: UserSchema },
       { name: Code.name, schema: CodeSchema },
       { name: Content.name, schema: ContentSchema },
+      { name: Plan.name, schema: PlanSchema },
     ]),
   ],
   providers: [
@@ -65,6 +70,7 @@ import { FollowService } from 'src/domain/usecases/follow.service';
     ValidateCodeService,
     UserRepository,
     CodeRepository,
+    PlanRepository,
     CryptoAdapter,
     SESAdapter,
     UpdateProfileService,
@@ -75,6 +81,7 @@ import { FollowService } from 'src/domain/usecases/follow.service';
     DeleteContentService,
     RegisterMinimalService,
     EditContentService,
+    PlanService,
     GetContentService,
     ContentRepository,
     GetProfileService,
@@ -86,6 +93,7 @@ import { FollowService } from 'src/domain/usecases/follow.service';
     ValidateMissingDataProfileService,
   ],
   controllers: [
+    PlanController,
     SearchController,
     FollowersControllers,
     RecoveryController,

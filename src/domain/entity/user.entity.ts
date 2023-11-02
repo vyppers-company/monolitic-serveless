@@ -35,7 +35,7 @@ export interface IProfile {
   verified?: boolean;
   fitToReceivePayment?: boolean;
   paymentConfiguration?: string;
-  planConfiguration?: string;
+  planConfiguration?: string[];
   birthday?: string;
   caracteristics?: ICaracteristicas;
   oauth2Partner?: string;

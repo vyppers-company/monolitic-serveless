@@ -91,4 +91,26 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       },
     );
   }
+
+  async addPlan(userId: string, PlanId: string) {
+    await this.user.updateOne(
+      { _id: userId },
+      {
+        $push: {
+          planConfiguration: String(PlanId),
+        },
+      },
+    );
+  }
+
+  async removePlan(userId: string, PlanId: string) {
+    await this.user.updateOne(
+      { _id: userId },
+      {
+        $pull: {
+          planConfiguration: String(PlanId),
+        },
+      },
+    );
+  }
 }
