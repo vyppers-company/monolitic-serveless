@@ -73,7 +73,7 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage caracteristics bans',
+            select: 'vypperID name profileImage caracteristics bans followers',
             populate: [
               {
                 path: 'profileImage',
@@ -106,6 +106,10 @@ export class FeedService implements IFeedUseCase {
           vypperID: doc.owner.vypperID,
           profileImage: doc.owner.profileImage,
         },
+        isFollowed:
+          doc.owner.followers && doc.owner.followers.length
+            ? doc.owner.followers.includes(myId)
+            : false,
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: doc.contents.filter((image: string) =>
           doc.payed ? image.includes('-payed') : !image.includes('-payed'),

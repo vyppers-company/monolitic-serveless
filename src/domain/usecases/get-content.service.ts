@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { PaginateResult } from 'mongoose';
 import { IContentsUseCase } from '../interfaces/usecases/get-content.interface';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
-import { IContentEntity, ITypeContent } from '../entity/contents';
+import {
+  IContentEntity,
+  IContentEntityExtended,
+  ITypeContent,
+} from '../entity/contents';
 
 @Injectable()
 export class GetContentService implements IContentsUseCase {
@@ -23,7 +27,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage',
+            select: 'vypperID name profileImage followers',
             populate: [
               {
                 path: 'profileImage',
@@ -60,6 +64,10 @@ export class GetContentService implements IContentsUseCase {
           vypperID: doc.owner.vypperID,
           profileImage: doc.owner.profileImage,
         },
+        isFollowed:
+          doc.owner.followers && doc.owner.followers.length
+            ? doc.owner.followers.includes(myId)
+            : false,
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: doc.contents.filter((image: string) =>
           doc.payed ? image.includes('-payed') : !image.includes('-payed'),
@@ -77,7 +85,7 @@ export class GetContentService implements IContentsUseCase {
     profileId: string,
     myId: string,
     contentId: string,
-  ): Promise<IContentEntity> {
+  ): Promise<IContentEntityExtended> {
     const content: any = await this.contentRepository.findOne(
       {
         owner: profileId || myId,
@@ -89,7 +97,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage',
+            select: 'vypperID name profileImage followers',
             populate: [
               {
                 path: 'profileImage',
@@ -113,6 +121,10 @@ export class GetContentService implements IContentsUseCase {
         vypperID: content.owner.vypperID,
         profileImage: content.owner.profileImage,
       },
+      isFollowed:
+        content.owner.followers && content.owner.followers.length
+          ? content.owner.followers.includes(myId)
+          : false,
       text: content.text,
       type: content.type,
       payed: content.payed || false,

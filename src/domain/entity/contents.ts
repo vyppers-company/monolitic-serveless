@@ -30,3 +30,6 @@ export interface IContentEntity {
   createdAt?: Date;
   updatedAt?: Date;
 }
+export interface IContentEntityExtended extends IContentEntity {
+  isFollowed: boolean;
+}

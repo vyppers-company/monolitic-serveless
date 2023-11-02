@@ -14,6 +14,9 @@ export class FollowService implements IFollowUseCase {
     if (!otherUser) {
       throw new NotFoundException('user not found');
     }
+    if (myId === userId) {
+      throw new ConflictException('you cant follow yourself');
+    }
     if (otherUser.followers && otherUser.followers.length) {
       if (otherUser.followers.includes(myId)) {
         await this.userRepository.removeFollower(userId, myId);
