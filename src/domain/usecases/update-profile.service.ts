@@ -41,7 +41,9 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
 
     await this.userRepository.updateProfileData(myId, {
       ...dto,
-      cpf: this.cryptoAdapter.encryptText(dto.cpf, ICryptoType.USER),
+      cpf: dto.cpf
+        ? this.cryptoAdapter.encryptText(dto.cpf, ICryptoType.USER)
+        : user.cpf || null,
     });
   }
   updateEmail(myId: string, email: string): Promise<any> {
