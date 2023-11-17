@@ -26,6 +26,11 @@ export class GetContentService implements IContentsUseCase {
         page: Number(page),
         populate: [
           {
+            path: 'planId',
+            model: 'Plan',
+            select: 'subscribers',
+          },
+          {
             path: 'owner',
             model: 'User',
             select: 'vypperId name profileImage followers planConfiguration',
@@ -34,11 +39,6 @@ export class GetContentService implements IContentsUseCase {
                 path: 'profileImage',
                 model: 'Content',
                 select: 'contents',
-              },
-              {
-                path: 'planConfiguration',
-                model: 'Plan',
-                select: 'subscribers',
               },
             ],
           },
@@ -77,7 +77,6 @@ export class GetContentService implements IContentsUseCase {
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: decideContent(doc, myId),
         likersId: doc.likersId,
-        planId: doc.planId,
         text: doc.text,
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt,
@@ -98,6 +97,11 @@ export class GetContentService implements IContentsUseCase {
       null,
       {
         populate: [
+          {
+            path: 'planId',
+            model: 'Plan',
+            select: 'subscribers',
+          },
           {
             path: 'owner',
             model: 'User',
@@ -129,7 +133,6 @@ export class GetContentService implements IContentsUseCase {
           : false,
       text: content.text,
       type: content.type,
-      planId: content.planId,
       canEdit: String(content.owner._id) === String(myId) ? true : false,
       createdAt: content.createdAt,
       updatedAt: content.updatedAt,

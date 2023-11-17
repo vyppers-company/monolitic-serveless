@@ -6,8 +6,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { ILogged } from '../interfaces/others/logged.interface';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
-import { IContentEntity } from '../entity/contents';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
+import { IContentEntity, ITypeContent } from '../entity/contents';
 
 @Injectable()
 export class GetProfileService implements IGetProfileUseCase {
@@ -90,10 +89,16 @@ export class GetProfileService implements IGetProfileUseCase {
           }, []).length
         : 0,
       payedContents: contents.length
-        ? contents.filter((content) => content.planId).length
+        ? contents.filter(
+            (content) =>
+              content.type !== ITypeContent.PROFILE && content.planId,
+          ).length
         : 0,
       freeContents: contents.length
-        ? contents.filter((content) => !content.planId).length
+        ? contents.filter(
+            (content) =>
+              content.type !== ITypeContent.PROFILE && !content.planId,
+          ).length
         : 0,
     };
   }

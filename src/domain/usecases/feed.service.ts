@@ -72,10 +72,14 @@ export class FeedService implements IFeedUseCase {
         page: Number(page),
         populate: [
           {
+            path: 'planId',
+            model: 'Plan',
+            select: 'subscribers',
+          },
+          {
             path: 'owner',
             model: 'User',
-            select:
-              'vypperId name profileImage caracteristics bans followers paymentConfiguration',
+            select: 'vypperId name profileImage caracteristics bans followers',
             populate: [
               {
                 path: 'profileImage',
@@ -117,7 +121,6 @@ export class FeedService implements IFeedUseCase {
           canEdit: String(doc.owner._id) === String(myId) ? true : false,
           contents: content,
           likersId: doc.likersId,
-          planId: doc.planId || false,
           text: doc.text,
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,
