@@ -8,6 +8,7 @@ import {
   ITypeContent,
 } from '../entity/contents';
 import { decideContent } from 'src/shared/utils/decideContent';
+import { isSubscriptor } from 'src/shared/utils/isSubscriptor';
 
 @Injectable()
 export class GetContentService implements IContentsUseCase {
@@ -28,7 +29,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'planId',
             model: 'Plan',
-            select: 'subscribers',
+            select: 'subscribers name price',
           },
           {
             path: 'owner',
@@ -77,7 +78,16 @@ export class GetContentService implements IContentsUseCase {
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: decideContent(doc, myId),
         likersId: doc.likersId,
+        planId:
+          doc.planId && doc.planId.length
+            ? doc.planId.map((plan) => ({
+                _id: plan._id,
+                name: plan.name,
+                price: plan.price,
+              }))
+            : [],
         text: doc.text,
+        isSubscriptor: isSubscriptor(doc.planId, myId),
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt,
       })),
@@ -100,7 +110,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'planId',
             model: 'Plan',
-            select: 'subscribers',
+            select: 'subscribers name price',
           },
           {
             path: 'owner',
@@ -133,6 +143,15 @@ export class GetContentService implements IContentsUseCase {
           : false,
       text: content.text,
       type: content.type,
+      isSubscriptor: isSubscriptor(content.planId, myId),
+      planId:
+        content.planId && content.planId.length
+          ? content.planId.map((plan) => ({
+              _id: plan._id,
+              name: plan.name,
+              price: plan.price,
+            }))
+          : [],
       canEdit: String(content.owner._id) === String(myId) ? true : false,
       createdAt: content.createdAt,
       updatedAt: content.updatedAt,

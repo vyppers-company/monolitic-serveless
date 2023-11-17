@@ -5,6 +5,7 @@ import { PaginateResult } from 'mongoose';
 import { ITypeContent } from '../entity/contents';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { decideContent } from 'src/shared/utils/decideContent';
+import { isSubscriptor } from 'src/shared/utils/isSubscriptor';
 
 @Injectable()
 export class FeedService implements IFeedUseCase {
@@ -74,7 +75,7 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'planId',
             model: 'Plan',
-            select: 'subscribers',
+            select: 'subscribers name price',
           },
           {
             path: 'owner',
@@ -121,6 +122,15 @@ export class FeedService implements IFeedUseCase {
           canEdit: String(doc.owner._id) === String(myId) ? true : false,
           contents: content,
           likersId: doc.likersId,
+          planId:
+            doc.planId && doc.planId.length
+              ? doc.planId.map((plan) => ({
+                  _id: plan._id,
+                  name: plan.name,
+                  price: plan.price,
+                }))
+              : [],
+          isSubscriptor: isSubscriptor(doc.planId, myId),
           text: doc.text,
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,

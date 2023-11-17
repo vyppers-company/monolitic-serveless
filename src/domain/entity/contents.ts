@@ -28,4 +28,5 @@ export interface IContentEntity {
 }
 export interface IContentEntityExtended extends IContentEntity {
   isFollowed: boolean;
+  isSubscriptor: boolean;
 }
