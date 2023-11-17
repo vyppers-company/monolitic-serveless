@@ -9,6 +9,8 @@ import {
   IResponseDeleteCardDefault,
 } from '../interfaces/usecases/payment-method.interface';
 import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods/payment-methods.adapter';
+import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
+import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class PaymentMethodsService implements IPaymentMethodUseCases {
@@ -17,6 +19,7 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
     private readonly paymentCustomerAdapter: PaymentCustomerAdapter,
     private readonly setupIntentAdapter: SetupIntentAdapter,
     private readonly paymentMethodAdapter: PaymentMethodAdapter,
+    private readonly cryptoAdapter: CryptoAdapter,
   ) {}
   async createSetupIntent(myId: string): Promise<ISetupIntentSecret> {
     const existentUser = await this.userRepository.findOneById(myId);
@@ -46,7 +49,10 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
       );
     }
     const paymentCustomer = await this.paymentCustomerAdapter.createCustomer({
-      email: existentUser.email,
+      email: this.cryptoAdapter.decryptText(
+        existentUser.email,
+        ICryptoType.USER,
+      ),
       name: existentUser.name,
       vypperId: existentUser.vypperId,
       _id: existentUser._id,
