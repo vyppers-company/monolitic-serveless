@@ -1,7 +1,6 @@
 import {
   UnprocessableEntityException,
   Injectable,
-  UnauthorizedException,
   ConflictException,
 } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
@@ -66,18 +65,18 @@ export class RecoveryService implements IRcoveryUseCase {
       });
 
       if (isEmail) {
-        this.sesAdapter
-          .sendEmailCode(
-            dto.emailOrPhone,
-            code.formated,
-            IValidationCodeType.RECOVERY,
-          )
-          .then();
+        await this.sesAdapter.sendEmailCode(
+          dto.emailOrPhone,
+          code.formated,
+          IValidationCodeType.RECOVERY,
+        );
       }
       if (isPhone) {
-        this.sendSmsAdapter
-          .send(dto.emailOrPhone, code.formated, IValidationCodeType.RECOVERY)
-          .then();
+        await this.sendSmsAdapter.send(
+          dto.emailOrPhone,
+          code.formated,
+          IValidationCodeType.RECOVERY,
+        );
       }
     }
   }

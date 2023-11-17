@@ -47,6 +47,16 @@ import { Plan, PlanSchema } from 'src/data/mongoose/model/plan.schema';
 import { PlanService } from 'src/domain/usecases/plan.service';
 import { PlanRepository } from 'src/data/mongoose/repositories/plan.repository';
 import { PlanController } from 'src/presentation/controller/plan.controller';
+import { PaymentSubscriptionAdapter } from 'src/infra/adapters/payment/subscription/subscription.adapter';
+import { SubscriptionController } from 'src/presentation/controller/subscription.controller';
+import { SubscriptionService } from 'src/domain/usecases/subscription.service';
+import Stripe from 'stripe';
+import { PaymentPlanAdapter } from 'src/infra/adapters/payment/plan/plan.adapter';
+import { PaymentCustomerAdapter } from 'src/infra/adapters/payment/customer/customer.adapter';
+import { SetupIntentAdapter } from 'src/infra/adapters/payment/setup/setIntent.adapter';
+import { PaymentMethodController } from 'src/presentation/controller/payment-method.controller';
+import { PaymentMethodsService } from 'src/domain/usecases/payment-method.service';
+import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods/payment-methods.adapter';
 
 @Module({
   imports: [
@@ -61,20 +71,23 @@ import { PlanController } from 'src/presentation/controller/plan.controller';
     ]),
   ],
   providers: [
+    {
+      provide: 'stripe',
+      useValue: new Stripe(environment.payment.stripe.secretKey),
+    },
     FacebookAuthStrategy,
     GoogleAuthStrategy,
+    ContentRepository,
+    UserRepository,
+    CodeRepository,
+    PlanRepository,
+    SubscriptionService,
     RecoveryService,
     RegisterService,
     ChangePasswordService,
     AuthService,
     ValidateCodeService,
-    UserRepository,
-    CodeRepository,
-    PlanRepository,
-    CryptoAdapter,
-    SESAdapter,
     UpdateProfileService,
-    SendSmsAdapter,
     MakeLikeService,
     ValidateDataService,
     CreateContentService,
@@ -83,7 +96,6 @@ import { PlanController } from 'src/presentation/controller/plan.controller';
     EditContentService,
     PlanService,
     GetContentService,
-    ContentRepository,
     GetProfileService,
     S3Service,
     FeedService,
@@ -91,9 +103,20 @@ import { PlanController } from 'src/presentation/controller/plan.controller';
     BanUserService,
     FollowService,
     ValidateMissingDataProfileService,
+    PaymentMethodsService,
+    CryptoAdapter,
+    SESAdapter,
+    SendSmsAdapter,
+    PaymentSubscriptionAdapter,
+    PaymentPlanAdapter,
+    PaymentCustomerAdapter,
+    SetupIntentAdapter,
+    PaymentMethodAdapter,
   ],
   controllers: [
+    PaymentMethodController,
     PlanController,
+    SubscriptionController,
     SearchController,
     FollowersControllers,
     RecoveryController,

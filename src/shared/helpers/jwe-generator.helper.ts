@@ -7,7 +7,7 @@ import { IValidationCodeType } from 'src/domain/entity/code.entity';
 export const generateToken = async (
   payload: {
     _id: string;
-    vypperID?: string;
+    vypperId?: string;
     email?: string;
     type?: IValidationCodeType;
   },

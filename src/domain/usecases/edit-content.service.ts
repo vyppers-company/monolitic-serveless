@@ -1,4 +1,4 @@
-import { NotFoundException, Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { IEditContentUseCase } from '../interfaces/usecases/edit-content.interface';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IEditContentDto } from 'src/presentation/dtos/edit-content.dto';
@@ -12,8 +12,14 @@ export class EditContentService implements IEditContentUseCase {
       owner: dto.owner,
     });
     if (!content) {
-      throw new NotFoundException();
+      throw new HttpException(
+        {
+          message: 'Not found content',
+          reason: 'ContentError',
+        },
+        HttpStatus.NOT_FOUND,
+      );
     }
-    this.contentRepository.updateOne(dto).then();
+    await this.contentRepository.updateOne(dto);
   }
 }

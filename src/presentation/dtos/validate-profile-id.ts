@@ -3,9 +3,9 @@ import { IsEmail, IsString, Matches } from 'class-validator';
 import { IProfile } from 'src/domain/entity/user.entity';
 import regex from 'src/shared/helpers/regex';
 
-export class ValidatevypperIDDto implements Pick<IProfile, 'vypperID'> {
+export class ValidatevypperIdDto implements Pick<IProfile, 'vypperId'> {
   @IsString()
-  @Matches(regex.vypperID, {
+  @Matches(regex.vypperId, {
     message: `O valor pode conter letras minúsculas (a-z).
   O valor pode começar com letras minúsculas (a-z).
   O valor pode começar com números (0-9).
@@ -20,7 +20,7 @@ export class ValidatevypperIDDto implements Pick<IProfile, 'vypperID'> {
     example: 'paulorr.io igual de instagram',
     description: 'mandar sem @ no inicio',
   })
-  vypperID: string;
+  vypperId: string;
 }
 
 export class ValidateEmailDto implements Pick<IProfile, 'email'> {

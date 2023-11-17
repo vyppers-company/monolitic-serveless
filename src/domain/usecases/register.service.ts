@@ -41,7 +41,7 @@ export class RegisterService implements IRegisterUseCase {
           email: hashedEmail,
         },
         {
-          vypperID: dto.vypperID,
+          vypperId: dto.vypperId,
         },
       ],
     });
@@ -69,6 +69,6 @@ export class RegisterService implements IRegisterUseCase {
       email: hashedEmail,
     };
 
-    this.userRepository.create({ ...newDto, type: ITYPEUSER.USER }).then();
+    await this.userRepository.create({ ...newDto, type: ITYPEUSER.USER });
   }
 }

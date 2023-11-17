@@ -63,6 +63,7 @@ export class ContentController {
   ) {
     await this.editService.editContent({
       text: dto.text,
+      planId: dto.planId,
       contentId: contentId,
       owner: userLogged._id,
     });

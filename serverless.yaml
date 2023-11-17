@@ -137,7 +137,7 @@ functions:
           path: 'content/v1/all'
       - http:
           method: GET
-          path: 'content/v1/unique/{contentId}/{vypperID}'
+          path: 'content/v1/unique/{contentId}/{vypperId}'
       - http:
           method: GET
           path: 'content/v1/profile/picture'

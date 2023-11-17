@@ -1,5 +1,5 @@
 export interface IValidateDataUseCase {
-  validatevypperID(vypperID: string, myId?: string): Promise<boolean>;
-  validatePhone(vypperID: string, myId: string): Promise<any>;
-  validateEmail(vypperID: string, myId: string): Promise<any>;
+  validatevypperId(vypperId: string, myId?: string): Promise<boolean>;
+  validatePhone(vypperId: string, myId: string): Promise<any>;
+  validateEmail(vypperId: string, myId: string): Promise<any>;
 }

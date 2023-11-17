@@ -4,8 +4,9 @@ import {
   BaseAbstractRepository,
   BaseModel,
 } from '../helpers/base.abstract.repository';
-import { IPlanDto } from 'src/domain/interfaces/usecases/plan.interface';
 import { Plan, PlanDocument } from '../model/plan.schema';
+import { IPlanSubscribers } from 'src/domain/entity/plan';
+import { EditPlanDto } from 'src/presentation/dtos/plan-dto';
 
 @Injectable()
 export class PlanRepository extends BaseAbstractRepository<PlanDocument> {
@@ -16,15 +17,24 @@ export class PlanRepository extends BaseAbstractRepository<PlanDocument> {
     super(plan);
   }
 
-  async updatePlan(planId: any, dto: IPlanDto) {
-    const { description, name, price, owner } = dto;
+  async updatePlan(planId: any, dto: EditPlanDto, owner: string) {
+    const { benefits, name } = dto;
     await this.plan.updateOne(
       { _id: planId, owner },
       {
         $set: {
-          description,
+          benefits,
           name,
-          price,
+        },
+      },
+    );
+  }
+  async addSubscriber(planId: string, dto: IPlanSubscribers) {
+    await this.plan.updateOne(
+      { _id: planId },
+      {
+        $push: {
+          subscribers: dto,
         },
       },
     );

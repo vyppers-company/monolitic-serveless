@@ -28,10 +28,10 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
     }
 
     const user = await this.userRepository.findOne({ _id: myId });
-    if (dto.vypperID && dto.vypperID !== user.vypperID) {
-      const result = await this.validate.validatevypperID(dto.vypperID);
+    if (dto.vypperId && dto.vypperId !== user.vypperId) {
+      const result = await this.validate.validatevypperId(dto.vypperId);
       if (!result)
-        throw new BadRequestException('this vypperID have been used');
+        throw new BadRequestException('this vypperId have been used');
     }
     const age = getAge(dto.birthday);
 

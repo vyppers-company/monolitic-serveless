@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import { correctDateNow } from '../../../shared/utils/correctDate';
 import {
   ICaracteristicas,
+  IPaymentConfig,
   IProfile,
   ITYPEUSER,
 } from '../../../domain/entity/user.entity';
@@ -27,8 +28,8 @@ export class User extends Document implements IProfile {
   @Prop()
   cpf?: string;
 
-  @Prop()
-  paymentConfiguration?: string;
+  @Prop({ type: Object })
+  paymentConfiguration?: IPaymentConfig;
 
   @Prop({ type: Array, default: [] })
   planConfiguration?: string[];
@@ -46,7 +47,7 @@ export class User extends Document implements IProfile {
   password?: string;
 
   @Prop({ unique: false })
-  vypperID?: string;
+  vypperId?: string;
 
   @Prop({ default: false })
   verified?: boolean;

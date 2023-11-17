@@ -9,16 +9,21 @@ export const environment = {
     cors: Array.from(process.env.ORIGINS.split(',')) || [],
     waterMark: process.env.WATER_MARK || '',
   },
+  payment: {
+    stripe: {
+      secretKey: process.env.STRIPE_SECRET_KEY || '',
+    },
+  },
   oauth: {
     redirectFrontUrl: process.env.REDIRECT_FRONTEND_URL || '',
     google: {
-      clientID: process.env.GOOGLE_AUTH_CLIENT_ID || '',
+      clientId: process.env.GOOGLE_AUTH_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET || '',
       callbackUrl: process.env.GOOGLE_AUTH_CALLBACK_URL || '',
       scope: Array.from(process.env.GOOGLE_AUTH_SCOPE.split(',')) || [],
     },
     facebook: {
-      clientID: process.env.FACEBOOK_AUTH_CLIENT_ID || '',
+      clientId: process.env.FACEBOOK_AUTH_CLIENT_ID || '',
       clientSecret: process.env.FACEBOOK_AUTH_CLIENT_SECRET || '',
       callbackUrl: process.env.FACEBOOK_AUTH_CALLBACK_URL || '',
       fields: Array.from(process.env.FACEBOOK_AUTH_FIELDS.split(',')) || [],

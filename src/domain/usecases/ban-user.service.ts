@@ -5,7 +5,7 @@ import {
   IBannedQuery,
 } from '../interfaces/usecases/ban-user.interface';
 import { PaginateResult } from 'mongoose';
-import { ConflictException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class BanUserService implements IBanUserUseCase {
@@ -46,7 +46,7 @@ export class BanUserService implements IBanUserUseCase {
           prevPage: result.prevPage,
           nextPage: result.nextPage,
           docs: result.docs.map((doc: any) => ({
-            vypperID: doc.vypperID,
+            vypperId: doc.vypperId,
             name: doc.name,
             profileImage: doc.profileImage,
             _id: doc._id,
@@ -57,23 +57,36 @@ export class BanUserService implements IBanUserUseCase {
   async banUser(userId: string, myId: string): Promise<void> {
     const user = await this.userRepository.findOne({ _id: myId });
     if (user.bans && user.bans.length && user.bans.includes(userId)) {
-      throw new ConflictException('this user have already banned');
+      throw new HttpException(
+        { message: 'This user have ever banned', reason: 'BannedUser' },
+        HttpStatus.CONFLICT,
+      );
     }
     if (userId === myId) {
-      throw new ConflictException('you cant ban yourself');
+      throw new HttpException(
+        { message: "You can't ban yourself", reason: 'BannedUser' },
+        HttpStatus.CONFLICT,
+      );
     }
     await this.userRepository.addBannedPerson(userId, myId);
     await this.userRepository.removeFollower(myId, userId);
     await this.userRepository.removeFollower(userId, myId);
   }
   async unbanUser(userId: string, myId: string): Promise<void> {
+    if (userId === myId) {
+      throw new HttpException(
+        { message: "You can't ban yourself", reason: 'BannedUser' },
+        HttpStatus.CONFLICT,
+      );
+    }
     const user = await this.userRepository.findOne({ _id: myId });
     if (user.bans && user.bans.length && !user.bans.includes(userId)) {
-      throw new ConflictException('this user have already not banned');
+      throw new HttpException(
+        { message: "This user haven't ever banned", reason: 'BannedUser' },
+        HttpStatus.CONFLICT,
+      );
     }
-    if (userId === myId) {
-      throw new ConflictException('you cant ban yourself');
-    }
+
     await this.userRepository.removeBannedPerson(userId, myId);
   }
 }

@@ -12,7 +12,10 @@ import {
   QueryWithHelpers,
 } from 'mongoose';
 import { SoftDeleteModel } from 'mongoose-delete';
-import { BaseInterfaceRepository } from './base.interface.repository';
+import {
+  BaseInterfaceRepository,
+  IRelationParams,
+} from './base.interface.repository';
 
 export type BaseModel<T extends Document> = Model<T> &
   SoftDeleteModel<T> &
@@ -53,8 +56,13 @@ export abstract class BaseAbstractRepository<T extends Document>
     return this.model.find(filter, projection, options);
   }
 
-  public async findWithRelations(relations: string[]): Promise<T[]> {
-    const query = this.model.find();
+  public async findWithRelations(
+    filter: FilterQuery<T>,
+    relations: IRelationParams[],
+    projection?: unknown | null,
+    options?: QueryOptions | null,
+  ): Promise<T[]> {
+    const query = this.model.find(filter, projection, options);
     relations.forEach((relation) => {
       query.populate(relation);
     });

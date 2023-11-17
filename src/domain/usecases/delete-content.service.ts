@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IDeleteContentUseCase } from '../interfaces/usecases/delete-content.interface';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IDeleteContentDto } from 'src/presentation/dtos/delete-content.dto';
@@ -19,7 +15,13 @@ export class DeleteContentService implements IDeleteContentUseCase {
       _id: dto.contentId,
     });
     if (content.owner !== dto.ownerId) {
-      throw new ForbiddenException('this content doesnt belongs to this user');
+      throw new HttpException(
+        {
+          message: 'this content doesnt belongs to this user',
+          reason: 'ContentError',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
     await this.contentRepository.deleteById(dto.contentId);
     await this.s3.deleteObject(content.contents);

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { IPlanEntity } from 'src/domain/entity/payment-plan';
+import { ICurrency } from 'src/domain/entity/currency';
+import { IPlanEntity, IPlanSubscribers } from 'src/domain/entity/plan';
 import { environment } from 'src/main/config/environment/environment';
 import { correctDateNow } from 'src/shared/utils/correctDate';
 
@@ -12,6 +13,7 @@ export type PlanDocument = Plan & Document;
 })
 export class Plan extends Document implements IPlanEntity {
   _id?: string;
+
   @Prop()
   price: number;
   @Prop()
@@ -19,7 +21,18 @@ export class Plan extends Document implements IPlanEntity {
   @Prop()
   owner: string;
   @Prop()
-  description: string;
+  activate: boolean;
+  @Prop()
+  benefits: string[];
+  @Prop()
+  currency: ICurrency;
+  @Prop()
+  paymentPlanId?: string;
+  @Prop({ type: Array, default: [] })
+  subscribers?: IPlanSubscribers[];
+
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const PlanSchema = SchemaFactory.createForClass(Plan);

@@ -5,7 +5,6 @@ import {
   ConflictException,
   Injectable,
   UnauthorizedException,
-  UnprocessableEntityException,
 } from '@nestjs/common';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { RegisterDtoMinimal } from 'src/presentation/dtos/register.dto';
@@ -84,24 +83,23 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
     };
 
     const checkAll = await this.userRepository.findAll();
-    const uniqueName = generateName(checkAll.map((us) => us.vypperID));
+    const uniqueName = generateName(checkAll.map((us) => us.vypperId));
 
-    this.userRepository
-      .create({
-        ...newDto,
-        profileImage: null,
-        type: ITYPEUSER.USER,
-        name: uniqueName,
-        vypperID: uniqueName,
-        caracteristics: {
-          ethnicity: null,
-          biotype: null,
-          eyes: null,
-          gender: null,
-          hair: null,
-        },
-      })
-      .then();
-    this.codeRecoveryRepository.deleteById(code._id).then();
+    await this.userRepository.create({
+      ...newDto,
+      profileImage: null,
+      type: ITYPEUSER.USER,
+      name: uniqueName,
+      vypperId: uniqueName,
+      caracteristics: {
+        ethnicity: null,
+        biotype: null,
+        eyes: null,
+        gender: null,
+        hair: null,
+      },
+    });
+
+    await this.codeRecoveryRepository.deleteById(code._id);
   }
 }

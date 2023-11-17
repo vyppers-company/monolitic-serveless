@@ -22,7 +22,7 @@ export class GetProfileService implements IGetProfileUseCase {
       IProfileExt,
       | 'bio'
       | '_id'
-      | 'vypperID'
+      | 'vypperId'
       | 'name'
       | 'profileImage'
       | 'birthday'
@@ -44,8 +44,22 @@ export class GetProfileService implements IGetProfileUseCase {
         { path: 'profileImage', select: 'contents', model: 'Content' },
         {
           path: 'planConfiguration',
-          select: 'name description price',
+          select: 'name description price subscribers',
           model: 'Plan',
+          populate: [
+            {
+              path: 'subscribers.vypperSubscriptionId',
+              select: '_id name vypperId profileImage',
+              model: 'User',
+              populate: [
+                {
+                  path: 'profileImage',
+                  select: 'contents',
+                  model: 'Content',
+                },
+              ],
+            },
+          ],
         },
       ],
     });
@@ -55,9 +69,9 @@ export class GetProfileService implements IGetProfileUseCase {
     return {
       _id: user._id,
       name: user.name,
-      vypperID: user.vypperID || null,
+      vypperId: user.vypperId || null,
       bio: user.bio || null,
-      profileImage: content.contents[0],
+      profileImage: content ? content.contents[0] : null,
       caracteristics: user.caracteristics || null,
       birthday: user.birthday || null,
       email: user.email || null,
@@ -75,8 +89,12 @@ export class GetProfileService implements IGetProfileUseCase {
             return acc;
           }, []).length
         : 0,
-      payedContents: contents.filter((content) => content.payed).length,
-      freeContents: contents.filter((content) => !content.payed).length,
+      payedContents: contents.length
+        ? contents.filter((content) => content.planId).length
+        : 0,
+      freeContents: contents.length
+        ? contents.filter((content) => !content.planId).length
+        : 0,
     };
   }
 }

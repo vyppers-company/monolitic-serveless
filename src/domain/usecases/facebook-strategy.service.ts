@@ -11,7 +11,7 @@ export class FacebookAuthStrategy extends PassportStrategy(
 ) {
   constructor() {
     super({
-      clientID: environment.oauth.facebook.clientID,
+      clientID: environment.oauth.facebook.clientId,
       clientSecret: environment.oauth.facebook.clientSecret,
       callbackURL: environment.oauth.facebook.callbackUrl,
       profileFields: environment.oauth.facebook.fields,

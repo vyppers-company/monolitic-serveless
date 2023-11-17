@@ -21,7 +21,7 @@ export class RegisterDto implements IProfile {
     example: 'paulorr.io',
     description: 'mandar sem @ no inicio',
   })
-  vypperID: string;
+  vypperId: string;
 
   @IsString()
   @ApiProperty({ required: true, example: '13996063278' })

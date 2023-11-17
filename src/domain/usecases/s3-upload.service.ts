@@ -44,14 +44,14 @@ export class S3Service {
       await s3.send(
         new PutObjectCommand({
           Bucket: environment.aws.midias,
-          Key: `${owner}/${type}/${randomNameBlur}-payed.jpg`,
+          Key: `${owner}/${type}/${randomNameBlur}-blocked.jpg`,
           Body: await blur(screenshot),
           ACL: 'public-read',
           ContentType: 'image/jpg',
         }),
       );
       uploads.push(
-        `${environment.aws.hostBucket}/${owner}/${type}/${randomNameBlur}-payed.jpg`,
+        `${environment.aws.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.jpg`,
       );
       return uploads;
     }
@@ -77,14 +77,14 @@ export class S3Service {
         await s3.send(
           new PutObjectCommand({
             Bucket: environment.aws.midias,
-            Key: `${owner}/${type}/${randomNameBlur}-payed.${fileExtName}`,
+            Key: `${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`,
             Body: await blur(file.buffer),
             ACL: 'public-read',
             ContentType: file.mimetype,
           }),
         );
         uploads.push(
-          `${environment.aws.hostBucket}/${owner}/${type}/${randomNameBlur}-payed.${fileExtName}`,
+          `${environment.aws.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`,
         );
       }
       return uploads;

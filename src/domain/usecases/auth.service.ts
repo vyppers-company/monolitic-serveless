@@ -1,8 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import {
-  ConflictException,
-  UnauthorizedException,
-} from '@nestjs/common/exceptions';
+import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { Auth } from '../../presentation/dtos/auth.dto';
 import regex from '../../shared/helpers/regex';
@@ -58,7 +55,10 @@ export class AuthService implements IAuthUseCase {
     });
 
     if (!findedOne) {
-      throw new UnauthorizedException();
+      throw new HttpException(
+        { message: 'User not found', reason: 'UserNotFound' },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const correctPassword =
@@ -66,14 +66,17 @@ export class AuthService implements IAuthUseCase {
       this.cryptoAdapter.encryptText(dto.password, ICryptoType.USER);
 
     if (!correctPassword) {
-      throw new UnauthorizedException();
+      throw new HttpException(
+        { message: 'Invalid Credentials', reason: 'InvalidCredentials' },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const token = await generateToken(
       {
         _id: String(findedOne._id),
         email: String(findedOne.email),
-        vypperID: String(findedOne.vypperID),
+        vypperId: String(findedOne.vypperId),
       },
       ICryptoType.USER,
     );
@@ -83,7 +86,7 @@ export class AuthService implements IAuthUseCase {
       info: {
         _id: findedOne._id,
         name: findedOne.name || null,
-        vypperID: findedOne.vypperID || null,
+        vypperId: findedOne.vypperId || null,
         verified: findedOne.verified || null,
         bio: findedOne.bio || null,
         birthday: findedOne.birthday || null,
@@ -99,7 +102,10 @@ export class AuthService implements IAuthUseCase {
 
   async loginOauth20(user?: IProfile) {
     if (!user) {
-      throw new UnauthorizedException();
+      throw new HttpException(
+        { message: 'User not found', reason: 'UserNotFound' },
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     const hashedEmail = this.cryptoAdapter.encryptText(
       user.email,
@@ -121,7 +127,7 @@ export class AuthService implements IAuthUseCase {
         {
           _id: String(findedOne._id),
           email: String(findedOne.email),
-          vypperID: String(findedOne.vypperID),
+          vypperId: String(findedOne.vypperId),
         },
         ICryptoType.USER,
       );
@@ -132,7 +138,7 @@ export class AuthService implements IAuthUseCase {
         info: {
           _id: findedOne._id,
           name: findedOne.name || null,
-          vypperID: findedOne.vypperID || null,
+          vypperId: findedOne.vypperId || null,
           verified: findedOne.verified || null,
           bio: findedOne.bio || null,
           birthday: findedOne.birthday || null,
@@ -148,7 +154,13 @@ export class AuthService implements IAuthUseCase {
     const age = user.birthday ? getAge(user.birthday) : null;
 
     if (!age) {
-      throw new ConflictException('you need to have 16 years old');
+      throw new HttpException(
+        {
+          message: 'You need have more than 18 years old',
+          reason: 'InvalidAge',
+        },
+        HttpStatus.CONFLICT,
+      );
     }
     const image = await getImageFromExternalUrl(user.profileImage as string);
 
@@ -183,12 +195,12 @@ export class AuthService implements IAuthUseCase {
       contentProfile._id,
     );
     const checkAll = await this.userRepository.findAll();
-    const uniqueName = generateName(checkAll.map((us) => us.vypperID));
+    const uniqueName = generateName(checkAll.map((us) => us.vypperId));
     const token = await generateToken(
       {
         _id: String(newOne._id),
         email: String(newOne.email),
-        vypperID: uniqueName,
+        vypperId: uniqueName,
       },
       ICryptoType.USER,
     );
@@ -199,7 +211,7 @@ export class AuthService implements IAuthUseCase {
         _id: findedOne._id,
         name: findedOne.name || null,
         profileImage: urlS3 ? urlS3 : null,
-        vypperID: findedOne.vypperID || null,
+        vypperId: findedOne.vypperId || null,
         verified: findedOne.verified || null,
         bio: findedOne.bio || null,
         birthday: findedOne.birthday || null,

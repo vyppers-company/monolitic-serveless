@@ -1,6 +1,6 @@
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IMakeLikeUseCase } from '../interfaces/usecases/make-like.interface';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class MakeLikeService implements IMakeLikeUseCase {
@@ -11,21 +11,27 @@ export class MakeLikeService implements IMakeLikeUseCase {
       { likersId: 1 },
     );
     if (!content) {
-      throw new NotFoundException('content not found');
+      throw new HttpException(
+        {
+          message: 'content not found',
+          reason: 'LikeError',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     if (content.likersId.includes(myId)) {
-      this.contentRepository
-        .makeLike(
-          content._id,
-          content.likersId.filter((likers) => likers !== myId),
-        )
-        .then();
+      await this.contentRepository.makeLike(
+        content._id,
+        content.likersId.filter((likers) => likers !== myId),
+      );
+
       return;
     }
 
-    this.contentRepository
-      .makeLike(content._id, [...content.likersId, myId])
-      .then();
+    await this.contentRepository.makeLike(content._id, [
+      ...content.likersId,
+      myId,
+    ]);
   }
 }

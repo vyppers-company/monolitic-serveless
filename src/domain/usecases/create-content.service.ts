@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { CreateContentDto } from 'src/presentation/dtos/create-content.dto';
 import { ICreateContentUseCase } from '../interfaces/usecases/create-content.interface';
@@ -13,38 +13,54 @@ export class CreateContentService implements ICreateContentUseCase {
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
     if (
-      dto.payed &&
+      dto.planId &&
       dto.contents.length % 2 === 1 &&
       dto.type !== ITypeContent.PROFILE
     ) {
-      throw new BadRequestException(
-        'if the content is payed, is required to send payed',
+      throw new HttpException(
+        {
+          message: 'if the content is payed, is required to send payed',
+          reason: 'ContentError',
+        },
+        HttpStatus.BAD_REQUEST,
       );
     }
-    if (dto.payed && dto.type === ITypeContent.PROFILE) {
-      throw new BadRequestException('profile image dont need to be payed');
+    if (dto.planId && dto.type === ITypeContent.PROFILE) {
+      throw new HttpException(
+        {
+          message: 'profile image dont need to be payed',
+          reason: 'ContentError',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
     if (!dto.contents.length && !dto.text) {
-      throw new BadRequestException('at least text or content is required');
+      throw new HttpException(
+        {
+          message: 'at least text or content is required',
+          reason: 'ContentError',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
     if (dto.text && dto.type === ITypeContent.PROFILE) {
-      throw new BadRequestException('profile content dont needs text');
+      throw new HttpException(
+        {
+          message: 'profile content dont needs text',
+          reason: 'ContentError',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
     if (dto.type === ITypeContent.PROFILE && dto.contents.length > 1) {
-      throw new BadRequestException(
-        'profile content dont needs more than 1 content',
+      throw new HttpException(
+        {
+          message: 'profile content dont needs more than 1 content',
+          reason: 'ContentError',
+        },
+        HttpStatus.BAD_REQUEST,
       );
     }
-
-    /*   const coount = dto.contents.filter((item) =>
-      item.includes('-payed'),
-    ).length;
-    const halfLength = dto.contents.length / 2;
-    if (coount >= halfLength) {
-      throw new BadRequestException(
-        'if the content is payed, is required to send payed',
-      );
-    } */
 
     if (dto.type === ITypeContent.PROFILE) {
       const hasProfileImage = await this.contentRepositoru.findOne({
@@ -58,7 +74,7 @@ export class CreateContentService implements ICreateContentUseCase {
 
     await this.contentRepositoru.create({
       ...dto,
-      payed: dto.payed || false,
+      planId: dto.planId || null,
       owner,
     });
     if (dto.type === ITypeContent.PROFILE) {

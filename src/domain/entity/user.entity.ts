@@ -22,6 +22,11 @@ export interface ICaracteristicas {
   eyes?: ICategoryEyes;
   biotype?: ICategoryBiotype;
 }
+
+export interface IPaymentConfig {
+  paymentCustomerId: string;
+}
+
 export interface IProfile {
   _id?: string;
   name?: string;
@@ -30,11 +35,11 @@ export interface IProfile {
   phone?: string;
   bio?: string;
   email?: string;
-  vypperID?: string;
+  vypperId?: string;
   profileImage?: string;
   verified?: boolean;
   fitToReceivePayment?: boolean;
-  paymentConfiguration?: string;
+  paymentConfiguration?: IPaymentConfig;
   planConfiguration?: string[];
   birthday?: string;
   caracteristics?: ICaracteristicas;

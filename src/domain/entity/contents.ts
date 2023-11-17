@@ -1,3 +1,6 @@
+import { IPlanEntity } from './plan';
+import { IProfile } from './user.entity';
+
 export enum ITypeContent {
   FEED = 'FEED',
   STORY = 'STORY',
@@ -15,20 +18,13 @@ export interface IContentEntity {
   _id?: string;
   text?: string;
   type?: ITypeContent;
-  owner?:
-    | string
-    | {
-        profileImage: string;
-        name: string;
-        _id: string;
-        vypperID: string;
-      };
+  owner?: string | IProfile;
   contents?: string[];
   likersId?: string[];
-  payed?: boolean;
   canEdit?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
+  planId?: string | IPlanEntity;
 }
 export interface IContentEntityExtended extends IContentEntity {
   isFollowed: boolean;

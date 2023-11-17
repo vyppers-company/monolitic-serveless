@@ -13,9 +13,9 @@ import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 import { PlanService } from 'src/domain/usecases/plan.service';
 import { Logged } from 'src/shared/decorators/logged.decorator';
-import { PlanDto } from '../dtos/plan-dto';
+import { EditPlanDto, PlanDto } from '../dtos/plan-dto';
 
-@ApiTags('plan')
+@ApiTags('Manage Plans of Customers')
 @Controller('plan')
 export class PlanController {
   private logger: Logger;
@@ -32,10 +32,10 @@ export class PlanController {
 
   @Put('v1/update/:planId')
   @ApiBearerAuth()
-  @ApiBody({ type: PlanDto })
+  @ApiBody({ type: EditPlanDto })
   async updatePlan(
     @Logged() user: ILogged,
-    @Body() dto: PlanDto,
+    @Body() dto: EditPlanDto,
     @Param('planId') planId: string,
   ) {
     return await this.planService.editPlan(planId, user._id, dto);
@@ -55,8 +55,16 @@ export class PlanController {
     example:
       'id do usuario que deseja buscar, se nao passar vai ser utilizado o do token',
   })
-  async getAll(@Logged() user: ILogged, @Query('userId') userId: string) {
-    return await this.planService.getPlans(userId || user._id);
+  async getAll(
+    @Logged() user: ILogged,
+    @Query('userId') userId: string,
+    @Query('resumed') resumed: boolean,
+  ) {
+    return await this.planService.getPlans(
+      user._id,
+      userId || user._id,
+      resumed,
+    );
   }
 
   @Get('v1/unique/:planId')
@@ -72,6 +80,6 @@ export class PlanController {
     @Param('planId') planId: string,
     @Query('userId') userId: string,
   ) {
-    return await this.planService.getPlan(userId || user._id, planId);
+    return await this.planService.getPlan(planId, userId || user._id);
   }
 }

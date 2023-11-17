@@ -4,6 +4,7 @@ import { ContentRepository } from 'src/data/mongoose/repositories/content.reposi
 import { PaginateResult } from 'mongoose';
 import { ITypeContent } from '../entity/contents';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
+import { decideContent } from 'src/shared/utils/decideContent';
 
 @Injectable()
 export class FeedService implements IFeedUseCase {
@@ -73,7 +74,8 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage caracteristics bans followers',
+            select:
+              'vypperId name profileImage caracteristics bans followers paymentConfiguration',
             populate: [
               {
                 path: 'profileImage',
@@ -97,29 +99,30 @@ export class FeedService implements IFeedUseCase {
       hasNextPage: result.hasNextPage,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      docs: result.docs.map((doc: any) => ({
-        _id: doc._id,
-        type: doc.type,
-        owner: {
-          _id: doc.owner._id,
-          name: doc.owner.name,
-          vypperID: doc.owner.vypperID,
-          profileImage: doc.owner.profileImage,
-        },
-        isFollowed:
-          doc.owner.followers && doc.owner.followers.length
-            ? doc.owner.followers.includes(myId)
-            : false,
-        canEdit: String(doc.owner._id) === String(myId) ? true : false,
-        contents: doc.contents.filter((image: string) =>
-          doc.payed ? image.includes('-payed') : !image.includes('-payed'),
-        ),
-        likersId: doc.likersId,
-        payed: doc.payed || false,
-        text: doc.text,
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      })),
+      docs: result.docs.map((doc: any) => {
+        const content = decideContent(doc, myId);
+        return {
+          _id: doc._id,
+          type: doc.type,
+          owner: {
+            _id: doc.owner._id,
+            name: doc.owner.name,
+            vypperId: doc.owner.vypperId,
+            profileImage: doc.owner.profileImage,
+          },
+          isFollowed:
+            doc.owner.followers && doc.owner.followers.length
+              ? doc.owner.followers.includes(myId)
+              : false,
+          canEdit: String(doc.owner._id) === String(myId) ? true : false,
+          contents: content,
+          likersId: doc.likersId,
+          planId: doc.planId || false,
+          text: doc.text,
+          createdAt: doc.createdAt,
+          updatedAt: doc.updatedAt,
+        };
+      }),
     };
   }
 }

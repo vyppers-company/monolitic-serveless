@@ -8,6 +8,13 @@ import {
   QueryOptions,
 } from 'mongoose';
 
+export interface IRelationParams {
+  path: string;
+  model: string;
+  select: string;
+  populate?: IRelationParams;
+}
+
 export interface BaseInterfaceRepository<T extends Document> {
   create(data: T | any): Promise<T>;
 
@@ -21,7 +28,12 @@ export interface BaseInterfaceRepository<T extends Document> {
 
   findAll(): Promise<T[]>;
 
-  findWithRelations(relations: string[]): Promise<T[]>;
+  findWithRelations(
+    filter: FilterQuery<T>,
+    relations: IRelationParams[],
+    projection?: unknown | null,
+    options?: QueryOptions | null,
+  ): Promise<T[]>;
 
   deleteById(id: string): Promise<void>;
 

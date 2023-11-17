@@ -17,7 +17,7 @@ export interface IGetProfileUseCase {
       IProfileExt,
       | 'bio'
       | '_id'
-      | 'vypperID'
+      | 'vypperId'
       | 'name'
       | 'profileImage'
       | 'birthday'

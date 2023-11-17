@@ -41,9 +41,9 @@ export class ProfileDto implements IProfile {
   bio?: string;
   @IsString()
   @IsOptional()
-  @Matches(regex.vypperID, { message: 'invalida format vypperID' })
+  @Matches(regex.vypperId, { message: 'invalida format vypperId' })
   @ApiProperty({ required: false, example: 'fulana' })
-  vypperID?: string;
+  vypperId?: string;
   @IsISO8601()
   @IsOptional()
   @ApiProperty({ required: false, example: '1991-01-01T00:00:00.000Z' })

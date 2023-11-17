@@ -7,6 +7,7 @@ import {
   IContentEntityExtended,
   ITypeContent,
 } from '../entity/contents';
+import { decideContent } from 'src/shared/utils/decideContent';
 
 @Injectable()
 export class GetContentService implements IContentsUseCase {
@@ -27,12 +28,17 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage followers',
+            select: 'vypperId name profileImage followers planConfiguration',
             populate: [
               {
                 path: 'profileImage',
                 model: 'Content',
                 select: 'contents',
+              },
+              {
+                path: 'planConfiguration',
+                model: 'Plan',
+                select: 'subscribers',
               },
             ],
           },
@@ -61,7 +67,7 @@ export class GetContentService implements IContentsUseCase {
         owner: {
           _id: doc.owner._id,
           name: doc.owner.name,
-          vypperID: doc.owner.vypperID,
+          vypperId: doc.owner.vypperId,
           profileImage: doc.owner.profileImage,
         },
         isFollowed:
@@ -69,11 +75,9 @@ export class GetContentService implements IContentsUseCase {
             ? doc.owner.followers.includes(myId)
             : false,
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
-        contents: doc.contents.filter((image: string) =>
-          doc.payed ? image.includes('-payed') : !image.includes('-payed'),
-        ),
+        contents: decideContent(doc, myId),
         likersId: doc.likersId,
-        payed: doc.payed || false,
+        planId: doc.planId,
         text: doc.text,
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt,
@@ -97,7 +101,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperID name profileImage followers',
+            select: 'vypperId name profileImage followers',
             populate: [
               {
                 path: 'profileImage',
@@ -111,14 +115,12 @@ export class GetContentService implements IContentsUseCase {
     );
 
     return {
-      contents: content.contents.filter((image: string) =>
-        content.payed ? image.includes('-payed') : !image.includes('-payed'),
-      ),
+      contents: decideContent(content, myId),
       likersId: content.likersId,
       owner: {
         _id: content.owner._id,
         name: content.owner.name,
-        vypperID: content.owner.vypperID,
+        vypperId: content.owner.vypperId,
         profileImage: content.owner.profileImage,
       },
       isFollowed:
@@ -127,7 +129,7 @@ export class GetContentService implements IContentsUseCase {
           : false,
       text: content.text,
       type: content.type,
-      payed: content.payed || false,
+      planId: content.planId,
       canEdit: String(content.owner._id) === String(myId) ? true : false,
       createdAt: content.createdAt,
       updatedAt: content.updatedAt,

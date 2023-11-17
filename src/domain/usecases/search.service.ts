@@ -81,7 +81,7 @@ export class SearchUsersService implements ISearchUseCase {
             name: { $regex: queries.value, $options: 'i' },
           },
           {
-            vypperID: { $regex: queries.value, $options: 'i' },
+            vypperId: { $regex: queries.value, $options: 'i' },
           },
         ],
       });
@@ -136,7 +136,7 @@ export class SearchUsersService implements ISearchUseCase {
       nextPage: result.nextPage,
       docs: result.docs.map((doc: any) => ({
         _id: doc._id,
-        vypperID: doc.vypperID,
+        vypperId: doc.vypperId,
         name: doc.name,
         profileImage: doc.profileImage,
       })),

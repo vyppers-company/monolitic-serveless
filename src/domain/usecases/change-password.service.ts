@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  Injectable,
-  UnprocessableEntityException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
 import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
@@ -20,7 +16,13 @@ export class ChangePasswordService implements IChangePasswordService {
   ) {}
   async change(dto: IChangePasswordDto) {
     if (dto.newPassword !== dto.confirmNewPassword) {
-      throw new ConflictException('password and confirmPassword are different');
+      throw new HttpException(
+        {
+          message: 'Password and Confirm Password Are different',
+          reason: 'InvalidPassword',
+        },
+        HttpStatus.CONFLICT,
+      );
     }
     const decryptedCode = await decryptData(dto.tokenCode, ICryptoType.CODE);
 
@@ -29,7 +31,13 @@ export class ChangePasswordService implements IChangePasswordService {
     });
 
     if (!code) {
-      throw new UnprocessableEntityException();
+      throw new HttpException(
+        {
+          message: 'Something went wrong :(',
+          reason: 'ErrorGeneratingCode',
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     const findedOne = await this.userRepository.findOne({ _id: code.owner });

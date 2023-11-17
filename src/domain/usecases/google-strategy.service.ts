@@ -9,7 +9,7 @@ import { IProfile } from '../entity/user.entity';
 export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
   constructor() {
     super({
-      clientID: environment.oauth.google.clientID,
+      clientID: environment.oauth.google.clientId,
       clientSecret: environment.oauth.google.clientSecret,
       callbackURL: environment.oauth.google.callbackUrl,
       scope: environment.oauth.google.scope,

@@ -43,7 +43,7 @@ export class SearchController {
     name: 'value',
     required: false,
     type: String,
-    description: 'valor da busca por nome ou vypperID',
+    description: 'valor da busca por nome ou vypperId',
   })
   @ApiQuery({
     name: 'verified',

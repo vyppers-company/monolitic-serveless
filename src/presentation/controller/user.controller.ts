@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
-import { ValidatevypperIDDto } from '../dtos/validate-profile-id';
+import { ValidatevypperIdDto } from '../dtos/validate-profile-id';
 import { ValidateDataService } from 'src/domain/usecases/validate-profile-id.service';
 import { Logged } from 'src/shared/decorators/logged.decorator';
 import { ILogged } from 'src/domain/interfaces/others/logged.interface';
@@ -45,22 +45,22 @@ export class UserController {
   }
 
   @ApiTags('profile/validate/opend')
-  @Get('v1/validate/vypperID')
-  @ApiQuery({ name: 'vypperID', required: true })
-  async validatevypperIDFs(@Query() validate: ValidatevypperIDDto) {
-    return await this.validateData.validatevypperID(validate.vypperID);
+  @Get('v1/validate/vypperId')
+  @ApiQuery({ name: 'vypperId', required: true })
+  async validatevypperIdFs(@Query() validate: ValidatevypperIdDto) {
+    return await this.validateData.validatevypperId(validate.vypperId);
   }
 
   @ApiTags('profile/validate')
-  @Get('v1/validate/vypperID/logged')
+  @Get('v1/validate/vypperId/logged')
   @ApiBearerAuth()
-  @ApiQuery({ name: 'vypperID', required: true })
-  async validatevypperIDFsLogged(
-    @Query() validate: ValidatevypperIDDto,
+  @ApiQuery({ name: 'vypperId', required: true })
+  async validatevypperIdFsLogged(
+    @Query() validate: ValidatevypperIdDto,
     @Logged() user: ILogged,
   ) {
-    return await this.validateData.validatevypperID(
-      validate.vypperID,
+    return await this.validateData.validatevypperId(
+      validate.vypperId,
       user._id,
     );
   }
