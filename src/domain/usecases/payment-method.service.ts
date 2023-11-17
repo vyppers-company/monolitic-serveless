@@ -48,15 +48,20 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
         existentUser?.paymentConfiguration?.paymentCustomerId,
       );
     }
+
+    const unhashedEmail = existentUser.email
+      ? this.cryptoAdapter.decryptText(existentUser.email, ICryptoType.USER)
+      : null;
+    const unhashedEPhone = existentUser.phone
+      ? this.cryptoAdapter.decryptText(existentUser.phone, ICryptoType.USER)
+      : null;
+
     const paymentCustomer = await this.paymentCustomerAdapter.createCustomer({
-      email: this.cryptoAdapter.decryptText(
-        existentUser.email,
-        ICryptoType.USER,
-      ),
+      email: unhashedEmail,
+      phone: unhashedEPhone,
       name: existentUser.name,
       vypperId: existentUser.vypperId,
       _id: existentUser._id,
-      phone: existentUser.phone || 'null',
     });
     const setupIntent = await this.setupIntentAdapter.createSetupIntent(
       paymentCustomer,
@@ -112,7 +117,10 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
         HttpStatus.NOT_FOUND,
       );
     }
-    await this.paymentCustomerAdapter.setDefaultCard(myId, paymentMethodId);
+    await this.paymentCustomerAdapter.setDefaultCard(
+      user.paymentConfiguration.paymentCustomerId,
+      paymentMethodId,
+    );
   }
   async deletePaymentMethod(
     myId: string,
