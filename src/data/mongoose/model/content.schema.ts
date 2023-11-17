@@ -29,8 +29,8 @@ export class Content extends Document implements IContentEntity {
   contents?: string[];
   @Prop()
   likersId?: string[];
-  @Prop()
-  planId?: string;
+  @Prop({ type: Array })
+  planId?: string[];
 }
 
 export const ContentSchema = SchemaFactory.createForClass(Content);

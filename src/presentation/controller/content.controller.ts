@@ -38,7 +38,10 @@ export class ContentController {
     @Body() dto: CreateContentDto,
     @Logged() userLogged: ILogged,
   ) {
-    await this.createService.create(dto, userLogged._id);
+    await this.createService.create(
+      { ...dto, planId: dto.planId ? dto.planId : [] },
+      userLogged._id,
+    );
   }
 
   @Delete('v1/:contentId/delete')
@@ -63,7 +66,7 @@ export class ContentController {
   ) {
     await this.editService.editContent({
       text: dto.text,
-      planId: dto.planId,
+      planId: dto.planId || [],
       contentId: contentId,
       owner: userLogged._id,
     });

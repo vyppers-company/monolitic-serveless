@@ -37,6 +37,7 @@ export class ContentRepository extends BaseAbstractRepository<ContentDocument> {
       {
         $set: {
           text: dto.text,
+          planId: dto.planId || [],
         },
       },
     );

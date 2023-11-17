@@ -24,7 +24,7 @@ export interface IContentEntity {
   canEdit?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
-  planId?: string | IPlanEntity;
+  planId?: string[] | IPlanEntity[];
 }
 export interface IContentEntityExtended extends IContentEntity {
   isFollowed: boolean;

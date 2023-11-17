@@ -1,12 +1,15 @@
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IContentEntity, ITypeContent } from 'src/domain/entity/contents';
 
 export class CreateContentDto implements IContentEntity {
-  @ApiProperty({ example: 'id do plano aqui', required: false })
+  @ApiProperty({
+    examples: ['object_id_here1', 'object_id_here2'],
+    required: false,
+  })
   @IsOptional()
-  @IsString()
-  planId?: string;
+  @IsArray()
+  planId?: string[];
 
   @IsEnum(ITypeContent, {
     each: true,

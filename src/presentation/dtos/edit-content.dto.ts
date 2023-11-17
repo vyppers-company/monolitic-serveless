@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsArray, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export interface IEditContentDto {
   owner: string;
   text: string;
   contentId: string;
-  planId?: string;
+  planId?: string[];
 }
 
 export class EditContentDto
@@ -17,9 +17,11 @@ export class EditContentDto
     example: 'description_here',
   })
   text: string;
-  @IsOptional()
   @ApiProperty({
-    example: 'change_plan_for_content_here',
+    examples: ['object_id_here1', 'object_id_here2'],
+    required: false,
   })
-  planId: string;
+  @IsOptional()
+  @IsArray()
+  planId?: string[];
 }

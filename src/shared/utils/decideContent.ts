@@ -1,18 +1,18 @@
 const decideContent = (doc, myId) => {
   if (String(doc.owner._id) === myId) {
-    if (doc.planId) {
+    if (doc.planId.length) {
       return doc.contents;
     }
     return doc.contents.filter((image) => !image.includes('-blocked'));
   }
-  if (doc.planId) {
-    if (doc.planId.subscribers.length) {
-      const isSubscriber = doc.planId.subscribers.some(
-        (item) => item.vypperSubscriptionId === myId,
+  if (doc.planId.length) {
+    const isInSomePlan = doc.planId.some((plan) => {
+      return plan.subscribers.some(
+        (user) => user.vypperSubscriptionId === myId,
       );
-      if (isSubscriber) {
-        return doc.contents.filter((image) => !image.includes('-blocked'));
-      }
+    });
+    if (isInSomePlan) {
+      return doc.contents.filter((image) => !image.includes('-blocked'));
     }
     return doc.contents.filter((image) => image.includes('-blocked'));
   }
