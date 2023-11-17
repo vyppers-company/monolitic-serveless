@@ -72,17 +72,13 @@ export class CreateContentService implements ICreateContentUseCase {
       }
     }
 
-    await this.contentRepositoru.create({
+    const data = await this.contentRepositoru.create({
       ...dto,
       planId: dto.planId || null,
       owner,
     });
     if (dto.type === ITypeContent.PROFILE) {
-      const content = await this.contentRepositoru.findOne({
-        owner,
-        type: dto.type,
-      });
-      await this.userrepo.updateProfileImage(owner, content._id);
+      await this.userrepo.updateProfileImage(owner, data._id);
     }
   }
 }
