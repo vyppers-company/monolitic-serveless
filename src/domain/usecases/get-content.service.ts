@@ -27,9 +27,9 @@ export class GetContentService implements IContentsUseCase {
         page: Number(page),
         populate: [
           {
-            path: 'planId',
+            path: 'plans',
             model: 'Plan',
-            select: 'subscribers name price',
+            select: 'subscribers name price benefits',
           },
           {
             path: 'owner',
@@ -78,16 +78,17 @@ export class GetContentService implements IContentsUseCase {
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
         contents: decideContent(doc, myId),
         likersId: doc.likersId,
-        planId:
-          doc.planId && doc.planId.length
-            ? doc.planId.map((plan) => ({
+        plans:
+          doc.plans && doc.plans.length
+            ? doc.plans.map((plan) => ({
                 _id: plan._id,
                 name: plan.name,
                 price: plan.price,
+                benefits: plan.benefits,
               }))
             : [],
         text: doc.text,
-        isSubscriptor: isSubscriptor(doc.planId, myId),
+        isSubscriptor: isSubscriptor(doc.plans, myId),
         createdAt: doc.createdAt,
         updatedAt: doc.updatedAt,
       })),
@@ -108,9 +109,9 @@ export class GetContentService implements IContentsUseCase {
       {
         populate: [
           {
-            path: 'planId',
+            path: 'plans',
             model: 'Plan',
-            select: 'subscribers name price',
+            select: 'subscribers name price benefits',
           },
           {
             path: 'owner',
@@ -143,13 +144,14 @@ export class GetContentService implements IContentsUseCase {
           : false,
       text: content.text,
       type: content.type,
-      isSubscriptor: isSubscriptor(content.planId, myId),
-      planId:
-        content.planId && content.planId.length
-          ? content.planId.map((plan) => ({
+      isSubscriptor: isSubscriptor(content.plans, myId),
+      plans:
+        content.plans && content.plans.length
+          ? content.plans.map((plan) => ({
               _id: plan._id,
               name: plan.name,
               price: plan.price,
+              benefits: plan.benefits,
             }))
           : [],
       canEdit: String(content.owner._id) === String(myId) ? true : false,

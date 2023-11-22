@@ -91,13 +91,13 @@ export class GetProfileService implements IGetProfileUseCase {
       payedContents: contents.length
         ? contents.filter(
             (content) =>
-              content.type !== ITypeContent.PROFILE && content.planId,
+              content.type !== ITypeContent.PROFILE && content.plans.length,
           ).length
         : 0,
       freeContents: contents.length
         ? contents.filter(
             (content) =>
-              content.type !== ITypeContent.PROFILE && !content.planId,
+              content.type !== ITypeContent.PROFILE && !content.plans.length,
           ).length
         : 0,
     };

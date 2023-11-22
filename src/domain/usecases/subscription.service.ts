@@ -1,5 +1,7 @@
 import {
   ConflictException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,6 +19,16 @@ export class SubscriptionService implements ISubscriptionsUseCases {
     private readonly paymentAdapter: PaymentSubscriptionAdapter,
   ) {}
   async processSubscription(myId: string, dto: ProcessSubscriptionDto) {
+    if (myId === dto.creatorVypperId) {
+      throw new HttpException(
+        {
+          reason: 'SubscriptionError',
+          message: 'creator and subscriber cant be the same',
+        },
+        HttpStatus.CONFLICT,
+      );
+    }
+
     const creator = await this.userRepository.findOne({
       _id: dto.creatorVypperId,
     });

@@ -1,4 +1,3 @@
-import { IQueriesSearchUser } from '../interfaces/usecases/search.interface';
 import {
   ICategory,
   ICategoryBiotype,

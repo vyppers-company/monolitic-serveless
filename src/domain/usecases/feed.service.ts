@@ -73,9 +73,9 @@ export class FeedService implements IFeedUseCase {
         page: Number(page),
         populate: [
           {
-            path: 'planId',
+            path: 'plans',
             model: 'Plan',
-            select: 'subscribers name price',
+            select: 'subscribers name price benefits',
           },
           {
             path: 'owner',
@@ -122,15 +122,16 @@ export class FeedService implements IFeedUseCase {
           canEdit: String(doc.owner._id) === String(myId) ? true : false,
           contents: content,
           likersId: doc.likersId,
-          planId:
-            doc.planId && doc.planId.length
-              ? doc.planId.map((plan) => ({
+          plans:
+            doc.plans && doc.plans.length
+              ? doc.plans.map((plan) => ({
                   _id: plan._id,
                   name: plan.name,
                   price: plan.price,
+                  benefits: plan.benefits,
                 }))
               : [],
-          isSubscriptor: isSubscriptor(doc.planId, myId),
+          isSubscriptor: isSubscriptor(doc.plans, myId),
           text: doc.text,
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,

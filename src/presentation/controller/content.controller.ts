@@ -39,7 +39,7 @@ export class ContentController {
     @Logged() userLogged: ILogged,
   ) {
     await this.createService.create(
-      { ...dto, planId: dto.planId ? dto.planId : [] },
+      { ...dto, plans: dto.plans ? dto.plans : [] },
       userLogged._id,
     );
   }
@@ -66,7 +66,7 @@ export class ContentController {
   ) {
     await this.editService.editContent({
       text: dto.text,
-      planId: dto.planId || [],
+      plans: dto.plans || [],
       contentId: contentId,
       owner: userLogged._id,
     });

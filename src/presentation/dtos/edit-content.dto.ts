@@ -5,12 +5,10 @@ export interface IEditContentDto {
   owner: string;
   text: string;
   contentId: string;
-  planId?: string[];
+  plans?: string[];
 }
 
-export class EditContentDto
-  implements Pick<IEditContentDto, 'text' | 'planId'>
-{
+export class EditContentDto implements Pick<IEditContentDto, 'text' | 'plans'> {
   @IsString()
   @MaxLength(1024, { message: 'message is too large' })
   @ApiProperty({
@@ -23,5 +21,5 @@ export class EditContentDto
   })
   @IsOptional()
   @IsArray()
-  planId?: string[];
+  plans?: string[] | null;
 }

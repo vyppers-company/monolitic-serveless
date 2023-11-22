@@ -1,6 +1,6 @@
-const isSubscriptor = (planId, myId) => {
-  if (planId.length) {
-    const isInSomePlan = planId.some((plan) => {
+const isSubscriptor = (plans, myId) => {
+  if (plans.length) {
+    const isInSomePlan = plans.some((plan) => {
       return plan.subscribers.some(
         (user) => user.vypperSubscriptionId === myId,
       );

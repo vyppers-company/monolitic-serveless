@@ -12,7 +12,6 @@ export class SubscriptionController {
 
   @Post('v1/process')
   @ApiBearerAuth()
-  @ApiTags('Make a Process to Assign one subscription')
   @ApiBody({ type: ProcessSubscriptionDto })
   async processPayment(
     @Body() dto: ProcessSubscriptionDto,

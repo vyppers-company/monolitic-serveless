@@ -9,7 +9,7 @@ export class CreateContentDto implements IContentEntity {
   })
   @IsOptional()
   @IsArray()
-  planId?: string[];
+  plans?: string[] | null;
 
   @IsEnum(ITypeContent, {
     each: true,
@@ -30,4 +30,10 @@ export class CreateContentDto implements IContentEntity {
     required: false,
   })
   text?: string;
+
+  @ApiProperty({
+    example: 'product_id',
+  })
+  @IsOptional()
+  productId?: string | null;
 }

@@ -13,7 +13,7 @@ export class CreateContentService implements ICreateContentUseCase {
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
     if (
-      dto.planId.length &&
+      dto.plans.length &&
       dto.contents.length % 2 === 1 &&
       dto.type !== ITypeContent.PROFILE
     ) {
@@ -25,7 +25,7 @@ export class CreateContentService implements ICreateContentUseCase {
         HttpStatus.BAD_REQUEST,
       );
     }
-    if (dto.planId.length && dto.type === ITypeContent.PROFILE) {
+    if (dto.plans.length && dto.type === ITypeContent.PROFILE) {
       throw new HttpException(
         {
           message: 'profile image dont need to be payed',
@@ -74,7 +74,7 @@ export class CreateContentService implements ICreateContentUseCase {
 
     const data = await this.contentRepositoru.create({
       ...dto,
-      planId: dto.planId || [],
+      plans: dto.plans || [],
       owner,
     });
     if (dto.type === ITypeContent.PROFILE) {
