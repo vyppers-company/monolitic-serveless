@@ -61,6 +61,7 @@ export class PlanService implements PlanUseCase {
       dto.isAnnual &&
       (await this.paymentPlanAdapter.createAnnualPlan(myId, {
         ...dto,
+        name: `${dto.name} - Annual`,
         currency: ICurrency.BRL,
       }));
 
@@ -126,6 +127,8 @@ export class PlanService implements PlanUseCase {
       owner: myId,
     });
 
+    dto.isAnnual = dto.activate === false ? false : dto.isAnnual;
+
     const plan = plans.find((pl) => String(pl._id) === planId);
 
     if (!plan) {
@@ -143,16 +146,19 @@ export class PlanService implements PlanUseCase {
     await this.paymentPlanAdapter.editPlan({
       paymentPlanId: plan.paymentPlanId,
       owner: plan.owner,
-      activate: dto.activate,
+      activate: dto.activate ?? plan.activate,
       name: dto.name || plan.name,
       benefits: dto.benefits || plan.benefits,
     });
-    if (plan.paymentPlanIdAnnual) {
+    if (
+      plan.paymentPlanIdAnnual &&
+      (dto.isAnnual !== null || dto.isAnnual !== undefined)
+    ) {
       await this.paymentPlanAdapter.editPlan({
         owner: plan.owner,
         paymentPlanId: plan.paymentPlanIdAnnual,
-        activate: dto.activate,
-        name: dto.name || plan.name,
+        activate: dto.isAnnual,
+        name: `${dto.name} - Annual` || `${plan.name} - Annual`,
         benefits: dto.benefits || plan.benefits,
       });
     }
@@ -160,22 +166,32 @@ export class PlanService implements PlanUseCase {
   }
 
   async getPlans(
+    activated: boolean,
     myId: string,
     userId: string,
     resumed: boolean,
   ): Promise<IPlanEntity[] | Pick<IPlanEntity, '_id' | 'name'>[]> {
     if (resumed) {
+      if (myId !== userId) {
+        throw new HttpException(
+          'this mode was design just for your own plans',
+          HttpStatus.FORBIDDEN,
+        );
+      }
       const plans = await this.planRepository.find({
         owner: userId,
         activate: true,
       });
       return plans.map((plan) => ({ _id: plan._id, name: plan.name }));
     }
+
+    const finalDto = { owner: userId };
+    if (activated) {
+      finalDto['activate'] = activated;
+    }
+
     const plans = await this.planRepository.findWithRelations(
-      {
-        owner: userId,
-        activate: true,
-      },
+      finalDto,
       [
         {
           path: 'subscribers.vypperSubscriptionId',
@@ -230,27 +246,28 @@ export class PlanService implements PlanUseCase {
   }
 
   async getPlan(
+    activated: boolean,
     planId: string,
     userId: string,
   ): Promise<IPlanEntityExtendedResponse> {
-    const plan = await this.planRepository.findOne(
-      { _id: planId, activate: true },
-      null,
-      {
-        populate: [
-          {
-            path: 'subscribers.vypperSubscriptionId',
-            model: 'User',
-            select: 'name _id vypperId profileImage',
-            populate: {
-              path: 'profileImage',
-              model: 'Content',
-              select: 'contents',
-            },
+    const finalDto = { _id: planId };
+    if (activated) {
+      finalDto['activate'] = activated;
+    }
+    const plan = await this.planRepository.findOne(finalDto, null, {
+      populate: [
+        {
+          path: 'subscribers.vypperSubscriptionId',
+          model: 'User',
+          select: 'name _id vypperId profileImage',
+          populate: {
+            path: 'profileImage',
+            model: 'Content',
+            select: 'contents',
           },
-        ],
-      },
-    );
+        },
+      ],
+    });
     if (!plan) {
       throw new HttpException(
         { message: 'Plan not found', reason: 'PlanError' },

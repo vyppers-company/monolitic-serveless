@@ -55,6 +55,7 @@ export class PlanController {
     @Query('resumed') resumed: boolean,
   ) {
     return await this.planService.getPlans(
+      userId === user._id ? true : false,
       user._id,
       userId || user._id,
       resumed,
@@ -74,6 +75,10 @@ export class PlanController {
     @Param('planId') planId: string,
     @Query('userId') userId: string,
   ) {
-    return await this.planService.getPlan(planId, userId || user._id);
+    return await this.planService.getPlan(
+      userId === user._id ? true : false,
+      planId,
+      userId || user._id,
+    );
   }
 }

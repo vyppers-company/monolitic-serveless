@@ -43,7 +43,7 @@ export class PaymentPlanAdapter implements IPaymentPlanUseCases {
           benefits: dto.benefits.toString(),
         },
         product: {
-          name: `${dto.name} - Annual`,
+          name: dto.name,
         },
       });
       return plan.id;
