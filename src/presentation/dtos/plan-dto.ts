@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsString,
+  IsOptional,
+} from 'class-validator';
 import { IPlanEntity } from 'src/domain/entity/plan';
 
 export class PlanDto implements IPlanEntity {
@@ -10,6 +16,7 @@ export class PlanDto implements IPlanEntity {
   })
   @IsBoolean()
   activate: boolean;
+
   @ApiProperty({
     example: 1990,
     required: true,
@@ -23,25 +30,41 @@ export class PlanDto implements IPlanEntity {
   @ApiProperty({ examples: ['benefit one'] })
   @IsArray()
   benefits: string[];
+
+  @IsBoolean()
+  @ApiProperty({ example: true })
+  isAnnual: boolean;
+
+  @IsNumber()
+  @ApiProperty({ example: 0.2 })
+  @IsOptional()
+  annualPercentage?: number;
 }
 
-export class EditPlanDto implements Pick<IPlanEntity, 'benefits' | 'name'> {
+export class EditPlanDto
+  implements Pick<IPlanEntity, 'benefits' | 'name' | 'activate' | 'isAnnual'>
+{
   @IsArray()
+  @IsOptional()
   @ApiProperty({ examples: ['benefit one'] })
   benefits: string[];
+
   @ApiProperty({ example: 'Basiquinha BB', required: true })
   @IsString()
+  @IsOptional()
   name: string;
-  @ApiProperty({
-    example: false,
-    required: true,
-    description: 'if you want deactivate ',
-  })
+
   @ApiProperty({
     example: true,
     required: true,
     description: 'if you want deactivate ',
   })
+  @IsOptional()
   @IsBoolean()
   activate: boolean;
+
+  @IsBoolean()
+  @ApiProperty({ example: true })
+  @IsOptional()
+  isAnnual: boolean;
 }

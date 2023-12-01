@@ -30,6 +30,12 @@ export class Plan extends Document implements IPlanEntity {
   paymentPlanId?: string;
   @Prop({ type: Array, default: [] })
   subscribers?: IPlanSubscribers[];
+  @Prop({ default: false })
+  isAnnual?: boolean;
+  @Prop({ default: 0 })
+  annualPercentage?: number;
+  @Prop()
+  paymentPlanIdAnnual?: string;
 
   createdAt?: string;
   updatedAt?: string;

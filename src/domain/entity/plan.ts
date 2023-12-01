@@ -1,5 +1,7 @@
 import { ICurrency } from './currency';
 
+export const percentageValues = [0.05, 0.1, 0.15, 0.2, 0.25];
+
 export interface IPlanSubscribers {
   vypperSubscriptionId: string;
   paymentSubscriptionId?: string;
@@ -16,6 +18,8 @@ export interface IPlanEntity {
   subscribers?: IPlanSubscribers[];
   createdAt?: string;
   updatedAt?: string;
+  isAnnual?: boolean;
+  annualPercentage?: number;
 }
 
 export interface IPlanEntityExtendedResponse extends IPlanEntity {

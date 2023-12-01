@@ -1,5 +1,9 @@
 import { PlanRepository } from 'src/data/mongoose/repositories/plan.repository';
-import { IPlanEntity, IPlanEntityExtendedResponse } from '../entity/plan';
+import {
+  IPlanEntity,
+  IPlanEntityExtendedResponse,
+  percentageValues,
+} from '../entity/plan';
 import { PlanUseCase } from '../interfaces/usecases/plan.interface';
 import {
   ConflictException,
@@ -24,7 +28,26 @@ export class PlanService implements PlanUseCase {
   ) {}
 
   async createPlan(myId: string, dto: IPlanEntity): Promise<void> {
-    const result = await this.planRepository.find({ owner: myId });
+    const result = await this.planRepository.find({
+      owner: myId,
+      activate: true,
+    });
+
+    if (dto.isAnnual === true && !dto.annualPercentage) {
+      throw new HttpException(
+        'percentage is required when isAnull is true',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!percentageValues.includes(dto.annualPercentage)) {
+      throw new HttpException(
+        `invalid percentage value: valid values ${percentageValues.map(
+          (item) => `${item * 100}%`,
+        )}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     if (result.length >= 3) {
       throw new ConflictException(`you only can have 3 plans`);
@@ -33,11 +56,20 @@ export class PlanService implements PlanUseCase {
       ...dto,
       currency: ICurrency.BRL,
     });
+
+    const paymentPlanIdAnnual =
+      dto.isAnnual &&
+      (await this.paymentPlanAdapter.createAnnualPlan(myId, {
+        ...dto,
+        currency: ICurrency.BRL,
+      }));
+
     const resultCreated = await this.planRepository.create({
       ...dto,
       owner: myId,
       currency: ICurrency.BRL,
       paymentPlanId,
+      paymentPlanIdAnnual,
     });
     await this.userRepository.addPlan(myId, resultCreated._id);
   }
@@ -63,6 +95,22 @@ export class PlanService implements PlanUseCase {
         HttpStatus.FORBIDDEN,
       );
     }
+    if (plan.isAnnual === true) {
+      const hasSubscribers =
+        await this.paymentSubscriptionAdapter.verifyIfHasSubsByPlan(
+          plan.paymentPlanId,
+        );
+      if (hasSubscribers) {
+        throw new HttpException(
+          {
+            reason: 'SubscriptionError',
+            message: "this plan has activated subscribers, you can't remove",
+          },
+          HttpStatus.FORBIDDEN,
+        );
+      }
+      await this.paymentPlanAdapter.deletePlan(plan.paymentPlanIdAnnual);
+    }
     await this.paymentPlanAdapter.deletePlan(plan.paymentPlanId);
     await this.userRepository.removePlan(myId, planId);
     await this.planRepository.deleteById(plan._id);
@@ -74,15 +122,40 @@ export class PlanService implements PlanUseCase {
     myId: string,
     dto: EditPlanDto,
   ): Promise<void> {
-    const plan = await this.planRepository.findOne({
-      _id: planId,
+    const plans = await this.planRepository.find({
       owner: myId,
     });
+
+    const plan = plans.find((pl) => String(pl._id) === planId);
+
     if (!plan) {
       throw new NotFoundException('plan not found');
     }
 
-    await this.paymentPlanAdapter.editPlan(plan);
+    const activatedPlans = plans.filter((pl) => pl.activate === true);
+
+    if (activatedPlans.length >= 3 && dto.activate === true) {
+      throw new NotFoundException(
+        'You cant have more than 3 plans activated, please deactive some plan before',
+      );
+    }
+
+    await this.paymentPlanAdapter.editPlan({
+      paymentPlanId: plan.paymentPlanId,
+      owner: plan.owner,
+      activate: dto.activate,
+      name: dto.name || plan.name,
+      benefits: dto.benefits || plan.benefits,
+    });
+    if (dto.isAnnual && plan.isAnnual) {
+      await this.paymentPlanAdapter.editPlan({
+        owner: plan.owner,
+        paymentPlanId: plan.paymentPlanIdAnnual,
+        activate: dto.activate,
+        name: dto.name || plan.name,
+        benefits: dto.benefits || plan.benefits,
+      });
+    }
     await this.planRepository.updatePlan(planId, dto, myId);
   }
 
@@ -94,12 +167,14 @@ export class PlanService implements PlanUseCase {
     if (resumed) {
       const plans = await this.planRepository.find({
         owner: userId,
+        activate: true,
       });
       return plans.map((plan) => ({ _id: plan._id, name: plan.name }));
     }
     const plans = await this.planRepository.findWithRelations(
       {
         owner: userId,
+        activate: true,
       },
       [
         {
@@ -126,6 +201,8 @@ export class PlanService implements PlanUseCase {
         _id,
         currency,
         subscribers,
+        isAnnual,
+        annualPercentage,
         createdAt,
         updatedAt,
       }) => ({
@@ -136,6 +213,8 @@ export class PlanService implements PlanUseCase {
         activate,
         benefits,
         currency,
+        isAnnual,
+        annualPercentage,
         canEdit: String(userId) === String(userId) ? true : false,
         subscribers:
           String(myId) === String(userId)
@@ -153,7 +232,24 @@ export class PlanService implements PlanUseCase {
     planId: string,
     userId: string,
   ): Promise<IPlanEntityExtendedResponse> {
-    const plan = await this.planRepository.findOneById(planId);
+    const plan = await this.planRepository.findOne(
+      { _id: planId, activate: true },
+      null,
+      {
+        populate: [
+          {
+            path: 'subscribers.vypperSubscriptionId',
+            model: 'User',
+            select: 'name _id vypperId profileImage',
+            populate: {
+              path: 'profileImage',
+              model: 'Content',
+              select: 'contents',
+            },
+          },
+        ],
+      },
+    );
     if (!plan) {
       throw new HttpException(
         { message: 'Plan not found', reason: 'PlanError' },
@@ -169,6 +265,8 @@ export class PlanService implements PlanUseCase {
       benefits,
       currency,
       subscribers,
+      isAnnual,
+      annualPercentage,
       createdAt,
       updatedAt,
     } = plan;
@@ -180,6 +278,8 @@ export class PlanService implements PlanUseCase {
       activate,
       benefits,
       currency,
+      isAnnual,
+      annualPercentage,
       subscribers:
         String(userId) === String(plan.owner)
           ? subscribers.map((item) => ({

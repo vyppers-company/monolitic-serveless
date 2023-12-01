@@ -18,13 +18,11 @@ export class PlanRepository extends BaseAbstractRepository<PlanDocument> {
   }
 
   async updatePlan(planId: any, dto: EditPlanDto, owner: string) {
-    const { benefits, name } = dto;
     await this.plan.updateOne(
       { _id: planId, owner },
       {
         $set: {
-          benefits,
-          name,
+          ...dto,
         },
       },
     );

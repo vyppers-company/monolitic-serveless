@@ -41,12 +41,6 @@ export class PlanController {
     return await this.planService.editPlan(planId, user._id, dto);
   }
 
-  @Delete('v1/delete/:planId')
-  @ApiBearerAuth()
-  async deletePlan(@Logged() user: ILogged, @Param('planId') planId: string) {
-    return await this.planService.deletePlan(user._id, planId);
-  }
-
   @Get('v1/all')
   @ApiBearerAuth()
   @ApiQuery({

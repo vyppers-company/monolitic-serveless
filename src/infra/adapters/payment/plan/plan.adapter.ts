@@ -18,14 +18,37 @@ export class PaymentPlanAdapter implements IPaymentPlanUseCases {
         nickname: dto.name,
         metadata: {
           owner: myId,
+          benefits: dto.benefits.toString(),
         },
         product: {
-          name: 'default subscription vyppers company',
+          name: dto.name,
         },
       });
       return plan.id;
     } catch (error) {
-      throw new HttpException('Failed Dependecy', 422, error);
+      throw new HttpException('Failed Dependency', 422, error);
+    }
+  }
+  async createAnnualPlan(myId: string, dto: IPlanEntity): Promise<string> {
+    try {
+      const plan = await this.stripe.plans.create({
+        currency: dto.currency,
+        interval: 'year',
+        active: dto.activate,
+        amount: dto.price * dto.annualPercentage * 12,
+        billing_scheme: 'per_unit',
+        nickname: dto.name,
+        metadata: {
+          owner: myId,
+          benefits: dto.benefits.toString(),
+        },
+        product: {
+          name: `${dto.name} - Annual`,
+        },
+      });
+      return plan.id;
+    } catch (error) {
+      throw new HttpException('Failed Dependency', 422, error);
     }
   }
   async deletePlan(planId: string): Promise<void> {
