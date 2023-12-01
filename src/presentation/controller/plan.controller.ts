@@ -15,7 +15,7 @@ import { PlanService } from 'src/domain/usecases/plan.service';
 import { Logged } from 'src/shared/decorators/logged.decorator';
 import { EditPlanDto, PlanDto } from '../dtos/plan-dto';
 
-@ApiTags('Manage Plans of Customers')
+@ApiTags('plan')
 @Controller('plan')
 export class PlanController {
   private logger: Logger;

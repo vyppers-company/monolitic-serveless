@@ -13,7 +13,7 @@ import { PaymentMethodsService } from 'src/domain/usecases/payment-method.servic
 import { Logged } from 'src/shared/decorators/logged.decorator';
 
 @Controller('payment-method')
-@ApiTags('Manage Payment Methods of Customer')
+@ApiTags('payment-method')
 export class PaymentMethodController {
   private logger: Logger;
   constructor(private readonly paymentMethod: PaymentMethodsService) {

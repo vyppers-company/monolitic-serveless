@@ -65,7 +65,7 @@ export class PaymentPlanAdapter implements IPaymentPlanUseCases {
       nickname: dto.name,
       active: dto.activate,
       metadata: {
-        owner: dto.owner,
+        owner: dto.owner.toString(),
       },
     });
   }

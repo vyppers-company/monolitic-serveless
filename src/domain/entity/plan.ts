@@ -1,4 +1,5 @@
 import { ICurrency } from './currency';
+import { IProfile } from './user.entity';
 
 export const percentageValues = [0.05, 0.1, 0.15, 0.2, 0.25];
 
@@ -8,7 +9,7 @@ export interface IPlanSubscribers {
 }
 export interface IPlanEntity {
   _id?: string;
-  owner?: string;
+  owner?: string | IProfile;
   price: number;
   name: string;
   benefits: string[];
