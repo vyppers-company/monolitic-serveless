@@ -147,7 +147,7 @@ export class PlanService implements PlanUseCase {
       name: dto.name || plan.name,
       benefits: dto.benefits || plan.benefits,
     });
-    if (dto.isAnnual && plan.isAnnual) {
+    if (plan.paymentPlanIdAnnual) {
       await this.paymentPlanAdapter.editPlan({
         owner: plan.owner,
         paymentPlanId: plan.paymentPlanIdAnnual,
@@ -215,6 +215,7 @@ export class PlanService implements PlanUseCase {
         currency,
         isAnnual,
         annualPercentage,
+        annualPrice: isAnnual ? price * (1 - annualPercentage) * 12 : 0,
         canEdit: String(userId) === String(userId) ? true : false,
         subscribers:
           String(myId) === String(userId)
@@ -280,6 +281,7 @@ export class PlanService implements PlanUseCase {
       currency,
       isAnnual,
       annualPercentage,
+      annualPrice: isAnnual ? price * (1 - annualPercentage) * 12 : 0,
       subscribers:
         String(userId) === String(plan.owner)
           ? subscribers.map((item) => ({

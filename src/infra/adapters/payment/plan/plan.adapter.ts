@@ -35,7 +35,7 @@ export class PaymentPlanAdapter implements IPaymentPlanUseCases {
         currency: dto.currency,
         interval: 'year',
         active: dto.activate,
-        amount: dto.price * dto.annualPercentage * 12,
+        amount: dto.price * (1 - dto.annualPercentage) * 12,
         billing_scheme: 'per_unit',
         nickname: dto.name,
         metadata: {

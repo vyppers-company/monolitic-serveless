@@ -24,4 +24,5 @@ export interface IPlanEntity {
 
 export interface IPlanEntityExtendedResponse extends IPlanEntity {
   canEdit: boolean;
+  annualPrice: number;
 }
