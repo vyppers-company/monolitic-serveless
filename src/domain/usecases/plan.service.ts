@@ -40,7 +40,10 @@ export class PlanService implements PlanUseCase {
       );
     }
 
-    if (!percentageValues.includes(dto.annualPercentage)) {
+    if (
+      dto.isAnnual === true &&
+      !percentageValues.includes(dto.annualPercentage)
+    ) {
       throw new HttpException(
         `invalid percentage value: valid values ${percentageValues.map(
           (item) => `${item * 100}%`,

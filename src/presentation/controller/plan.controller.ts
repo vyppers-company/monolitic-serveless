@@ -81,4 +81,10 @@ export class PlanController {
       userId || user._id,
     );
   }
+
+  @Delete('v1/delete/:planId')
+  @ApiBearerAuth()
+  async deletePlan(@Logged() user: ILogged, @Param('planId') planId: string) {
+    return await this.planService.deletePlan(user._id, planId);
+  }
 }
