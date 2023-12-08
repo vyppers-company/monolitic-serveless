@@ -25,7 +25,7 @@ export class User extends Document implements IProfile {
   @Prop({ default: false })
   fitToReceivePayment?: boolean;
 
-  @Prop()
+  @Prop({ default: null })
   cpf?: string;
 
   @Prop({ type: Object })

@@ -8,25 +8,14 @@ import {
 } from '@nestjs/common';
 import { ValidateDataService } from './validate-profile-id.service';
 import { getAge } from 'src/shared/utils/getAge';
-import { validateCPF } from 'src/shared/utils/validate-cpf';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
-import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class UpdateProfileService implements IUpdateProfileUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly validate: ValidateDataService,
-    private readonly cryptoAdapter: CryptoAdapter,
   ) {}
   async updateData(myId: string, dto: ProfileDto): Promise<void> {
-    if (dto.cpf) {
-      const isValid = validateCPF(dto.cpf);
-      if (!isValid) {
-        throw new BadRequestException('cpf invalid');
-      }
-    }
-
     const user = await this.userRepository.findOne({ _id: myId });
     if (dto.vypperId && dto.vypperId !== user.vypperId) {
       const result = await this.validate.validatevypperId(dto.vypperId);
@@ -41,9 +30,6 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
 
     await this.userRepository.updateProfileData(myId, {
       ...dto,
-      cpf: dto.cpf
-        ? this.cryptoAdapter.encryptText(dto.cpf, ICryptoType.USER)
-        : user.cpf || null,
     });
   }
   updateEmail(myId: string, email: string): Promise<any> {

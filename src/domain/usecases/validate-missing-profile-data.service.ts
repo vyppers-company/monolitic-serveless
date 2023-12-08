@@ -50,7 +50,6 @@ export class ValidateMissingDataProfileService
     if (!user.verified) missingDatas.push('verified');
     if (!user.profileImage) missingDatas.push('profileImage');
     if (!user.bio) missingDatas.push('bio');
-    if (!user.cpf) missingDatas.push('cpf');
     if (!user.paymentConfiguration) missingDatas.push('paymentConfiguration');
     if (!user.planConfiguration.length) missingDatas.push('planConfiguration');
 

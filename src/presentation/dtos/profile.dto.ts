@@ -66,12 +66,4 @@ export class ProfileDto implements IProfile {
     examples: ['F', 'M'],
   })
   interests?: InterestsDto;
-
-  @ApiProperty({
-    required: false,
-    example: '99323107000',
-  })
-  @IsString()
-  @IsOptional()
-  cpf: string;
 }
