@@ -27,10 +27,15 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
     if (!age) {
       throw new ConflictException('you need to have 18 years old');
     }
-
-    await this.userRepository.updateProfileData(myId, {
-      ...dto,
-    });
+    const final: ProfileDto = {
+      bio: dto.bio ?? user.bio,
+      birthday: dto.birthday ?? user.birthday,
+      caracteristics: dto.caracteristics ?? user.caracteristics,
+      interests: dto.interests ?? user.interests,
+      name: dto.name ?? user.name,
+      vypperId: dto.vypperId ?? user.vypperId,
+    };
+    await this.userRepository.updateProfileData(myId, final);
   }
   updateEmail(myId: string, email: string): Promise<any> {
     return new Promise(null);
