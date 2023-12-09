@@ -22,10 +22,6 @@ export interface ICaracteristicas {
   biotype?: ICategoryBiotype;
 }
 
-export interface IPaymentConfig {
-  paymentCustomerId: string;
-}
-
 export interface IProfile {
   _id?: string;
   name?: string;
@@ -35,10 +31,10 @@ export interface IProfile {
   bio?: string;
   email?: string;
   vypperId?: string;
-  profileImage?: string;
   verified?: boolean;
   fitToReceivePayment?: boolean;
-  paymentConfiguration?: IPaymentConfig;
+  profileImage?: string;
+  paymentConfiguration?: string;
   planConfiguration?: string[];
   birthday?: string;
   caracteristics?: ICaracteristicas;

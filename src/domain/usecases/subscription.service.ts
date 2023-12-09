@@ -12,6 +12,7 @@ import { ISubscriptionsUseCases } from '../interfaces/usecases/payment.interface
 import { ProcessSubscriptionDto } from 'src/presentation/dtos/subscription.dto';
 import { PaginateResult } from 'mongoose';
 import { IPlanEntity } from '../entity/plan';
+import { IPaymentConfiguration } from '../entity/payment';
 
 @Injectable()
 export class SubscriptionService implements ISubscriptionsUseCases {
@@ -38,11 +39,18 @@ export class SubscriptionService implements ISubscriptionsUseCases {
     if (!creator) {
       throw new NotFoundException('creator not found');
     }
-    const buyer = await this.userRepository.findOne({ _id: myId });
+    const buyer = await this.userRepository.findOne({ _id: myId }, null, {
+      lean: true,
+      populate: [{ model: 'Payment', path: 'paymentConfiguration' }],
+    });
+
     if (!buyer) {
-      throw new NotFoundException('creator not found');
+      throw new HttpException('user not found', 404);
     }
-    if (!buyer?.paymentConfiguration?.paymentCustomerId) {
+
+    const pay = buyer.paymentConfiguration as IPaymentConfiguration;
+
+    if (!pay.customerId) {
       throw new NotFoundException(
         'needs create one payment method before to assign subscription',
       );
@@ -74,7 +82,7 @@ export class SubscriptionService implements ISubscriptionsUseCases {
 
       const renewSubs = await this.paymentAdapter.createSubscription(
         plan.paymentPlanId,
-        buyer.paymentConfiguration.paymentCustomerId,
+        pay.customerId,
         plan.currency,
       );
 
@@ -87,7 +95,7 @@ export class SubscriptionService implements ISubscriptionsUseCases {
 
     const newSubs = await this.paymentAdapter.createSubscription(
       plan.paymentPlanId,
-      buyer.paymentConfiguration.paymentCustomerId,
+      pay.customerId,
       plan.currency,
     );
 

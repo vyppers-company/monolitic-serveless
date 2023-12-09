@@ -57,6 +57,10 @@ import { SetupIntentAdapter } from 'src/infra/adapters/payment/setup/setIntent.a
 import { PaymentMethodController } from 'src/presentation/controller/payment-method.controller';
 import { PaymentMethodsService } from 'src/domain/usecases/payment-method.service';
 import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods/payment-methods.adapter';
+import { Payment, PaymentSchema } from 'src/data/mongoose/model/payment.schema';
+import { PaymentRepository } from 'src/data/mongoose/repositories/payment.repository';
+import { Product, ProductSchema } from 'src/data/mongoose/model/product.schema';
+import { ProductRepository } from 'src/data/mongoose/repositories/product.repository';
 
 @Module({
   imports: [
@@ -68,6 +72,8 @@ import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods
       { name: Code.name, schema: CodeSchema },
       { name: Content.name, schema: ContentSchema },
       { name: Plan.name, schema: PlanSchema },
+      { name: Payment.name, schema: PaymentSchema },
+      { name: Product.name, schema: ProductSchema },
     ]),
   ],
   providers: [
@@ -81,6 +87,8 @@ import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods
     UserRepository,
     CodeRepository,
     PlanRepository,
+    PaymentRepository,
+    ProductRepository,
     SubscriptionService,
     RecoveryService,
     RegisterService,

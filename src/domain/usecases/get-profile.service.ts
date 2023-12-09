@@ -60,6 +60,11 @@ export class GetProfileService implements IGetProfileUseCase {
             },
           ],
         },
+        {
+          path: 'paymentConfiguration',
+          model: 'Payment',
+          select: 'paymentMethods',
+        },
       ],
     });
     const contents = await this.contentRepository.find({ owner: user._id });

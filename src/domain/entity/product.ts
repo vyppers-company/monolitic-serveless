@@ -4,7 +4,6 @@ export enum IModeproduct {
 }
 export interface IProductContent {
   _id?: string;
-
   price: number;
   content: string;
   currency: string;

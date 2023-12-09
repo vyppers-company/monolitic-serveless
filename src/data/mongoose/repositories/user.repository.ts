@@ -113,16 +113,14 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       },
     );
   }
-  async updatePaymentId(vypperBuyerId: string, paymentCustomerId: string) {
+  async updatePaymentId(vypperBuyerId: string, paymentConfigurationId: string) {
     await this.user.updateOne(
       {
         _id: vypperBuyerId,
       },
       {
         $set: {
-          paymentConfiguration: {
-            paymentCustomerId: paymentCustomerId,
-          },
+          paymentConfiguration: paymentConfigurationId,
         },
       },
     );
