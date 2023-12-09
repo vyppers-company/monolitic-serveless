@@ -9,7 +9,7 @@ export enum typePayment {
 }
 
 export interface IPaymentMethods {
-  id: string;
+  id?: string;
   last4?: string;
   brand?: string;
   country?: string;

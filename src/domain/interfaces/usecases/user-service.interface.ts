@@ -7,6 +7,7 @@ export interface IProfileExt extends IProfile {
   freeContents: number;
   followersQtd: number;
   qtdLikes: number;
+  paymentConfiguration: any;
 }
 
 export interface IGetProfileUseCase {

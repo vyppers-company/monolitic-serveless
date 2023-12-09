@@ -1,3 +1,5 @@
+import { IPaymentConfiguration } from 'src/domain/entity/payment';
+
 export interface ISetupIntentSecret {
   clientSecret: string;
 }
@@ -16,7 +18,9 @@ export interface IPaymentMethodsList {
 }
 export interface IPaymentMethodUseCases {
   createSetupIntent(myId: string): Promise<ISetupIntentSecret>;
-  getPaymentMethods(myId: string): Promise<IPaymentMethodsList[]>;
+  getPaymentMethods(
+    myId: string,
+  ): Promise<IPaymentConfiguration['paymentMethods']>;
   setAsDefault(myId: string, paymentMethodId: string): Promise<void>;
   deletePaymentMethod(
     myId: string,

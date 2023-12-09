@@ -39,6 +39,7 @@ export class GetProfileService implements IGetProfileUseCase {
     >
   > {
     const user = await this.userRepository.findOne({ _id: logged._id }, null, {
+      lean: true,
       populate: [
         { path: 'profileImage', select: 'contents', model: 'Content' },
         {
@@ -70,6 +71,8 @@ export class GetProfileService implements IGetProfileUseCase {
     const contents = await this.contentRepository.find({ owner: user._id });
     const content = user.profileImage as IContentEntity;
 
+    const paymentConfiguration = user.paymentConfiguration as any;
+
     return {
       _id: user._id,
       name: user.name,
@@ -81,7 +84,16 @@ export class GetProfileService implements IGetProfileUseCase {
       email: user.email || null,
       phone: user.phone || null,
       interests: user.interests || null,
-      paymentConfiguration: user.paymentConfiguration || null,
+      paymentConfiguration: paymentConfiguration
+        ? {
+            _id: paymentConfiguration._id,
+            paymentMethods: paymentConfiguration.paymentMethods.map(
+              ({ id, ...item }) => ({
+                ...item,
+              }),
+            ),
+          }
+        : null,
       planConfiguration: user.planConfiguration.length
         ? user.planConfiguration
         : [],

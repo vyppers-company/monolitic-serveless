@@ -97,7 +97,9 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
     return setup;
   }
 
-  async getPaymentMethods(myVypperId: string): Promise<IPaymentMethodsList[]> {
+  async getPaymentMethods(
+    myVypperId: string,
+  ): Promise<IPaymentConfiguration['paymentMethods']> {
     const existentUser = await this.userRepository.findOne(
       { _id: myVypperId },
       null,
@@ -140,9 +142,9 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
       (pay) => pay.isDefault === true,
     );
 
-    const finalDto = payments.map((pay) => ({
+    const finalDto = payments.map(({ id, ...pay }) => ({
       ...pay,
-      isDefault: defaultPayment?.id === pay.id ? true : false,
+      isDefault: defaultPayment?.id === id ? true : false,
     }));
 
     await this.paymentRepository.updateMethods(
