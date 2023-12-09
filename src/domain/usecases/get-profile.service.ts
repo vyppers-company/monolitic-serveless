@@ -87,11 +87,9 @@ export class GetProfileService implements IGetProfileUseCase {
       paymentConfiguration: paymentConfiguration
         ? {
             _id: paymentConfiguration._id,
-            paymentMethods: paymentConfiguration.paymentMethods.map(
-              ({ id, ...item }) => ({
-                ...item,
-              }),
-            ),
+            paymentMethods: paymentConfiguration.paymentMethods.map((item) => ({
+              ...item,
+            })),
           }
         : null,
       planConfiguration: user.planConfiguration.length

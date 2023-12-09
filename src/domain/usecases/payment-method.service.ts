@@ -142,9 +142,9 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
       (pay) => pay.isDefault === true,
     );
 
-    const finalDto = payments.map(({ id, ...pay }) => ({
+    const finalDto = payments.map((pay) => ({
       ...pay,
-      isDefault: defaultPayment?.id === id ? true : false,
+      isDefault: defaultPayment?.id === pay.id ? true : false,
     }));
 
     await this.paymentRepository.updateMethods(
