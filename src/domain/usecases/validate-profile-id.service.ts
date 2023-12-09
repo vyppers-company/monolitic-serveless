@@ -1,20 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { IValidateDataUseCase } from '../interfaces/usecases/validate-profile-id.interface';
-import { SendSmsAdapter } from 'src/infra/adapters/blow-io.adapter';
 import { generateCode } from 'src/shared/utils/generateRandomicCode';
 import { IValidationCodeType } from '../entity/code.entity';
 import { CodeRepository } from 'src/data/mongoose/repositories/code.repository';
 import { environment } from 'src/main/config/environment/environment';
-import { SESAdapter } from 'src/infra/adapters/ses.adapter';
 
 @Injectable()
 export class ValidateDataService implements IValidateDataUseCase {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly sendSmsAdapter: SendSmsAdapter,
     private readonly codeRecoveryRepository: CodeRepository,
-    private readonly sesAdapter: SESAdapter,
   ) {}
 
   async validatevypperId(vypperId: string, myId?: string): Promise<boolean> {
@@ -54,8 +50,6 @@ export class ValidateDataService implements IValidateDataUseCase {
         type: IValidationCodeType.CHANGE_EMAIL,
       });
 
-      /*   await this.sesAdapter.sendEmailCode(email, 'body', 'subject'); */
-
       return 'one email was sent';
     }
   }
@@ -83,8 +77,6 @@ export class ValidateDataService implements IValidateDataUseCase {
         expiresIn: Date.now() + environment.sendCode.expiration,
         type: IValidationCodeType.CHANGE_PHONE,
       });
-
-      /*  await this.sendSmsAdapter.send(phone, 'body-template'); */
 
       return 'one sms was sent';
     }

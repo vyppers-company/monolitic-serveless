@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
-import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
+import { CryptoAdapter } from '../../infra/adapters/crypto/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
 import { IChangePasswordDto } from '../interfaces/others/change-password.interface';
 import { IChangePasswordService } from '../interfaces/usecases/change-password.interface';

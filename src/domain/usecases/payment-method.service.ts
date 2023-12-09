@@ -8,7 +8,7 @@ import {
   IResponseDeleteCardDefault,
 } from '../interfaces/usecases/payment-method.interface';
 import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods/payment-methods.adapter';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
+import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { IPaymentConfiguration } from '../entity/payment';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';

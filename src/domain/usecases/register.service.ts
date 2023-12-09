@@ -3,7 +3,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
+import { CryptoAdapter } from '../../infra/adapters/crypto/cryptoAdapter';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';
 import { IRegisterUseCase } from '../interfaces/usecases/register.interface';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';

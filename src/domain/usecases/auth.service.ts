@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions';
-import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
+import { CryptoAdapter } from '../../infra/adapters/crypto/cryptoAdapter';
 import { Auth } from '../../presentation/dtos/auth.dto';
 import regex from '../../shared/helpers/regex';
 import { UserRepository } from '../../data/mongoose/repositories/user.repository';

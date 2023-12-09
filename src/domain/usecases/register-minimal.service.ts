@@ -1,6 +1,6 @@
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { IRegisterMinimalUseCase } from '../interfaces/usecases/register.interface';
-import { CryptoAdapter } from 'src/infra/adapters/cryptoAdapter';
+import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
 import {
   ConflictException,
   Injectable,

@@ -4,8 +4,8 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
-import { SendSmsAdapter } from '../../infra/adapters/blow-io.adapter';
-import { CryptoAdapter } from '../../infra/adapters/cryptoAdapter';
+import { SendSmsAdapter } from '../../infra/adapters/aws/sns/blow-io.adapter';
+import { CryptoAdapter } from '../../infra/adapters/crypto/cryptoAdapter';
 import { environment } from '../../main/config/environment/environment';
 import regex from '../../shared/helpers/regex';
 import { generateCode } from '../../shared/utils/generateRandomicCode';
@@ -13,7 +13,7 @@ import { UserRepository } from '../../data/mongoose/repositories/user.repository
 import { IRecoveryDto } from '../interfaces/others/recovery.interface';
 import { IRcoveryUseCase } from '../interfaces/usecases/send-email.interface';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
-import { SESAdapter } from 'src/infra/adapters/ses.adapter';
+import { SESAdapter } from 'src/infra/adapters/aws/ses/ses.adapter';
 import { IValidationCodeType } from '../entity/code.entity';
 
 @Injectable()
