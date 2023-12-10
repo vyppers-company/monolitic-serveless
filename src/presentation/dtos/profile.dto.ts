@@ -8,7 +8,6 @@ import {
   MaxLength,
 } from 'class-validator';
 import {
-  ICategory,
   ICategoryBiotype,
   ICategoryEthnicity,
   ICategoryEyes,

@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Logger,
-  Get,
-  Query,
-  Put,
-  Body,
-  Patch,
-} from '@nestjs/common';
+import { Controller, Logger, Get, Query, Body, Patch } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ValidatevypperIdDto } from '../dtos/validate-profile-id';

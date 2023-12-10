@@ -61,6 +61,13 @@ import { Payment, PaymentSchema } from 'src/data/mongoose/model/payment.schema';
 import { PaymentRepository } from 'src/data/mongoose/repositories/payment.repository';
 import { Product, ProductSchema } from 'src/data/mongoose/model/product.schema';
 import { ProductRepository } from 'src/data/mongoose/repositories/product.repository';
+import {
+  VerifiDocumentsSchema,
+  VerifyDocuments,
+} from 'src/data/mongoose/model/verify-documents.schema';
+import { VerifyDocumentsRepository } from 'src/data/mongoose/repositories/verify-documents.repository';
+import { VerifyDocumentsController } from 'src/presentation/controller/verify-documents';
+import { VerifyDocumentsService } from 'src/domain/usecases/verify-documents.service';
 
 @Module({
   imports: [
@@ -74,6 +81,7 @@ import { ProductRepository } from 'src/data/mongoose/repositories/product.reposi
       { name: Plan.name, schema: PlanSchema },
       { name: Payment.name, schema: PaymentSchema },
       { name: Product.name, schema: ProductSchema },
+      { name: VerifyDocuments.name, schema: VerifiDocumentsSchema },
     ]),
   ],
   providers: [
@@ -89,6 +97,7 @@ import { ProductRepository } from 'src/data/mongoose/repositories/product.reposi
     PlanRepository,
     PaymentRepository,
     ProductRepository,
+    VerifyDocumentsRepository,
     SubscriptionService,
     RecoveryService,
     RegisterService,
@@ -112,6 +121,7 @@ import { ProductRepository } from 'src/data/mongoose/repositories/product.reposi
     FollowService,
     ValidateMissingDataProfileService,
     PaymentMethodsService,
+    VerifyDocumentsService,
     CryptoAdapter,
     SESAdapter,
     SendSmsAdapter,
@@ -136,6 +146,7 @@ import { ProductRepository } from 'src/data/mongoose/repositories/product.reposi
     BanUserController,
     UploadController,
     ReactionsController,
+    VerifyDocumentsController,
   ],
 })
 export class AppModule {}
