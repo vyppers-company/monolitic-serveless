@@ -6,6 +6,7 @@ export enum ITypeContent {
   STORY = 'STORY',
   PROFILE = 'PROFILE',
   SHORTS = 'SHORT',
+  DOCUMENT = 'DOCUMENT',
 }
 
 export interface IComment {

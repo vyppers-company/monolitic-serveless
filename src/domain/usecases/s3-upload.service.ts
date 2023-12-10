@@ -72,7 +72,7 @@ export class S3Service {
       uploads.push(
         `${environment.aws.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
       );
-      if (type !== ITypeContent.PROFILE) {
+      if (type !== ITypeContent.PROFILE && type !== ITypeContent.DOCUMENT) {
         const randomNameBlur = randomUUID();
         await s3.send(
           new PutObjectCommand({
