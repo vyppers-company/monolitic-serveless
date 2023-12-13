@@ -39,9 +39,7 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
 
     const result = await this.verify.create({
       documents: {
-        front: dto.front,
-        back: dto.back,
-        justFace: dto.justFace,
+        justDocumentOpened: dto.justDocumentOpened,
         personHoldingDocument: dto.personHoldingDocument,
       },
       owner: userId,
@@ -53,10 +51,8 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
       _id: result._id,
       status: result.status,
       documents: {
-        front: result.documents.front,
-        back: result.documents.back,
-        justFace: result.documents.justFace,
-        personHoldingDocument: result.documents.personHoldingDocument,
+        justDocumentOpened: dto.justDocumentOpened,
+        personHoldingDocument: dto.personHoldingDocument,
       },
       owner: result.owner,
       isValid: result.isValid,
@@ -93,9 +89,7 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
       _id: hasDocumentInAnalize._id,
       status: hasDocumentInAnalize.status,
       documents: {
-        front: hasDocumentInAnalize.documents.front,
-        back: hasDocumentInAnalize.documents.back,
-        justFace: hasDocumentInAnalize.documents.justFace,
+        justDocumentOpened: hasDocumentInAnalize.documents.justDocumentOpened,
         personHoldingDocument:
           hasDocumentInAnalize.documents.personHoldingDocument,
       },

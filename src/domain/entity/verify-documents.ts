@@ -8,9 +8,7 @@ export interface IConfirmationData {
 }
 
 export interface IDocumentData {
-  front: string;
-  back: string;
-  justFace: string;
+  justDocumentOpened: string;
   personHoldingDocument: string;
 }
 

@@ -47,16 +47,6 @@ export class ConfirmationDataDto implements IConfirmationData {
 export class VerifyDocumentsDto implements IDocumentData {
   @IsUrl()
   @ApiProperty({
-    example: 'https://image-front.com',
-  })
-  front: string;
-  @IsUrl()
-  @ApiProperty({
-    example: 'https://image-back.com',
-  })
-  back: string;
-  @IsUrl()
-  @ApiProperty({
     example: 'https://image-holding.com',
   })
   personHoldingDocument: string;
@@ -64,7 +54,7 @@ export class VerifyDocumentsDto implements IDocumentData {
   @ApiProperty({
     example: 'https://image-face.com',
   })
-  justFace: string;
+  justDocumentOpened: string;
 }
 
 export class VerifyDocumentResponseDto implements IVerifyDocuments {
