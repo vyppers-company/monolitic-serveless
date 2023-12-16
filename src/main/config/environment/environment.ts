@@ -63,7 +63,7 @@ export const environment = {
     bufferSize: Number(process.env.BUFFER_SIZE),
     bufferFill: process.env.BUFFER_FILL,
     jwe: {
-      expiresIn: process.env.SESSION_EXPIRE,
+      expiresIn: Number(process.env.SESSION_EXPIRE),
       algorithm: process.env.ALGORITHM,
       encrypt: process.env.ENCRYPT,
     },

@@ -21,4 +21,7 @@ export interface IVerifyDocuments {
   documentConfirmation?: IConfirmationData;
   verifiedBy?: string;
   reason?: string;
+
+  createdAt?: string;
+  updatedAt?: string;
 }

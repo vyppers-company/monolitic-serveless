@@ -105,6 +105,8 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
           }
         : null,
       reason: hasDocumentInAnalize.reason || null,
+      createdAt: hasDocumentInAnalize.createdAt,
+      updatedAt: hasDocumentInAnalize.updatedAt,
     };
   }
 }

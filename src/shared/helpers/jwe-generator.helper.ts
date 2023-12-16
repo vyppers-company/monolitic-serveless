@@ -22,11 +22,14 @@ export const generateToken = async (
     jwe: { algorithm, expiresIn, encrypt },
   } = environment.cryptoData;
 
+  const expiracao = new Date();
+  expiracao.setDate(expiracao.getDate() + expiresIn);
+
   const keyPass = type === ICryptoType.CODE ? keyPassCode : keyPassUser;
   const key = scryptSync(keyPass, keySalt, keyLength);
   return new EncryptJWT(payload)
     .setProtectedHeader({ alg: algorithm, enc: encrypt })
-    .setExpirationTime(expires ? expires : expiresIn)
+    .setExpirationTime(expiracao.getTime())
     .encrypt(key);
 };
 
