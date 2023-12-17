@@ -76,16 +76,16 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }
 
-    const hasDocumentInAnalize = await this.verify.findOne(
-      { owner: myId },
-      null,
-      { limit: 1, sort: { createdAt: -1 }, lean: true },
-    );
+    const documentsInAnalise = await this.verify.find({ owner: myId }, null, {
+      sort: { createdAt: -1 },
+      lean: true,
+    });
 
-    if (!hasDocumentInAnalize && !user.verified === false) {
+    if (!documentsInAnalise.length && !user.verified === false) {
       throw new HttpException('Document not found', HttpStatus.NOT_FOUND);
     }
-    return {
+
+    return documentsInAnalise.map((hasDocumentInAnalize) => ({
       _id: hasDocumentInAnalize._id,
       status: hasDocumentInAnalize.status,
       documents: {
@@ -107,6 +107,6 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
       reason: hasDocumentInAnalize.reason || null,
       createdAt: hasDocumentInAnalize.createdAt,
       updatedAt: hasDocumentInAnalize.updatedAt,
-    };
+    }));
   }
 }

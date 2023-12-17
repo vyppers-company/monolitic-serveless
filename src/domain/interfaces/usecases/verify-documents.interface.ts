@@ -5,5 +5,5 @@ import {
 
 export interface IVerifyDocumentsUseCase {
   submit: (dto: IDocumentData, userId: string) => Promise<IVerifyDocuments>;
-  getStatus: (myId: string) => Promise<IVerifyDocuments>;
+  getStatus: (myId: string) => Promise<IVerifyDocuments[]>;
 }
