@@ -30,7 +30,7 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
     const final: ProfileDto = {
       bio: dto.bio ?? user.bio,
       birthday: dto.birthday ?? user.birthday,
-      caracteristics: Object.keys(dto.caracteristics).length
+      caracteristics: Object.keys(dto.caracteristics || {}).length
         ? { ...user.caracteristics, ...dto.caracteristics }
         : user.caracteristics,
       interests: dto.interests ?? user.interests,
