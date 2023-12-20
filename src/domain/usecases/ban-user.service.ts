@@ -4,7 +4,7 @@ import {
   IBanUserUseCase,
   IBannedQuery,
 } from '../interfaces/usecases/ban-user.interface';
-import { PaginateResult } from 'mongoose';
+import { PaginateResult, isValidObjectId } from 'mongoose';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -54,24 +54,56 @@ export class BanUserService implements IBanUserUseCase {
       : [];
   }
   async banUser(userId: string, myId: string): Promise<void> {
-    const user = await this.userRepository.findOne({ _id: myId });
-    if (user.bans && user.bans.length && user.bans.includes(userId)) {
+    const isValid = isValidObjectId(userId);
+    if (!isValid) {
       throw new HttpException(
-        { message: 'This user have ever banned', reason: 'BannedUser' },
-        HttpStatus.CONFLICT,
+        { message: 'user to ban not found', reason: 'BannedUser' },
+        HttpStatus.NOT_FOUND,
       );
     }
+    const user = await this.userRepository.findOne({ _id: myId });
+    const userToBan = await this.userRepository.findOne({ _id: userId });
+
+    if (!userToBan) {
+      throw new HttpException(
+        { message: 'user to ban not found', reason: 'BannedUser' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     if (userId === myId) {
       throw new HttpException(
         { message: "You can't ban yourself", reason: 'BannedUser' },
         HttpStatus.CONFLICT,
       );
     }
+
+    if (user.bans && user.bans.length && user.bans.includes(userId)) {
+      throw new HttpException(
+        { message: 'This user have already banned', reason: 'BannedUser' },
+        HttpStatus.CONFLICT,
+      );
+    }
+
     await this.userRepository.addBannedPerson(userId, myId);
     await this.userRepository.removeFollower(myId, userId);
     await this.userRepository.removeFollower(userId, myId);
   }
   async unbanUser(userId: string, myId: string): Promise<void> {
+    const isValid = isValidObjectId(userId);
+    if (!isValid) {
+      throw new HttpException(
+        { message: 'user to ban not found', reason: 'BannedUser' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const userToBan = await this.userRepository.findOne({ _id: userId });
+    if (!userToBan) {
+      throw new HttpException(
+        { message: 'user to ban not found', reason: 'BannedUser' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
     if (userId === myId) {
       throw new HttpException(
         { message: "You can't ban yourself", reason: 'BannedUser' },
