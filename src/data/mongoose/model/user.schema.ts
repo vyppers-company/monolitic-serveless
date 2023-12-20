@@ -72,7 +72,7 @@ export class User extends Document implements IProfile {
   @Prop({ type: Object })
   interests?: ICategory;
 
-  @Prop({ type: Array })
+  @Prop({ type: Array, default: [] })
   bans?: string[];
 
   @Prop({ type: Array })

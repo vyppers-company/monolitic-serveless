@@ -22,7 +22,6 @@ export class BanUserService implements IBanUserUseCase {
     if (user.bans && user.bans.length) {
       filter['_id'] = { $in: user.bans };
     }
-
     const result = user.bans.length
       ? await this.userRepository.findPaginated(
           {
