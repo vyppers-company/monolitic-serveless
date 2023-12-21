@@ -27,6 +27,13 @@ export class BanUserService implements IBanUserUseCase {
           {
             limit: Number(queries.limit) || 10,
             page: Number(queries.page) || 1,
+            populate: [
+              {
+                path: 'profileImage',
+                model: 'Content',
+                select: 'contents',
+              },
+            ],
           },
           filter,
         )
