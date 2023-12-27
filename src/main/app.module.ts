@@ -68,7 +68,13 @@ import {
 import { VerifyDocumentsRepository } from 'src/data/mongoose/repositories/verify-documents.repository';
 import { VerifyDocumentsController } from 'src/presentation/controller/verify-documents';
 import { VerifyDocumentsService } from 'src/domain/usecases/verify-documents.service';
-
+import { InternalUserRepository } from '../data/mongoose/repositories/internal-user.repository';
+import {
+  InternalUser,
+  InternalUserSchema,
+} from '../data/mongoose/model/internal-users';
+import { RegisterInternalUserService } from 'src/domain/usecases/register-internal-user.service';
+import { AuthInternalUserService } from 'src/domain/usecases/auth-internal-user.service';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -82,6 +88,7 @@ import { VerifyDocumentsService } from 'src/domain/usecases/verify-documents.ser
       { name: Payment.name, schema: PaymentSchema },
       { name: Product.name, schema: ProductSchema },
       { name: VerifyDocuments.name, schema: VerifiDocumentsSchema },
+      { name: InternalUser.name, schema: InternalUserSchema },
     ]),
   ],
   providers: [
@@ -98,6 +105,9 @@ import { VerifyDocumentsService } from 'src/domain/usecases/verify-documents.ser
     PaymentRepository,
     ProductRepository,
     VerifyDocumentsRepository,
+    InternalUserRepository,
+    RegisterInternalUserService,
+    AuthInternalUserService,
     SubscriptionService,
     RecoveryService,
     RegisterService,

@@ -20,7 +20,7 @@ export class ValidateCodeService implements IValidateCode {
     const tokenCode = await generateToken(
       { _id: code._id },
       ICryptoType.CODE,
-      '60s',
+      0.0014,
     );
     return { tokenCode };
   }

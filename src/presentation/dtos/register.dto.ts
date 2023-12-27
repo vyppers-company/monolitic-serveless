@@ -9,6 +9,7 @@ import {
 import regex from '../../shared/helpers/regex';
 import { Match } from '../../shared/decorators/match.decorator';
 import { IProfile } from '../../domain/entity/user.entity';
+import { IInternalUser } from 'src/domain/entity/internal-users';
 
 export class RegisterDto implements IProfile {
   @IsString()
@@ -95,4 +96,29 @@ export class RegisterDtoMinimal implements IProfile {
   tokenCode: string;
 }
 
-export class RegisterDtoCandidates {}
+export class RegisterDtoInternalUsers implements IInternalUser {
+  @IsEmail()
+  @IsOptional()
+  @ApiProperty({ required: false, example: 'email@email.com' })
+  email: string;
+
+  @IsString()
+  @ApiProperty({ required: true, example: 'userPassword@2022' })
+  @Matches(regex.senhaForte, {
+    message: 'invalid minimum format  password',
+  })
+  password: string;
+
+  @IsString()
+  @Match('password')
+  @ApiProperty({ required: true, example: 'userPassword@2022' })
+  passwordConfirm: string;
+
+  @IsString()
+  @ApiProperty({ required: true, example: 'Maria eugenia' })
+  name: string;
+
+  @IsString()
+  @ApiProperty({ required: true, example: '1236548965' })
+  cpf: string;
+}

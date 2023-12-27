@@ -4,28 +4,34 @@ import { EncryptJWT, jwtDecrypt } from 'jose';
 import { UnauthorizedException } from '@nestjs/common';
 import { ICryptoType } from 'src/domain/interfaces/adapters/crypto.interface';
 import { IValidationCodeType } from 'src/domain/entity/code.entity';
+import { chooseEncryptionCode } from '../utils/chooseEncryption';
+import { IInternalRole } from 'src/domain/entity/internal-role';
+
 export const generateToken = async (
   payload: {
     _id: string;
     vypperId?: string;
     email?: string;
     type?: IValidationCodeType;
+    cpf?: string;
+    role?: IInternalRole;
   },
   type: ICryptoType,
-  expires?: number | string,
+  expiresInMinutes?: number,
 ) => {
   const {
     keyLength,
-    keyPassCode,
-    keyPassUser,
     keySalt,
-    jwe: { algorithm, expiresIn, encrypt },
+    jwe: { algorithm, expiresInDays, encrypt },
   } = environment.cryptoData;
 
   const expiracao = new Date();
-  expiracao.setDate(expiracao.getDate() + expiresIn);
 
-  const keyPass = type === ICryptoType.CODE ? keyPassCode : keyPassUser;
+  !expiresInMinutes
+    ? expiracao.setDate(expiracao.getDate() + expiresInDays)
+    : expiracao.setMinutes(expiracao.getMinutes() + expiresInMinutes);
+
+  const keyPass = chooseEncryptionCode(type, environment.cryptoData);
   const key = scryptSync(keyPass, keySalt, keyLength);
   return new EncryptJWT(payload)
     .setProtectedHeader({ alg: algorithm, enc: encrypt })

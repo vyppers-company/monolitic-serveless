@@ -1,5 +1,5 @@
 import { IProfile } from 'src/domain/entity/user.entity';
-import { ILogged } from '../../interfaces/others/logged.interface';
+import { ILogged } from '../others/logged.interface';
 
 export interface IProfileExt extends IProfile {
   bansQtd: number;

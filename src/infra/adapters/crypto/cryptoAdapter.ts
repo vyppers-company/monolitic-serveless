@@ -6,14 +6,12 @@ import { Buffer } from 'node:buffer';
 import { environment } from '../../../main/config/environment/environment';
 import { createCipheriv, scryptSync } from 'crypto';
 import { createDecipheriv } from 'node:crypto';
+import { chooseEncryptionCode } from 'src/shared/utils/chooseEncryption';
 
 export class CryptoAdapter implements ICrypto {
   encryptText(text: string, type: ICryptoType): string {
     try {
-      const keyPass =
-        type === ICryptoType.CODE
-          ? environment.cryptoData.keyPassCode
-          : environment.cryptoData.keyPassUser;
+      const keyPass = chooseEncryptionCode(type, environment.cryptoData);
       const keySalt = environment.cryptoData.keySalt;
       const keyLength = environment.cryptoData.keyLength;
       const cipherString = environment.cryptoData.cipherString;
@@ -31,10 +29,7 @@ export class CryptoAdapter implements ICrypto {
   }
   decryptText(encryptedText: string, type: ICryptoType): string {
     try {
-      const keyPass =
-        type === ICryptoType.CODE
-          ? environment.cryptoData.keyPassCode
-          : environment.cryptoData.keyPassUser;
+      const keyPass = chooseEncryptionCode(type, environment.cryptoData);
       const algorithm = environment.cryptoData.cipherString;
       const key = scryptSync(
         keyPass,

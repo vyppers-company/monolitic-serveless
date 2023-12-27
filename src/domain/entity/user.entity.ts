@@ -12,6 +12,8 @@ export enum ITYPEUSER {
   BOT = 'BOT',
   ADMIN = 'ADMIN',
   CREATOR = 'CREATOR',
+  EMPLOYEE = 'EMPLOYEE',
+  TESTER = 'TESTER',
 }
 
 export interface ICaracteristicas {

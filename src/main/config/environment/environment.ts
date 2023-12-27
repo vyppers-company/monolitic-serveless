@@ -37,6 +37,7 @@ export const environment = {
     collections: {
       code: process.env.MONGODB_COLLECTION_CODE || '',
       user: process.env.MONGODB_COLLECTION_USER || '',
+      internalUser: process.env.MONGODB_COLLECTION_INTERNAL_USER || '',
       content: process.env.MONGODB_COLLECTION_CONTENT || '',
       plan: process.env.MONGODB_COLLECTION_PLAN || '',
       product: process.env.MONGODB_COLLECTION_PRODUCT || '',
@@ -58,12 +59,13 @@ export const environment = {
     cipherString: process.env.CIPHER_STRING,
     keyPassUser: process.env.KEY_PASS_USER,
     keyPassCode: process.env.KEY_PASS_CODE,
+    keyPassInternalUser: process.env.KEY_PASS_INTERNAL_USER,
     keySalt: process.env.KEY_SALT,
     keyLength: Number(process.env.KEY_LENGTH),
     bufferSize: Number(process.env.BUFFER_SIZE),
     bufferFill: process.env.BUFFER_FILL,
     jwe: {
-      expiresIn: Number(process.env.SESSION_EXPIRE),
+      expiresInDays: Number(process.env.SESSION_EXPIRE),
       algorithm: process.env.ALGORITHM,
       encrypt: process.env.ENCRYPT,
     },
