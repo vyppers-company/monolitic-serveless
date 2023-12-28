@@ -42,4 +42,8 @@ export class ContentRepository extends BaseAbstractRepository<ContentDocument> {
       },
     );
   }
+
+  async aggregate(array: any[]) {
+    return this.content.aggregate(array);
+  }
 }

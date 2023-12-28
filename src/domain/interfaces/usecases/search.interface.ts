@@ -14,4 +14,8 @@ export interface ISearchUseCase {
     queries: IQueriesSearchUser,
     myId: string,
   ) => Promise<PaginateResult<IProfile>>;
+  searchUserV2: (
+    queries: IQueriesSearchUser,
+    myId: string,
+  ) => Promise<PaginateResult<IProfile>>;
 }

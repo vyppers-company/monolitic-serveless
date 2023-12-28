@@ -93,6 +93,93 @@ export class SearchController {
     return this.searchService.searchUser(queries, user._id);
   }
 
+  @Get('v2/users')
+  @ApiBearerAuth()
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
+  })
+  @ApiQuery({
+    name: 'value',
+    required: false,
+    type: String,
+    description: 'valor da busca por nome ou vypperId',
+  })
+  @ApiQuery({
+    name: 'verified',
+    required: false,
+    description: 'busca por perfis verificados',
+    type: Boolean,
+  })
+  @ApiQuery({
+    name: 'hair',
+    type: Array,
+    required: false,
+    description: 'busca por cor dos cabelos',
+    enum: ICategoryHair,
+  })
+  @ApiQuery({
+    name: 'eyes',
+    type: Array,
+    required: false,
+    description: 'busca por cor dos olhos',
+    enum: ICategoryEyes,
+  })
+  @ApiQuery({
+    name: 'biotype',
+    type: Array,
+    required: false,
+    description: 'busca por biotipo corporal',
+    enum: ICategoryBiotype,
+  })
+  @ApiQuery({
+    name: 'gender',
+    type: Array,
+    required: false,
+    description: 'busca por genero',
+    enum: ICategoryGender,
+  })
+  @ApiQuery({
+    name: 'ethnicity',
+    required: false,
+    type: Array,
+    description: 'busca por etnia',
+    enum: ICategoryEthnicity,
+  })
+  async searchUserV2(
+    @Query() queries: SearchCategoryDto,
+    @Logged() user: ILogged,
+  ) {
+    return this.searchService.searchUserV2(queries, user._id);
+  }
+
+  @Get('v2/users/captcha')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
+  })
+  async searchUserOpened(
+    @Query() queries: Pick<SearchCategoryDto, 'limit' | 'page'>,
+  ) {
+    return this.searchService.searchUserV2Opened(queries);
+  }
+
   @Get('v1/consult/filter')
   @ApiBearerAuth()
   @ApiOperation({
