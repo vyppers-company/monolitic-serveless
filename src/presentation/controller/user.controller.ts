@@ -1,4 +1,13 @@
-import { Controller, Logger, Get, Query, Body, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Logger,
+  Get,
+  Query,
+  Body,
+  Patch,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 import { ValidatevypperIdDto } from '../dtos/validate-profile-id';
@@ -25,8 +34,18 @@ export class UserController {
   @ApiTags('profile')
   @Get('v1/info/home')
   @ApiBearerAuth()
-  async getProfile(@Logged() logged: ILogged) {
-    return await this.getProfileService.getPersonalData(logged);
+  @ApiQuery({
+    name: 'userId',
+    required: true,
+  })
+  async getProfile(@Logged() logged: ILogged, @Query('userId') userId: string) {
+    if (!userId) {
+      throw new HttpException(
+        'userId query param is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return await this.getProfileService.getPersonalData(userId, logged._id);
   }
 
   @ApiTags('profile')

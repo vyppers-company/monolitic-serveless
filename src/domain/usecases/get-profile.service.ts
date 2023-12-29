@@ -4,18 +4,22 @@ import {
   IProfileExt,
 } from '../interfaces/usecases/user-service.interface';
 import { Injectable } from '@nestjs/common';
-import { ILogged } from '../interfaces/others/logged.interface';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IContentEntity, ITypeContent } from '../entity/contents';
+import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
+import { ITYPEUSER } from '../entity/user.entity';
+import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
 export class GetProfileService implements IGetProfileUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly contentRepository: ContentRepository,
+    private readonly crypto: CryptoAdapter,
   ) {}
   async getPersonalData(
-    logged: ILogged,
+    userId: string,
+    myId: string,
   ): Promise<
     Pick<
       IProfileExt,
@@ -38,7 +42,7 @@ export class GetProfileService implements IGetProfileUseCase {
       | 'qtdLikes'
     >
   > {
-    const user = await this.userRepository.findOne({ _id: logged._id }, null, {
+    const user = await this.userRepository.findOne({ _id: userId }, null, {
       lean: true,
       populate: [
         { path: 'profileImage', select: 'contents', model: 'Content' },
@@ -73,29 +77,19 @@ export class GetProfileService implements IGetProfileUseCase {
 
     const paymentConfiguration = user.paymentConfiguration as any;
 
-    return {
+    const finalObjt = {
       _id: user._id,
       name: user.name,
       vypperId: user.vypperId || null,
       bio: user.bio || null,
       profileImage: content ? content.contents[0] : null,
-      caracteristics: user.caracteristics || null,
-      birthday: user.birthday || null,
-      email: user.email || null,
-      phone: user.phone || null,
-      interests: user.interests || null,
-      paymentConfiguration: paymentConfiguration
-        ? {
-            _id: paymentConfiguration._id,
-            paymentMethods: paymentConfiguration.paymentMethods.map((item) => ({
-              ...item,
-            })),
-          }
-        : null,
       planConfiguration: user.planConfiguration.length
-        ? user.planConfiguration
+        ? user.planConfiguration.map((pln: any) => ({
+            ...pln,
+            subscribers:
+              myId === userId ? pln.subscribers : pln.subscribers.length,
+          }))
         : [],
-      bansQtd: user.bans ? user.bans.length : 0,
       followersQtd: user.followers ? user.followers.length : 0,
       qtdLikes: contents.length
         ? contents.reduce((acc, curr) => {
@@ -116,5 +110,28 @@ export class GetProfileService implements IGetProfileUseCase {
           ).length
         : 0,
     };
+
+    if (myId === userId) {
+      finalObjt['caracteristics'] = user.caracteristics;
+      finalObjt['birthday'] = user.birthday;
+      finalObjt['email'] = user.email
+        ? this.crypto.decryptText(user.email, ICryptoType.USER)
+        : null;
+      finalObjt['phone'] = user.phone
+        ? this.crypto.decryptText(user.phone, ICryptoType.USER)
+        : null;
+      finalObjt['interests'] = user.interests;
+      finalObjt['bansQtd'] = user.bans ? user.bans.length : 0;
+      finalObjt['paymentConfiguration'] = paymentConfiguration
+        ? {
+            _id: paymentConfiguration._id,
+            paymentMethods: paymentConfiguration.paymentMethods.map((item) => ({
+              ...item,
+            })),
+          }
+        : null;
+    }
+
+    return finalObjt;
   }
 }

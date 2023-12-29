@@ -1,18 +1,18 @@
 import { IProfile } from 'src/domain/entity/user.entity';
-import { ILogged } from '../others/logged.interface';
 
 export interface IProfileExt extends IProfile {
-  bansQtd: number;
+  bansQtd?: number;
   payedContents: number;
   freeContents: number;
   followersQtd: number;
   qtdLikes: number;
-  paymentConfiguration: any;
+  paymentConfiguration?: any;
 }
 
 export interface IGetProfileUseCase {
   getPersonalData: (
-    logged: ILogged,
+    userId: string,
+    myId: string,
   ) => Promise<
     Pick<
       IProfileExt,
