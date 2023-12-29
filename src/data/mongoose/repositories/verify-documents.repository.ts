@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { ICodeEntity } from '../../../domain/entity/code.entity';
 
 import {
   BaseAbstractRepository,
@@ -10,7 +9,7 @@ import {
   VerifyDocuments,
   VerifyDocumentsDocument,
 } from '../model/verify-documents.schema';
-import { IVerificationStatus } from 'src/domain/entity/verify-documents';
+import { IVerifyDocuments } from 'src/domain/entity/verify-documents';
 
 @Injectable()
 export class VerifyDocumentsRepository extends BaseAbstractRepository<VerifyDocumentsDocument> {
@@ -21,21 +20,12 @@ export class VerifyDocumentsRepository extends BaseAbstractRepository<VerifyDocu
     super(verifyDocuments);
   }
 
-  async setStatus(
-    ownerId: ICodeEntity,
-    verifiedBy: string,
-    status: IVerificationStatus,
-    documentConfirmationNumber: string | null,
-    reason: string | null,
-  ) {
+  async setStatus(dto: IVerifyDocuments) {
     return this.verifyDocuments.updateOne(
-      { owner: ownerId },
+      { owner: dto.owner, _id: dto._id },
       {
         $set: {
-          status,
-          verifiedBy,
-          documentConfirmationNumber,
-          reason,
+          ...dto,
         },
       },
       { lean: true, returnDocument: 'after' },

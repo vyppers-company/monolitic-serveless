@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import {
   IConfirmationData,
   IDocumentData,
-  IVerificationStatus,
+  IVerificationStatusEnum,
   IVerifyDocuments,
 } from 'src/domain/entity/verify-documents';
 import { environment } from 'src/main/config/environment/environment';
@@ -24,8 +24,8 @@ export class VerifyDocuments extends Document implements IVerifyDocuments {
   documents: IDocumentData;
   @Prop({ default: false })
   isValid: boolean;
-  @Prop()
-  status: IVerificationStatus;
+  @Prop({ enum: IVerificationStatusEnum })
+  status: IVerificationStatusEnum;
   @Prop({ type: Object, default: null })
   documentConfirmation?: IConfirmationData;
   @Prop({ default: null })

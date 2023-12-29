@@ -2,7 +2,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { VerifyDocumentsRepository } from 'src/data/mongoose/repositories/verify-documents.repository';
 import { IVerifyDocumentsUseCase } from '../interfaces/usecases/verify-documents.interface';
-import { IDocumentData } from '../entity/verify-documents';
+import {
+  IDocumentData,
+  IVerificationStatusEnum,
+} from '../entity/verify-documents';
 
 @Injectable()
 export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
@@ -23,14 +26,20 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
       { limit: 1, sort: { createdAt: -1 } },
     );
 
-    if (hasDocumentInAnalize && hasDocumentInAnalize.status === 'APPROVED') {
+    if (
+      hasDocumentInAnalize &&
+      hasDocumentInAnalize.status === IVerificationStatusEnum.APPROVED
+    ) {
       throw new HttpException(
         'Your document was verified with success and you have already passed',
         HttpStatus.NOT_MODIFIED,
       );
     }
 
-    if (hasDocumentInAnalize && hasDocumentInAnalize.status === 'WAITING') {
+    if (
+      hasDocumentInAnalize &&
+      hasDocumentInAnalize.status === IVerificationStatusEnum.WAITING
+    ) {
       throw new HttpException(
         'document has still under analyzed, await please',
         HttpStatus.CONFLICT,
@@ -43,7 +52,7 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
         personHoldingDocument: dto.personHoldingDocument,
       },
       owner: userId,
-      status: 'WAITING',
+      status: IVerificationStatusEnum.WAITING,
       isValid: false,
     });
 

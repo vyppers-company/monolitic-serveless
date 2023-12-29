@@ -16,6 +16,9 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
   ) {
     super(user);
   }
+  async changeStatusVerified(userId: string, status: boolean) {
+    await this.user.updateOne({ _id: userId }, { $set: { verified: status } });
+  }
   async updateOnePassword(dto: IProfile, password: string) {
     await this.user.updateOne(
       { _id: dto?._id },

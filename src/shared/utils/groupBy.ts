@@ -15,3 +15,15 @@ export const groupBy = (array, fieldName) => {
 
   return resultDictionary;
 };
+
+export const groupBySimple = (arr: any[], key: string) => {
+  return arr.reduce(
+    (result, item) => {
+      const groupKey = item[key];
+
+      result[groupKey].push(item);
+      return result;
+    },
+    { APPROVED: [], WAITING: [], FAILED: [] },
+  );
+};

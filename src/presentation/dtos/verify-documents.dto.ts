@@ -9,7 +9,7 @@ import {
 import {
   IConfirmationData,
   IDocumentData,
-  IVerificationStatus,
+  IVerificationStatusEnum,
   IVerifyDocuments,
 } from 'src/domain/entity/verify-documents';
 
@@ -103,6 +103,8 @@ export class VerifyDocumentResponseDto implements IVerifyDocuments {
     enum: ['WAITING', 'APPROVED', 'FAILED'],
     description: 'Status of the document verification',
   })
-  @IsNotEmpty({ message: 'Status cannot be empty' })
-  status: IVerificationStatus;
+  @IsNotEmpty({
+    message: 'Status cannot be empty',
+  })
+  status: IVerificationStatusEnum;
 }

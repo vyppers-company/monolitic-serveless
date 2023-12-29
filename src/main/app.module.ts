@@ -75,6 +75,8 @@ import {
 } from '../data/mongoose/model/internal-users';
 import { RegisterInternalUserService } from 'src/domain/usecases/register-internal-user.service';
 import { AuthInternalUserService } from 'src/domain/usecases/auth-internal-user.service';
+import { VerifyDocumentsInternalService } from 'src/domain/usecases/verify-documents-internal.service';
+import { VerifyDocumentsInternalController } from 'src/presentation/controller/internal-verify.controller';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -106,6 +108,7 @@ import { AuthInternalUserService } from 'src/domain/usecases/auth-internal-user.
     ProductRepository,
     VerifyDocumentsRepository,
     InternalUserRepository,
+    VerifyDocumentsInternalService,
     RegisterInternalUserService,
     AuthInternalUserService,
     SubscriptionService,
@@ -157,6 +160,7 @@ import { AuthInternalUserService } from 'src/domain/usecases/auth-internal-user.
     UploadController,
     ReactionsController,
     VerifyDocumentsController,
+    VerifyDocumentsInternalController,
   ],
 })
 export class AppModule {}
