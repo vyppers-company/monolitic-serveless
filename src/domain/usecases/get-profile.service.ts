@@ -7,7 +7,6 @@ import { Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IContentEntity, ITypeContent } from '../entity/contents';
 import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
-import { ITYPEUSER } from '../entity/user.entity';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 
 @Injectable()
@@ -91,6 +90,10 @@ export class GetProfileService implements IGetProfileUseCase {
           }))
         : [],
       followersQtd: user.followers ? user.followers.length : 0,
+      isFollowed:
+        user.followers && user.followers
+          ? user.followers.includes(myId)
+          : false,
       qtdLikes: contents.length
         ? contents.reduce((acc, curr) => {
             acc.push(...curr.likersId);
