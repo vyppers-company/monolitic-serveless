@@ -13,7 +13,7 @@ export type PaymentDocument = Payment & Document;
   timestamps: { currentTime: correctDateNow },
   collection: environment.mongodb.collections.payment,
 })
-export class Payment implements IPaymentConfiguration {
+export class Payment extends Document implements IPaymentConfiguration {
   @Prop()
   owner: string;
 

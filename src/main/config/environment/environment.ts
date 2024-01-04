@@ -35,6 +35,7 @@ export const environment = {
   mongodb: {
     url: process.env.MONGODB_URL || '',
     collections: {
+      denunciate: process.env.MONGO_COLLECTION_DENUNCIATE || '',
       code: process.env.MONGODB_COLLECTION_CODE || '',
       user: process.env.MONGODB_COLLECTION_USER || '',
       internalUser: process.env.MONGODB_COLLECTION_INTERNAL_USER || '',

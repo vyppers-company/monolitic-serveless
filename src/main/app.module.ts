@@ -77,6 +77,13 @@ import { RegisterInternalUserService } from 'src/domain/usecases/register-intern
 import { AuthInternalUserService } from 'src/domain/usecases/auth-internal-user.service';
 import { VerifyDocumentsInternalService } from 'src/domain/usecases/verify-documents-internal.service';
 import { VerifyDocumentsInternalController } from 'src/presentation/controller/internal-verify.controller';
+import { DenunciateController } from 'src/presentation/controller/denunciate.controller';
+import { DenunciateService } from 'src/domain/usecases/denunciate.service';
+import {
+  Denunciate,
+  denunciateSchema,
+} from 'src/data/mongoose/model/denunciate.schema';
+import { DenunciateRepository } from 'src/data/mongoose/repositories/denunciate.repository';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -91,6 +98,7 @@ import { VerifyDocumentsInternalController } from 'src/presentation/controller/i
       { name: Product.name, schema: ProductSchema },
       { name: VerifyDocuments.name, schema: VerifiDocumentsSchema },
       { name: InternalUser.name, schema: InternalUserSchema },
+      { name: Denunciate.name, schema: denunciateSchema },
     ]),
   ],
   providers: [
@@ -103,6 +111,7 @@ import { VerifyDocumentsInternalController } from 'src/presentation/controller/i
     ContentRepository,
     UserRepository,
     CodeRepository,
+    DenunciateRepository,
     PlanRepository,
     PaymentRepository,
     ProductRepository,
@@ -135,6 +144,7 @@ import { VerifyDocumentsInternalController } from 'src/presentation/controller/i
     ValidateMissingDataProfileService,
     PaymentMethodsService,
     VerifyDocumentsService,
+    DenunciateService,
     CryptoAdapter,
     SESAdapter,
     SendSmsAdapter,
@@ -161,6 +171,7 @@ import { VerifyDocumentsInternalController } from 'src/presentation/controller/i
     ReactionsController,
     VerifyDocumentsController,
     VerifyDocumentsInternalController,
+    DenunciateController,
   ],
 })
 export class AppModule {}
