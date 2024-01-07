@@ -1,23 +1,17 @@
 import { ISendEmailAdapter } from 'src/domain/interfaces/adapters/send-email.interface';
-import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
-import { environment } from 'src/main/config/environment/environment';
+import { SES, SendEmailCommand } from '@aws-sdk/client-ses';
 import { IValidationCodeType } from 'src/domain/entity/code.entity';
+import { Inject, Injectable } from '@nestjs/common';
 
-const ses = new SESClient({
-  region: environment.aws.region,
-  credentials: {
-    accessKeyId: environment.aws.clientId,
-    secretAccessKey: environment.aws.secretKey,
-  },
-});
-
+@Injectable()
 export class SESAdapter implements ISendEmailAdapter {
+  constructor(@Inject('ses') private readonly sesAdapter: SES) {}
   async sendEmailCode(
     to: string,
     code: string,
     type: IValidationCodeType,
   ): Promise<void> {
-    await ses.send(
+    await this.sesAdapter.send(
       new SendEmailCommand({
         Source: 'customer.service@vyppers.com',
         Destination: {

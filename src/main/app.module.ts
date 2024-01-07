@@ -84,6 +84,14 @@ import {
   denunciateSchema,
 } from 'src/data/mongoose/model/denunciate.schema';
 import { DenunciateRepository } from 'src/data/mongoose/repositories/denunciate.repository';
+import { LiveStreamingController } from 'src/presentation/controller/livestreaming.controller';
+import { IvsClient } from '@aws-sdk/client-ivs';
+import { S3 } from '@aws-sdk/client-s3';
+import { SESClient } from '@aws-sdk/client-ses';
+import { S3Adapter } from 'src/infra/adapters/aws/s3/s3.adapter';
+import { CreateRoomLiveService } from 'src/domain/usecases/create-room.service';
+import { IVSAdapter } from 'src/infra/adapters/aws/ivs/ivs.adapter';
+import { IVSRealTimeClient } from '@aws-sdk/client-ivs-realtime';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -106,6 +114,48 @@ import { DenunciateRepository } from 'src/data/mongoose/repositories/denunciate.
       provide: 'stripe',
       useValue: new Stripe(environment.payment.stripe.secretKey),
     },
+    {
+      provide: 'ivs',
+      useValue: new IvsClient({
+        credentials: {
+          accessKeyId: environment.aws.config.clientId,
+          secretAccessKey: environment.aws.config.secretKey,
+        },
+        region: 'us-east-1',
+        defaultsMode: 'standard',
+      }),
+    },
+    {
+      provide: 'ivs-realtime',
+      useValue: new IVSRealTimeClient({
+        credentials: {
+          accessKeyId: environment.aws.config.clientId,
+          secretAccessKey: environment.aws.config.secretKey,
+        },
+        region: 'us-east-1',
+        defaultsMode: 'standard',
+      }),
+    },
+    {
+      provide: 's3',
+      useValue: new S3({
+        region: environment.aws.config.region,
+        credentials: {
+          accessKeyId: environment.aws.config.clientId,
+          secretAccessKey: environment.aws.config.secretKey,
+        },
+      }),
+    },
+    {
+      provide: 'ses',
+      useValue: new SESClient({
+        region: environment.aws.config.region,
+        credentials: {
+          accessKeyId: environment.aws.config.clientId,
+          secretAccessKey: environment.aws.config.secretKey,
+        },
+      }),
+    },
     FacebookAuthStrategy,
     GoogleAuthStrategy,
     ContentRepository,
@@ -123,6 +173,7 @@ import { DenunciateRepository } from 'src/data/mongoose/repositories/denunciate.
     SubscriptionService,
     RecoveryService,
     RegisterService,
+    CreateRoomLiveService,
     ChangePasswordService,
     AuthService,
     ValidateCodeService,
@@ -147,7 +198,9 @@ import { DenunciateRepository } from 'src/data/mongoose/repositories/denunciate.
     DenunciateService,
     CryptoAdapter,
     SESAdapter,
+    S3Adapter,
     SendSmsAdapter,
+    IVSAdapter,
     PaymentSubscriptionAdapter,
     PaymentPlanAdapter,
     PaymentCustomerAdapter,
@@ -172,6 +225,7 @@ import { DenunciateRepository } from 'src/data/mongoose/repositories/denunciate.
     VerifyDocumentsController,
     VerifyDocumentsInternalController,
     DenunciateController,
+    LiveStreamingController,
   ],
 })
 export class AppModule {}

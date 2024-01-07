@@ -1,22 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { S3, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { environment } from 'src/main/config/environment/environment';
 import * as mime from 'mime-types';
 import { randomUUID } from 'node:crypto';
 import { ITypeContent } from '../entity/contents';
 import { blur } from 'src/shared/utils/sharp';
 import { captureScreenshotFromS3 } from 'src/shared/helpers/screenshot';
-
-const s3 = new S3({
-  region: environment.aws.region,
-  credentials: {
-    accessKeyId: environment.aws.clientId,
-    secretAccessKey: environment.aws.secretKey,
-  },
-});
+import { IS3Adapter } from '../interfaces/adapters/s3.adapter';
 
 @Injectable()
 export class S3Service {
+  constructor(@Inject('s3') private readonly s3Adapter: IS3Adapter) {}
   async uploadFile(file: any, type: string, owner: string) {
     if (file.mimetype.includes('video') && type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile cant be a video');
@@ -25,33 +18,29 @@ export class S3Service {
       const uploads: string[] = [];
       const fileExtName = mime.extension(file.mimetype);
       const randomName = randomUUID();
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: environment.aws.midias,
-          Key: `${owner}/${type}/${randomName}.${fileExtName}`,
-          Body: file.buffer,
-          ACL: 'public-read',
-          ContentType: file.mimetype,
-        }),
-      );
+      await this.s3Adapter.putObjectCommand({
+        Bucket: environment.aws.s3.midias,
+        Key: `${owner}/${type}/${randomName}.${fileExtName}`,
+        Body: file.buffer,
+        ACL: 'public-read',
+        ContentType: file.mimetype,
+      });
       uploads.push(
-        `${environment.aws.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
+        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
       );
       const screenshot = await captureScreenshotFromS3(
-        `${environment.aws.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
+        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
       );
       const randomNameBlur = randomUUID();
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: environment.aws.midias,
-          Key: `${owner}/${type}/${randomNameBlur}-blocked.jpg`,
-          Body: await blur(screenshot),
-          ACL: 'public-read',
-          ContentType: 'image/jpg',
-        }),
-      );
+      await this.s3Adapter.putObjectCommand({
+        Bucket: environment.aws.s3.midias,
+        Key: `${owner}/${type}/${randomNameBlur}-blocked.jpg`,
+        Body: await blur(screenshot),
+        ACL: 'public-read',
+        ContentType: 'image/jpg',
+      });
       uploads.push(
-        `${environment.aws.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.jpg`,
+        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.jpg`,
       );
       return uploads;
     }
@@ -60,31 +49,27 @@ export class S3Service {
       const uploads: string[] = [];
       const fileExtName = mime.extension(file.mimetype);
       const randomName = randomUUID();
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: environment.aws.midias,
-          Key: `${owner}/${type}/${randomName}.${fileExtName}`,
-          Body: file.buffer,
-          ACL: 'public-read',
-          ContentType: file.mimetype,
-        }),
-      );
+      await this.s3Adapter.putObjectCommand({
+        Bucket: environment.aws.s3.midias,
+        Key: `${owner}/${type}/${randomName}.${fileExtName}`,
+        Body: file.buffer,
+        ACL: 'public-read',
+        ContentType: file.mimetype,
+      });
       uploads.push(
-        `${environment.aws.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
+        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
       );
       if (type !== ITypeContent.PROFILE && type !== ITypeContent.DOCUMENT) {
         const randomNameBlur = randomUUID();
-        await s3.send(
-          new PutObjectCommand({
-            Bucket: environment.aws.midias,
-            Key: `${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`,
-            Body: await blur(file.buffer),
-            ACL: 'public-read',
-            ContentType: file.mimetype,
-          }),
-        );
+        await this.s3Adapter.putObjectCommand({
+          Bucket: environment.aws.s3.midias,
+          Key: `${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`,
+          Body: await blur(file.buffer),
+          ACL: 'public-read',
+          ContentType: file.mimetype,
+        });
         uploads.push(
-          `${environment.aws.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`,
+          `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`,
         );
       }
       return uploads;
@@ -95,12 +80,10 @@ export class S3Service {
     const keys = urls.map((url) => url.split('/'));
     await Promise.all(
       keys.map(async (key, index) => {
-        return await s3.send(
-          new DeleteObjectCommand({
-            Bucket: environment.aws.midias,
-            Key: `${key[index][3]}/${key[index][4]}/${key[index][5]}`,
-          }),
-        );
+        return await this.s3Adapter.deleteObjectCommand({
+          Bucket: environment.aws.s3.midias,
+          Key: `${key[index][3]}/${key[index][4]}/${key[index][5]}`,
+        });
       }),
     );
     return;

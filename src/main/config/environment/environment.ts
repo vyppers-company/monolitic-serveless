@@ -47,11 +47,16 @@ export const environment = {
     },
   },
   aws: {
-    clientId: process.env.AWS_CLIENT_ID_INTERNAL || '',
-    secretKey: process.env.AWS_SECRET_KEY_INTERNAL || '',
-    region: process.env.AWS_REGION_INTERNAL,
-    midias: process.env.AWS_BUCKET_NAME_INTERNAL || '',
-    hostBucket: process.env.AWS_BUCKET_URL || '',
+    config: {
+      clientId: process.env.AWS_CLIENT_ID_INTERNAL || '',
+      secretKey: process.env.AWS_SECRET_KEY_INTERNAL || '',
+      region: process.env.AWS_REGION_INTERNAL,
+    },
+    s3: {
+      midias: process.env.AWS_BUCKET_NAME_INTERNAL || '',
+      hostBucket: process.env.AWS_BUCKET_URL || '',
+    },
+    ivs: {},
   },
   sendCode: {
     expiration: Number(process.env.SEND_CODE_EXPIRATION) || 60,
