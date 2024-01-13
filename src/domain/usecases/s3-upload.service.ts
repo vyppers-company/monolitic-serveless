@@ -5,11 +5,11 @@ import { randomUUID } from 'node:crypto';
 import { ITypeContent } from '../entity/contents';
 import { blur } from 'src/shared/utils/sharp';
 import { captureScreenshotFromS3 } from 'src/shared/helpers/screenshot';
-import { IS3Adapter } from '../interfaces/adapters/s3.adapter';
+import { S3Adapter } from 'src/infra/adapters/aws/s3/s3.adapter';
 
 @Injectable()
 export class S3Service {
-  constructor(@Inject('s3') private readonly s3Adapter: IS3Adapter) {}
+  constructor(private readonly s3Adapter: S3Adapter) {}
   async uploadFile(file: any, type: string, owner: string) {
     if (file.mimetype.includes('video') && type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile cant be a video');
