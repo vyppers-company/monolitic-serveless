@@ -15,7 +15,7 @@ export class Content extends Document implements IContentEntity {
   createdAt?: Date;
   updatedAt?: Date;
 
-  @Prop({ default: null })
+  @Prop({ default: '' })
   text?: string;
   @Prop({ enum: ITypeContent })
   type?: ITypeContent;
