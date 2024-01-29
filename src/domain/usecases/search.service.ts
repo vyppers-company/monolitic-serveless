@@ -256,9 +256,11 @@ export class SearchUsersService implements ISearchUseCase {
         },
         group: {
           _id: '$owner',
-          topContent: { $first: '$$ROOT' },
+          contents: { $push: '$$ROOT' },
         },
-        replaceRoot: { newRoot: '$topContent' },
+        project: {
+          contents: { $slice: ['$contents', 2] },
+        },
         populate: [
           {
             path: 'owner',
