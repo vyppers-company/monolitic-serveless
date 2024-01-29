@@ -29,7 +29,10 @@ export class Denunciate extends Document implements IDenunciate {
   decisionReason?: string;
 
   @Prop({ default: false })
-  banUserReported?: boolean;
+  decisionToBanUser?: boolean;
+
+  @Prop({ default: false })
+  excludeContent?: true;
 
   @Prop({ enum: IStatusDenunciate, default: IStatusDenunciate.OPENED })
   status?: IStatusDenunciate;

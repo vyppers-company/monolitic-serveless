@@ -11,7 +11,7 @@ import {
 export interface IRelationParams {
   path: string;
   model: string;
-  select: string;
+  select?: string;
   populate?: IRelationParams;
 }
 

@@ -77,6 +77,18 @@ export class User extends Document implements IProfile {
 
   @Prop({ type: Array })
   followers?: string[];
+
+  @Prop()
+  reviewerId?: string;
+
+  @Prop()
+  bannedFromPlataform?: boolean;
+
+  @Prop()
+  relatedTicket?: string;
+
+  @Prop({ default: false })
+  freezeAccount?: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

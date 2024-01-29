@@ -128,4 +128,39 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       },
     );
   }
+  async banFromPlataform(
+    userId: string,
+    reviewerId: string,
+    relatedTicket: string,
+  ) {
+    await this.user.updateOne(
+      {
+        _id: userId,
+      },
+      {
+        $set: {
+          reviewerId,
+          bannedFromPlataform: true,
+          relatedTicket,
+        },
+      },
+    );
+    await this.user.deleteById(userId);
+  }
+  async deleteAccount(userId: string) {
+    await this.user.deleteOne({ _id: userId });
+  }
+  async freezeAccount(userId: string) {
+    await this.user.updateOne(
+      {
+        _id: userId,
+      },
+      {
+        $set: {
+          freezeAccount: true,
+        },
+      },
+    );
+    await this.user.deleteOne({ _id: userId });
+  }
 }

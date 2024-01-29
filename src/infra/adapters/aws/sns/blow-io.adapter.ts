@@ -23,4 +23,23 @@ export class SendSmsAdapter implements ISendRecoveryCode {
       throw new InternalServerErrorException(error);
     }
   }
+  async sendSms(to: string, template: string) {
+    try {
+      await axios.post(
+        environment.sms.apiUrl,
+        {
+          to: `+55${to}`,
+          message: template,
+        },
+        {
+          headers: {
+            'content-type': 'application/x-www-form-urlencoded',
+            Accepts: 'application/json',
+          },
+        },
+      );
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

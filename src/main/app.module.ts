@@ -92,6 +92,8 @@ import { S3Adapter } from 'src/infra/adapters/aws/s3/s3.adapter';
 import { CreateRoomLiveService } from 'src/domain/usecases/create-room.service';
 import { IVSAdapter } from 'src/infra/adapters/aws/ivs/ivs.adapter';
 import { IVSRealTimeClient } from '@aws-sdk/client-ivs-realtime';
+import { InternalDenunciateController } from 'src/presentation/controller/internal-denunciate.controller';
+import { DenunciateInternalService } from 'src/domain/usecases/denunciate-internal.service';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -196,6 +198,7 @@ import { IVSRealTimeClient } from '@aws-sdk/client-ivs-realtime';
     PaymentMethodsService,
     VerifyDocumentsService,
     DenunciateService,
+    DenunciateInternalService,
     CryptoAdapter,
     SESAdapter,
     S3Adapter,
@@ -226,6 +229,7 @@ import { IVSRealTimeClient } from '@aws-sdk/client-ivs-realtime';
     VerifyDocumentsInternalController,
     DenunciateController,
     LiveStreamingController,
+    InternalDenunciateController,
   ],
 })
 export class AppModule {}

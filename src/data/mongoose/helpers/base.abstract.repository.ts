@@ -44,7 +44,11 @@ export abstract class BaseAbstractRepository<T extends Document>
     filter?: FilterQuery<T>,
     projection?: unknown | null,
     options?: QueryOptions | null,
+    withDeleted = false,
   ): Promise<Query<T | null, T>> {
+    if (withDeleted) {
+      return await this.model.findOneWithDeleted(filter, projection, options);
+    }
     return await this.model.findOne(filter, projection, options);
   }
 

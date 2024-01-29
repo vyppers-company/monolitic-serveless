@@ -46,4 +46,8 @@ export interface IProfile {
   interests?: ICategory;
   bans?: string[];
   followers?: string[];
+  freezeAccount?: boolean;
+  reviewerId?: string;
+  bannedFromPlataform?: boolean;
+  relatedTicket?: string;
 }

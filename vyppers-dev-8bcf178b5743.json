@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "vyppers-dev",
+  "private_key_id": "8bcf178b57430f02e9e2ca195b00dbce120aeb7b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCi/D/eWMf9KZSF\nk/RLOQeiLNZI7Pr4C8xX0C8bavbkyVtDFjQqaSJSZR+oHZmr/8gl0hAOWjXx04yZ\nQQddV5i2DT0kR417OKG5COob8WZ++TaUvEeRM5kZbprER860AbjnNry6jB83Yec1\nGsvSSvVOey76y+b9mw8xvMmMayPPs8OKS8jqHePsOgjc0jxXsfw8GOlDxzV4DG0G\ncCEyOqjdM2jKjwkqw6/s/qkVRUJd5AMwJu3qdN6zA65RLtfNoWlz4tdPg2LGgzTa\nrN6dOLWYHC5jeG4AOavF4MZyVW/LPApCZ85wmH0hHeE+6fpwNj2nrn8dSweb/QUO\n97aN3cjPAgMBAAECggEAE5VQjURIn1QYKuaoo0MydhuCEdgbnaM5RdHXXyl+ieXh\nx9FKqk/gllrdL2ODG+YLY/P2Buty8OAU1DM6kc4dJL65enr4dnZLBEMccggS4y3J\nj5yB0uIKwsIF6ZChNwK/91Qd4CJG++4RDFHwbI+iIvBtKChI1G8Fp9nBs9QJxQJo\nzWWm6KgX3gujwbYkyk1/x/gInyhuzHmzyPRkLHNHt3sMOiw2cEfK5fhuneaPs+3f\nUyOACpnmyHCyXTaxAaoBaTiAhUTanlL5xSq42QjaD761L5az1sct/Mb66g2tj3XP\n+WUaXqYUtrW59uMZFHnK4PAFO6V307PhA/qHHFsihQKBgQDZVTWluXyc9lR4Y7WG\nDS7pUMy1V2iOprVMncyRHMgr8KudtvHGFv01M37nT7464im45UAdKJbHAR0rUNk0\n//FFJRX842gIE6ExCeX2uVxZPRfUiqSXhAPRKHLqC9T0tWEIstIty99gEbJlxB9Y\nkj9ZjgTbDcOW6ZOTinqnRJsnlQKBgQC/+7EJpLDMyI+yE7d50v7vLOirpsOYukZC\n/olrrX98js/P+nxsXXv17dAq5er6VVS4gEnqlUxWdeuOoGVMcgJsFSFa6MVBVc29\n6hYVXPyPDT6LziKk+Rz5pavmaZIx7vH11ZN0/Zc+GOHYeIex/Vc5DsJC+vnopzzu\nHeKzBs1F0wKBgAd8EMHpVmpNbXFL9cdtEs2EM9iW7wnioeHGmXHx7M7elfpzf3YT\n+ppncJpku6dpfIhalM+sQy0NU8TXHvPdUKDR+yTfbAjDLEz1C09o6M5F9VkjgTGa\noUsFupdm2ummiXX0OprLJ6E2Ws94Zp/1QWtDIdWtbqv21VdCcKDsEu/VAoGAfarw\nWQKf5HyIayWy3SC7Va5M40d3E3sjUOky5PQd1lfZOieZ2IldAj9YGyyDIrhGi7sW\nJ2LxJEtuFN9zT5X1dfBi9BIYRMs4sM8RA4zpmW4u+e7GCL00NUo3+swyMVNauPPD\n4Tm6DaDV/Q/wqxbNSIEbsiJ9Aciu/qM7aLrUFZcCgYBH006XIwjnFZTlctXvi+vl\n8jVirPYxNujmykENObEXdGEqaFFSEwuSLFjpi/n3cC7SYupZlZKY1GPawlyHS86F\nZNK3JPKMKQk+rzywBqiFUr1O0xlLfnYU6VLIU+AA+iFNCV3rXFsiAsDXBUU/w/K3\nz18jZctAXV285kkV9+GEUA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "vyppers-dev@vyppers-dev.iam.gserviceaccount.com",
+  "client_id": "116223433633102811024",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vyppers-dev%40vyppers-dev.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

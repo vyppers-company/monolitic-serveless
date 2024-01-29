@@ -1,3 +1,5 @@
+import { IProfile } from './user.entity';
+
 export enum IDenuncianteReasons {
   CONTEUDO = 'Contéudo Inapropriado',
   ASSEDIO = 'Assédio ou Bullying',
@@ -10,7 +12,6 @@ export enum IDenuncianteReasons {
 }
 
 export enum IStatusDenunciate {
-  UNDER_ANALISE = 'UNDER_ANALISE',
   OPENED = 'OPENED',
   CLOSED = 'CLOSED',
 }
@@ -19,12 +20,13 @@ export interface IDenunciate {
   _id?: string;
 
   complainant: string;
-  reported: string;
+  reported: string | IProfile;
   contentId: string;
   reason: string;
 
   reviewedBy?: string;
-  decisionToBan?: boolean;
+  decisionToBanUser?: boolean;
+  decisionToBanContent?: boolean;
   decisionReason?: string;
 
   createdAt?: Date;

@@ -39,4 +39,26 @@ export class SESAdapter implements ISendEmailAdapter {
       }),
     );
   }
+  async sendEmail(to: string, title: string, template: string) {
+    await this.sesAdapter.send(
+      new SendEmailCommand({
+        Source: 'customer.service@vyppers.com',
+        Destination: {
+          ToAddresses: [to],
+        },
+        Message: {
+          Body: {
+            Html: {
+              Data: template,
+              Charset: 'utf-8',
+            },
+          },
+          Subject: {
+            Data: title,
+            Charset: 'utf-8',
+          },
+        },
+      }),
+    );
+  }
 }

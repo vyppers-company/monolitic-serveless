@@ -6,4 +6,5 @@ export interface ISendEmailAdapter {
     code: string,
     type: IValidationCodeType,
   ) => Promise<void>;
+  sendEmail: (to: string, title: string, template: string) => Promise<void>;
 }
