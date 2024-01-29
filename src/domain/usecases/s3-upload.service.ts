@@ -42,6 +42,17 @@ export class S3Service {
       uploads.push(
         `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.jpg`,
       );
+      const randomNameThumb = randomUUID();
+      await this.s3Adapter.putObjectCommand({
+        Bucket: environment.aws.s3.midias,
+        Key: `${owner}/${type}/${randomNameThumb}-thumb.jpg`,
+        Body: screenshot,
+        ACL: 'public-read',
+        ContentType: 'image/jpg',
+      });
+      uploads.push(
+        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameThumb}-thumb.jpg`,
+      );
       return uploads;
     }
 

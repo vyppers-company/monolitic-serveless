@@ -19,7 +19,7 @@ async function captureScreenshotFromS3(s3url) {
         })
         .screenshot({
           count: 1,
-          timestamps: [0.5],
+          timestamps: [1],
           filename: `${randomName}.jpg`,
           folder: './',
         });
