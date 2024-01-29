@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { environment } from 'src/main/config/environment/environment';
 import * as mime from 'mime-types';
 import { randomUUID } from 'node:crypto';
-import { ITypeContent } from '../entity/contents';
+import { ITypeContent, IUploadContent } from '../entity/contents';
 import { blur } from 'src/shared/utils/sharp';
 import { captureScreenshotFromS3 } from 'src/shared/helpers/screenshot';
 import { S3Adapter } from 'src/infra/adapters/aws/s3/s3.adapter';
@@ -11,11 +11,16 @@ import { S3Adapter } from 'src/infra/adapters/aws/s3/s3.adapter';
 export class S3Service {
   constructor(private readonly s3Adapter: S3Adapter) {}
   async uploadFile(file: any, type: string, owner: string) {
+    if (!String(typeof file.mimetype == 'string')) {
+      throw new BadRequestException('mimetype needs to be a string');
+    }
     if (file.mimetype.includes('video') && type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile cant be a video');
     }
+    const uploads = {} as IUploadContent;
+    uploads['type'] = mime.extension(file.mimetype) as string;
+
     if (file.mimetype.includes('video')) {
-      const uploads: string[] = [];
       const fileExtName = mime.extension(file.mimetype);
       const randomName = randomUUID();
       await this.s3Adapter.putObjectCommand({
@@ -25,9 +30,10 @@ export class S3Service {
         ACL: 'public-read',
         ContentType: file.mimetype,
       });
-      uploads.push(
-        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
-      );
+      uploads[
+        'content'
+      ] = `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`;
+
       const screenshot = await captureScreenshotFromS3(
         `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
       );
@@ -39,9 +45,10 @@ export class S3Service {
         ACL: 'public-read',
         ContentType: 'image/jpg',
       });
-      uploads.push(
-        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.jpg`,
-      );
+      uploads[
+        'blockedThumb'
+      ] = `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.jpg`;
+
       const randomNameThumb = randomUUID();
       await this.s3Adapter.putObjectCommand({
         Bucket: environment.aws.s3.midias,
@@ -50,14 +57,14 @@ export class S3Service {
         ACL: 'public-read',
         ContentType: 'image/jpg',
       });
-      uploads.push(
-        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameThumb}-thumb.jpg`,
-      );
+      uploads[
+        'thumb'
+      ] = `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameThumb}-thumb.jpg`;
+
       return uploads;
     }
 
     if (!file.mimetype.includes('video')) {
-      const uploads: string[] = [];
       const fileExtName = mime.extension(file.mimetype);
       const randomName = randomUUID();
       await this.s3Adapter.putObjectCommand({
@@ -67,9 +74,13 @@ export class S3Service {
         ACL: 'public-read',
         ContentType: file.mimetype,
       });
-      uploads.push(
-        `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`,
-      );
+      uploads[
+        'content'
+      ] = `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`;
+      uploads[
+        'thumb'
+      ] = `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomName}.${fileExtName}`;
+
       if (type !== ITypeContent.PROFILE && type !== ITypeContent.DOCUMENT) {
         const randomNameBlur = randomUUID();
         await this.s3Adapter.putObjectCommand({
@@ -79,9 +90,9 @@ export class S3Service {
           ACL: 'public-read',
           ContentType: file.mimetype,
         });
-        uploads.push(
-          `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`,
-        );
+        uploads[
+          'blockedThumb'
+        ] = `${environment.aws.s3.hostBucket}/${owner}/${type}/${randomNameBlur}-blocked.${fileExtName}`;
       }
       return uploads;
     }

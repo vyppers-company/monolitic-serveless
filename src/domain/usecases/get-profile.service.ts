@@ -81,7 +81,7 @@ export class GetProfileService implements IGetProfileUseCase {
       name: user.name,
       vypperId: user.vypperId || null,
       bio: user.bio || null,
-      profileImage: content ? content.contents[0] : null,
+      profileImage: content ? content.contents[0].content : null,
       planConfiguration: user.planConfiguration.length
         ? user.planConfiguration.map((pln: any) => ({
             ...pln,

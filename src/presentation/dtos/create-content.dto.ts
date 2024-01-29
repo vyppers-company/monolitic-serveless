@@ -1,7 +1,41 @@
-import { IsArray, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IContentEntity, ITypeContent } from 'src/domain/entity/contents';
-
+import {
+  IContentEntity,
+  ITypeContent,
+  IUploadContent,
+} from 'src/domain/entity/contents';
+import { Type } from 'class-transformer';
+export class UploadContentDto implements IUploadContent {
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  blockedThumb?: string;
+  @IsString()
+  @ApiProperty()
+  content: string;
+  @IsString()
+  @ApiProperty()
+  @IsOptional()
+  preview?: string;
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  shortContent?: string;
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  thumb?: string;
+  @ApiProperty()
+  @IsString()
+  type: string;
+}
 export class CreateContentDto implements IContentEntity {
   @ApiProperty({
     examples: ['object_id_here1', 'object_id_here2'],
@@ -19,11 +53,21 @@ export class CreateContentDto implements IContentEntity {
   type: ITypeContent;
 
   @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UploadContentDto)
   @ApiProperty({
-    examples: ['https://image_url.com/image1', 'https://image_url.com/video'],
-    required: false,
+    example: JSON.stringify([
+      {
+        type: 'string',
+        thumb: 'string',
+        blockedThumb: 'string',
+        content: 'string',
+        preview: 'string',
+        shortContent: 'string',
+      },
+    ]),
   })
-  contents?: string[];
+  contents?: UploadContentDto[];
 
   @ApiProperty({
     example: 'description_here',

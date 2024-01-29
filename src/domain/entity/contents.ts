@@ -1,6 +1,15 @@
 import { IPlanEntity } from './plan';
 import { IProfile } from './user.entity';
 
+export interface IUploadContent {
+  type: string;
+  content: string;
+  thumb?: string;
+  blockedThumb?: string;
+  preview?: string;
+  shortContent?: string;
+}
+
 export enum ITypeContent {
   FEED = 'FEED',
   STORY = 'STORY',
@@ -20,7 +29,7 @@ export interface IContentEntity {
   text?: string;
   type?: ITypeContent;
   owner?: string | IProfile;
-  contents?: string[];
+  contents?: IUploadContent[];
   likersId?: string[];
   canEdit?: boolean;
   createdAt?: Date;

@@ -148,7 +148,7 @@ export class DenunciateInternalService {
         templatesEmail.BAN_USER_MESSAGE.BODY(
           name,
           text,
-          contents.find((image) => !image.includes('blocked')),
+          contents.find((image) => image.content).content,
         ),
       );
       return;
@@ -163,7 +163,7 @@ export class DenunciateInternalService {
         templatesSMS.BAN_USER_MESSAGE.BODY(
           name,
           text,
-          contents.find((image) => !image.includes('blocked')),
+          contents.find((image) => image.content).content,
         ),
       );
       return;

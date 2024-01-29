@@ -1,6 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-import { IContentEntity, ITypeContent } from 'src/domain/entity/contents';
+import {
+  IContentEntity,
+  ITypeContent,
+  IUploadContent,
+} from 'src/domain/entity/contents';
 import { environment } from 'src/main/config/environment/environment';
 import { correctDateNow } from 'src/shared/utils/correctDate';
 
@@ -21,8 +25,8 @@ export class Content extends Document implements IContentEntity {
   type?: ITypeContent;
   @Prop()
   owner?: string;
-  @Prop()
-  contents?: string[];
+  @Prop({ type: Array, default: [] })
+  contents?: IUploadContent[];
   @Prop()
   likersId?: string[];
   @Prop({ type: Array, default: [] })

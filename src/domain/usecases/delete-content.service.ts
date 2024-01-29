@@ -14,6 +14,15 @@ export class DeleteContentService implements IDeleteContentUseCase {
     const content = await this.contentRepository.findOne({
       _id: dto.contentId,
     });
+    if (!content) {
+      throw new HttpException(
+        {
+          message: 'content not found',
+          reason: 'ContentError',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
     if (content.owner !== dto.ownerId) {
       throw new HttpException(
         {
@@ -24,6 +33,11 @@ export class DeleteContentService implements IDeleteContentUseCase {
       );
     }
     await this.contentRepository.deleteById(dto.contentId);
-    await this.s3.deleteObject(content.contents);
+    await this.s3.deleteObject(
+      content.contents.reduce((acc, curr) => {
+        Object.values(curr).forEach((photo) => acc.push(photo));
+        return acc;
+      }, []),
+    );
   }
 }

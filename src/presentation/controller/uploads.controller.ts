@@ -61,7 +61,7 @@ export class UploadController {
       type,
       userLogged._id,
     );
-    return { path };
+    return path;
   }
 
   @Delete('v1/delete')
@@ -72,7 +72,10 @@ export class UploadController {
     type: DeleteUpload,
   })
   async DeleteMidiaV2(@Body() body: DeleteUpload) {
-    const urls = body.urls.map((url) => url.split('?')[0]);
+    const urls: string[] = body.contents.reduce((acc, curr) => {
+      Object.values(curr).forEach((photo) => acc.push(photo));
+      return acc;
+    }, []);
     await this.s3Service.deleteObject(urls);
   }
 }

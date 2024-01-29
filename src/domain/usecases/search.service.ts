@@ -248,15 +248,22 @@ export class SearchUsersService implements ISearchUseCase {
       finalFilters['$and'] = filters;
     }
 
-    const result = await this.userRepository.findPaginated(
+    const result = await this.contentRepository.findPaginated(
       {
         limit: Number(queries.limit) || 10,
         page: Number(queries.page) || 1,
         populate: [
           {
-            path: 'profileImage',
-            model: 'Content',
-            select: 'contents',
+            path: 'owner',
+            model: 'User',
+            select: 'name profileImage vypperId followers',
+            populate: [
+              {
+                path: 'profileImage',
+                model: 'Content',
+                select: 'contents',
+              },
+            ],
           },
         ],
       },
