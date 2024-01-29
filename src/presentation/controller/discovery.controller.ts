@@ -17,15 +17,15 @@ import {
 import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 import { Logged } from 'src/shared/decorators/logged.decorator';
 
-@ApiTags('search')
-@Controller('search')
-export class SearchController {
+@ApiTags('discovery')
+@Controller('discovery')
+export class DiscoveryController {
   private logger: Logger;
   constructor(private readonly searchService: SearchUsersService) {
-    this.logger = new Logger(SearchController.name);
+    this.logger = new Logger(DiscoveryController.name);
   }
 
-  @Get('v1/users')
+  @Get('v1/contents-by-user')
   @ApiBearerAuth()
   @ApiQuery({
     name: 'limit',
@@ -86,11 +86,30 @@ export class SearchController {
     description: 'busca por etnia',
     enum: ICategoryEthnicity,
   })
-  async searchUser(
+  async searchUserV2(
     @Query() queries: SearchCategoryDto,
     @Logged() user: ILogged,
   ) {
-    return this.searchService.searchUser(queries, user._id);
+    return this.searchService.searchUserV2(queries, user._id);
+  }
+
+  @Get('v1/contents-by-user/opened')
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
+  })
+  async searchUserOpened(
+    @Query() queries: Pick<SearchCategoryDto, 'limit' | 'page'>,
+  ) {
+    return 'falta implementar';
   }
 
   @Get('v1/consult/filter')

@@ -94,6 +94,7 @@ import { IVSAdapter } from 'src/infra/adapters/aws/ivs/ivs.adapter';
 import { IVSRealTimeClient } from '@aws-sdk/client-ivs-realtime';
 import { InternalDenunciateController } from 'src/presentation/controller/internal-denunciate.controller';
 import { DenunciateInternalService } from 'src/domain/usecases/denunciate-internal.service';
+import { DiscoveryController } from 'src/presentation/controller/discovery.controller';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -211,6 +212,7 @@ import { DenunciateInternalService } from 'src/domain/usecases/denunciate-intern
     PaymentMethodAdapter,
   ],
   controllers: [
+    DiscoveryController,
     PaymentMethodController,
     PlanController,
     SubscriptionController,

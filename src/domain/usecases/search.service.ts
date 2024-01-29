@@ -7,8 +7,7 @@ import {
 import { PaginateResult } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
-import { groupBy } from 'src/shared/utils/groupBy';
-import { ITypeContent } from '../entity/contents';
+import { IContentEntity, ITypeContent } from '../entity/contents';
 
 @Injectable()
 export class SearchUsersService implements ISearchUseCase {
@@ -152,7 +151,7 @@ export class SearchUsersService implements ISearchUseCase {
   async searchUserV2(
     queries: IQueriesSearchUser,
     myId: string,
-  ): Promise<PaginateResult<IProfile>> {
+  ): Promise<PaginateResult<IContentEntity>> {
     const getCategories = ({
       value,
       limit,
@@ -252,11 +251,20 @@ export class SearchUsersService implements ISearchUseCase {
       {
         limit: Number(queries.limit) || 10,
         page: Number(queries.page) || 1,
+        sort: {
+          likersId: -1,
+        },
+        group: {
+          _id: '$owner',
+          topContent: { $first: '$$ROOT' },
+        },
+        replaceRoot: { newRoot: '$topContent' },
         populate: [
           {
             path: 'owner',
             model: 'User',
-            select: 'name profileImage vypperId followers',
+            select: 'name profileImage vypperId likersId verified plans',
+            match: { ...finalFilters },
             populate: [
               {
                 path: 'profileImage',
@@ -266,168 +274,34 @@ export class SearchUsersService implements ISearchUseCase {
             ],
           },
         ],
-      },
-      Object.keys(finalFilters).length ? finalFilters : null,
-    );
-
-    const promises = result.docs.map(async (user) => {
-      return await this.contentRepository.aggregate([
-        {
-          $match: {
-            owner: String(user._id),
-            contents: { $exists: true, $ne: [] },
-            type: { $nin: [ITypeContent.DOCUMENT, ITypeContent.PROFILE] },
-          },
-        },
-        {
-          $sort: { likersId: -1 },
-        },
-        {
-          $addFields: {
-            hasPlans: {
-              $cond: {
-                if: {
-                  $and: [
-                    { $ne: [{ $ifNull: ['$plans', []] }, []] },
-                    { $ne: ['$plans', null] },
-                  ],
-                },
-                then: true,
-                else: false,
-              },
-            },
-          },
-        },
-        {
-          $sort: { hasPlan: -1 },
-        },
-        {
-          $project: {
-            _id: 1,
-            owner: 1,
-            contents: 1,
-            type: 1,
-            likersId: 1,
-            plans: 1,
-            hasPlans: 1,
-          },
-        },
-        {
-          $limit: 5,
-        },
-      ]);
-    });
-
-    const resultContent = await Promise.all(promises);
-    const groupedByUser = groupBy(resultContent, 'owner');
-    return {
-      totalDocs: result.totalDocs,
-      limit: result.limit,
-      totalPages: result.totalPages,
-      page: result.page,
-      offset: result.offset,
-      pagingCounter: result.pagingCounter,
-      hasPrevPage: result.hasPrevPage,
-      hasNextPage: result.hasNextPage,
-      prevPage: result.prevPage,
-      nextPage: result.nextPage,
-      docs: result.docs.map((doc: any) => ({
-        _id: doc._id,
-        vypperId: doc.vypperId,
-        name: doc.name,
-        profileImage: doc.profileImage,
-        contents: groupedByUser[doc._id],
-      })),
-    };
-  }
-  async searchUserV2Opened(
-    queries: Pick<IQueriesSearchUser, 'limit' | 'page'>,
-  ): Promise<PaginateResult<IProfile>> {
-    const result = await this.userRepository.findPaginated(
-      {
-        sort: { followers: -1 },
-        limit: Number(queries.limit) || 10,
-        page: Number(queries.page) || 1,
-        populate: [
-          {
-            path: 'profileImage',
-            model: 'Content',
-            select: 'contents',
-          },
-        ],
+        lean: true,
       },
       null,
     );
 
-    const promises = result.docs.map(async (user) => {
-      return await this.contentRepository.aggregate([
-        {
-          $match: {
-            owner: String(user._id),
-            contents: { $exists: true, $ne: [] },
-            type: { $nin: [ITypeContent.DOCUMENT, ITypeContent.PROFILE] },
-          },
-        },
-        {
-          $sort: { likersId: -1 },
-        },
-        {
-          $addFields: {
-            hasPlans: {
-              $cond: {
-                if: {
-                  $and: [
-                    { $ne: [{ $ifNull: ['$plans', []] }, []] },
-                    { $ne: ['$plans', null] },
-                  ],
-                },
-                then: true,
-                else: false,
-              },
-            },
-          },
-        },
-        {
-          $sort: { hasPlan: -1 },
-        },
-        {
-          $project: {
-            _id: 1,
-            owner: 1,
-            contents: 1,
-            type: 1,
-            likersId: 1,
-            plans: 1,
-            hasPlans: 1,
-          },
-        },
-        {
-          $limit: 5,
-        },
-      ]);
-    });
+    const finalDocs = result.docs
+      .map((item) => ({
+        ...item,
+        likersId: item.likersId.length,
+        plans: item.plans.map(({ paymentPlanId, subscribers, ...rest }) => ({
+          ...rest,
+          subscribers: subscribers.length,
+        })),
+      }))
+      .filter((item) => item.owner);
 
-    const resultContent = await Promise.all(promises);
-    const groupedByUser = groupBy(resultContent, 'owner');
     return {
-      totalDocs: result.totalDocs,
+      totalDocs: finalDocs.length,
       limit: result.limit,
-      totalPages: result.totalPages,
+      totalPages: finalDocs.length > result.limit ? result.page : 1,
       page: result.page,
       offset: result.offset,
       pagingCounter: result.pagingCounter,
-      hasPrevPage: result.hasPrevPage,
-      hasNextPage: result.hasNextPage,
+      hasPrevPage: finalDocs.length > result.limit ? result.hasPrevPage : false,
+      hasNextPage: finalDocs.length > result.limit ? result.hasNextPage : false,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      docs: result.docs.map((doc: any) => ({
-        _id: doc._id,
-        vypperId: doc.vypperId,
-        followers: doc.followers,
-        name: doc.name,
-        profileImage: doc.profileImage,
-        contents: groupedByUser[doc._id],
-      })),
+      docs: finalDocs,
     };
   }
 }
