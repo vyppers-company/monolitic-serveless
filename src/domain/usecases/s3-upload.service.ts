@@ -1,4 +1,4 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { environment } from 'src/main/config/environment/environment';
 import * as mime from 'mime-types';
 import { randomUUID } from 'node:crypto';
@@ -17,7 +17,7 @@ export class S3Service {
     if (file.mimetype.includes('video') && type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile cant be a video');
     }
-    const uploads = {} as IUploadContent;
+    const uploads = { _id: randomUUID() } as IUploadContent;
     uploads['type'] = mime.extension(file.mimetype) as string;
 
     if (file.mimetype.includes('video')) {

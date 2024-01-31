@@ -1,16 +1,42 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsUrl, ValidateNested } from 'class-validator';
-import { UploadContentDto } from './create-content.dto';
+import {
+  IsArray,
+  IsDefined,
+  IsOptional,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
+
+export class UploadDeleteContentDto {
+  @ApiProperty()
+  @IsUrl()
+  @IsOptional()
+  blockedThumb?: string;
+  @IsUrl()
+  @ApiProperty()
+  content: string;
+  @IsUrl()
+  @ApiProperty()
+  @IsOptional()
+  preview?: string;
+  @ApiProperty()
+  @IsOptional()
+  @IsUrl()
+  shortContent?: string;
+  @ApiProperty()
+  @IsUrl()
+  @IsOptional()
+  thumb?: string;
+}
 
 export class DeleteUpload {
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => UploadContentDto)
+  @Type(() => UploadDeleteContentDto)
   @ApiProperty({
     example: JSON.stringify([
       {
-        type: 'string',
         thumb: 'string',
         blockedThumb: 'string',
         content: 'string',
@@ -19,5 +45,6 @@ export class DeleteUpload {
       },
     ]),
   })
-  contents?: UploadContentDto[];
+  @IsDefined()
+  contents?: UploadDeleteContentDto[];
 }

@@ -2,6 +2,7 @@ import { IPlanEntity } from './plan';
 import { IProfile } from './user.entity';
 
 export interface IUploadContent {
+  _id?: string;
   type: string;
   content: string;
   thumb?: string;

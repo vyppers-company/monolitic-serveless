@@ -11,18 +11,20 @@ async function captureScreenshotFromS3(s3url) {
   const randomName = randomUUID();
   await new Promise((resolve, reject) => {
     try {
-      ffmpeg()
-        .input(s3url)
-        .on('end', function () {
-          console.log('Miniatura gerada com sucesso.');
-          resolve(true);
-        })
-        .screenshot({
-          count: 1,
-          timestamps: [1],
-          filename: `${randomName}.jpg`,
-          folder: './',
-        });
+      ffmpeg.ffprobe(s3url, (err, metadata) => {
+        ffmpeg()
+          .input(s3url)
+          .on('end', function () {
+            console.log('Miniatura gerada com sucesso.');
+            resolve(true);
+          })
+          .screenshot({
+            count: 1,
+            timestamps: [metadata.format.duration / 2],
+            filename: `${randomName}.jpg`,
+            folder: './',
+          });
+      });
     } catch (error) {
       reject(error);
     }
