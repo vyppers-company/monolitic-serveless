@@ -47,7 +47,7 @@ export class AuthService implements IAuthUseCase {
       finalDto['phone'] = hashedPhone;
     }
 
-    const findedOne = await this.userRepository.findOne(finalDto, null, {
+    const findedOne = await this.userRepository.findOne({ ...finalDto }, null, {
       lean: true,
       populate: [
         { path: 'profileImage', select: 'contents', model: 'Content' },
@@ -57,6 +57,16 @@ export class AuthService implements IAuthUseCase {
     if (!findedOne) {
       throw new HttpException(
         { message: 'User not found', reason: 'UserNotFound' },
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    if (findedOne.isBanned) {
+      throw new HttpException(
+        {
+          message: 'You are banned, Contact support for more',
+          reason: 'UserNotFound',
+        },
         HttpStatus.UNAUTHORIZED,
       );
     }
@@ -71,6 +81,8 @@ export class AuthService implements IAuthUseCase {
         HttpStatus.UNAUTHORIZED,
       );
     }
+
+    await this.userRepository.freezeAccount(findedOne._id, false);
 
     const token = await generateToken(
       {
@@ -123,6 +135,16 @@ export class AuthService implements IAuthUseCase {
     );
 
     if (findedOne) {
+      if (findedOne.isBanned) {
+        throw new HttpException(
+          {
+            message: 'You are banned, Contact support for more',
+            reason: 'UserNotFound',
+          },
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
       const token = await generateToken(
         {
           _id: String(findedOne._id),

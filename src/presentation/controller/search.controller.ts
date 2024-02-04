@@ -6,7 +6,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SearchUsersService } from 'src/domain/usecases/search.service';
-import { SearchCategoryDto } from '../dtos/search-categories.dto';
+import {
+  SearchCategoryDto,
+  SearchQueriesCompleteDto,
+} from '../dtos/search-categories.dto';
 import {
   ICategoryBiotype,
   ICategoryEthnicity,
@@ -87,7 +90,7 @@ export class SearchController {
     enum: ICategoryEthnicity,
   })
   async searchUser(
-    @Query() queries: SearchCategoryDto,
+    @Query() queries: SearchQueriesCompleteDto,
     @Logged() user: ILogged,
   ) {
     return this.searchService.searchUser(queries, user._id);

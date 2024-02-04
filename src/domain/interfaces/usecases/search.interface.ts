@@ -4,10 +4,11 @@ import { IContentEntity } from 'src/domain/entity/contents';
 import { IProfile } from 'src/domain/entity/user.entity';
 
 export interface IQueriesSearchUser extends ICategory {
-  value: string;
-  limit: number;
-  page: number;
-  verified: string;
+  value?: string;
+  limit?: number;
+  page?: number;
+  verified?: string;
+  limitByUser?: number;
 }
 
 export interface ISearchUseCase {

@@ -8,9 +8,13 @@ export class ValidateMissingDataProfileService
 {
   constructor(private readonly userRepository: UserRepository) {}
   async validateMissingDatas(userId: string): Promise<string[]> {
-    const result = await this.userRepository.findOne({ _id: userId }, null, {
-      lean: true,
-    });
+    const result = await this.userRepository.findOne(
+      { _id: userId, isBanned: false },
+      null,
+      {
+        lean: true,
+      },
+    );
     const user = { ...result };
     const missingDatas = [];
     const caracteristicsFields = [

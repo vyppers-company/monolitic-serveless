@@ -48,6 +48,7 @@ export class GetContentService implements IContentsUseCase {
       {
         owner: profileId || myId,
         type,
+        isDeleted: false,
       },
     );
 
@@ -104,6 +105,7 @@ export class GetContentService implements IContentsUseCase {
       {
         owner: profileId || myId,
         _id: contentId,
+        isDeleted: false,
       },
       null,
       {

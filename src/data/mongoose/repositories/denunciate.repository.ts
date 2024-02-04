@@ -24,7 +24,7 @@ export class DenunciateRepository extends BaseAbstractRepository<DenunciateDocum
       },
       {
         $set: {
-          reviewerId: dto.reviewerId,
+          reviewedBy: dto.reviewerId,
           excludeContent: dto.excludeContent,
           decisionToBanUser: dto.decisionToBanUser,
           decisionReason: dto.decisionReason,

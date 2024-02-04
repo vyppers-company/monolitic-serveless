@@ -3,7 +3,7 @@ import {
   IGetProfileUseCase,
   IProfileExt,
 } from '../interfaces/usecases/user-service.interface';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IContentEntity, ITypeContent } from '../entity/contents';
 import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
@@ -41,36 +41,43 @@ export class GetProfileService implements IGetProfileUseCase {
       | 'qtdLikes'
     >
   > {
-    const user = await this.userRepository.findOne({ _id: userId }, null, {
-      lean: true,
-      populate: [
-        { path: 'profileImage', select: 'contents', model: 'Content' },
-        {
-          path: 'planConfiguration',
-          select: 'name description price subscribers',
-          model: 'Plan',
-          populate: [
-            {
-              path: 'subscribers.vypperSubscriptionId',
-              select: '_id name vypperId profileImage',
-              model: 'User',
-              populate: [
-                {
-                  path: 'profileImage',
-                  select: 'contents',
-                  model: 'Content',
-                },
-              ],
-            },
-          ],
-        },
-        {
-          path: 'paymentConfiguration',
-          model: 'Payment',
-          select: 'paymentMethods',
-        },
-      ],
-    });
+    const user = await this.userRepository.findOne(
+      { _id: userId, isBanned: false, isFreezed: false },
+      null,
+      {
+        lean: true,
+        populate: [
+          { path: 'profileImage', select: 'contents', model: 'Content' },
+          {
+            path: 'planConfiguration',
+            select: 'name description price subscribers',
+            model: 'Plan',
+            populate: [
+              {
+                path: 'subscribers.vypperSubscriptionId',
+                select: '_id name vypperId profileImage',
+                model: 'User',
+                populate: [
+                  {
+                    path: 'profileImage',
+                    select: 'contents',
+                    model: 'Content',
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            path: 'paymentConfiguration',
+            model: 'Payment',
+            select: 'paymentMethods',
+          },
+        ],
+      },
+    );
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const contents = await this.contentRepository.find({ owner: user._id });
     const content = user.profileImage as IContentEntity;
 
@@ -83,11 +90,14 @@ export class GetProfileService implements IGetProfileUseCase {
       bio: user.bio || null,
       profileImage: content ? content.contents[0].content : null,
       planConfiguration: user.planConfiguration.length
-        ? user.planConfiguration.map((pln: any) => ({
-            ...pln,
-            subscribers:
-              myId === userId ? pln.subscribers : pln.subscribers.length,
-          }))
+        ? user.planConfiguration
+            //@ts-ignore
+            .filter((plan) => !plan.isDeleted)
+            .map((pln: any) => ({
+              ...pln,
+              subscribers:
+                myId === userId ? pln.subscribers : pln.subscribers.length,
+            }))
         : [],
       followersQtd: user.followers ? user.followers.length : 0,
       isFollowed:

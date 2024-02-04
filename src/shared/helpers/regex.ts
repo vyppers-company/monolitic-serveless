@@ -7,4 +7,5 @@ export default {
   emailOrPhone:
     /^(?:\d{10,11}|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/,
   iso8601: /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?Z?$/,
+  isoSemHora: /^\d{4}-\d{2}-\d{2}$/,
 };

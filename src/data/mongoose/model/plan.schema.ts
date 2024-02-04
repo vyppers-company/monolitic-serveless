@@ -37,6 +37,9 @@ export class Plan extends Document implements IPlanEntity {
   @Prop()
   paymentPlanIdAnnual?: string;
 
+  @Prop({ type: Boolean, default: false })
+  isDeleted?: boolean;
+
   createdAt?: string;
   updatedAt?: string;
 }

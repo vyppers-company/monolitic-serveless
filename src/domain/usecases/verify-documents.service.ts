@@ -14,7 +14,10 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
     private readonly verify: VerifyDocumentsRepository,
   ) {}
   async submit(dto: IDocumentData, userId: string) {
-    const user = await this.userRepository.findOne({ _id: userId });
+    const user = await this.userRepository.findOne({
+      _id: userId,
+      isBanned: false,
+    });
 
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
@@ -79,7 +82,10 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
   }
 
   async getStatus(myId: string) {
-    const user = await this.userRepository.findOne({ _id: myId });
+    const user = await this.userRepository.findOne({
+      _id: myId,
+      isBanned: false,
+    });
 
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);

@@ -6,12 +6,7 @@ import { enableCors } from '../../config/cors';
 import { setupSwagger } from '../../config/swagger';
 import * as mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-import mongoose_delete from 'mongoose-delete';
 async function bootstrapServer() {
-  mongoose.plugin(mongoose_delete, {
-    deletedAt: true,
-    overrideMethods: 'all',
-  });
   mongoose.plugin(mongoosePaginate);
   const app = await NestFactory.create(AppModule);
   enableCors(app);

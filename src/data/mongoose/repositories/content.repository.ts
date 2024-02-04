@@ -46,4 +46,20 @@ export class ContentRepository extends BaseAbstractRepository<ContentDocument> {
   async aggregate(array: any[]) {
     return this.content.aggregate(array);
   }
+
+  public async deleteSoftOne(id: string): Promise<void> {
+    const result = await this.content.findOne({ _id: id });
+    if (result) {
+      await this.content.updateOne({ _id: id }, { $set: { isDeleted: true } });
+    }
+  }
+  public async deleteSoftMany(id: string): Promise<void> {
+    const result = await this.content.find({ owner: id }, null, { lean: true });
+    await this.content.updateMany(
+      {
+        _id: { $in: result.map((item) => item._id) },
+      },
+      { $set: { isDeleted: true } },
+    );
+  }
 }

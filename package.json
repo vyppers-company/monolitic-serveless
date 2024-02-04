@@ -43,7 +43,6 @@
     "googleapis": "^126.0.1",
     "jose": "^4.13.1",
     "mongoose": "^6.8.3",
-    "mongoose-delete": "^0.5.4",
     "mongoose-paginate-v2": "^1.7.1",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",

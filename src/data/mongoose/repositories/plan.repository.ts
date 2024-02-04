@@ -37,4 +37,11 @@ export class PlanRepository extends BaseAbstractRepository<PlanDocument> {
       },
     );
   }
+  async deleteSoftOne(planId: string) {
+    const existentPlanId = await this.plan.findOne({ _id: planId });
+    await this.plan.updateOne(
+      { _id: existentPlanId._id },
+      { $set: { isDeleted: true } },
+    );
+  }
 }

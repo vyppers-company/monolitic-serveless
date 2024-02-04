@@ -40,7 +40,19 @@ export class ChangePasswordService implements IChangePasswordService {
       );
     }
 
-    const findedOne = await this.userRepository.findOne({ _id: code.owner });
+    const findedOne = await this.userRepository.findOne({
+      _id: code.owner,
+      isBanned: false,
+    });
+    if (!findedOne) {
+      throw new HttpException(
+        {
+          message: 'Something went wrong :(',
+          reason: 'ErrorGeneratingCode',
+        },
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
+    }
 
     const hashedPassword = this.cryptoAdapter.encryptText(
       dto.newPassword,

@@ -33,6 +33,8 @@ export class Content extends Document implements IContentEntity {
   plans?: string[];
   @Prop()
   productId?: string;
+  @Prop({ type: Boolean, default: false })
+  isDeleted?: boolean;
 }
 
 export const ContentSchema = SchemaFactory.createForClass(Content);

@@ -9,6 +9,7 @@ import {
   ICategoryGender,
   ICategoryHair,
 } from 'src/domain/entity/category';
+import { IQueriesSearchUser } from 'src/domain/interfaces/usecases/search.interface';
 
 export class SearchCategoryDto implements ICategory {
   @IsEnum(ICategoryHair, { each: true })
@@ -55,7 +56,12 @@ export class SearchCategoryDto implements ICategory {
   })
   @IsOptional()
   gender?: ICategoryGender[];
+}
 
+export class SearchQueriesCompleteDto
+  extends SearchCategoryDto
+  implements IQueriesSearchUser
+{
   @IsString()
   @IsOptional()
   @ApiProperty({
@@ -63,7 +69,7 @@ export class SearchCategoryDto implements ICategory {
     example: false,
     type: String,
   })
-  verified: string;
+  verified?: string;
 
   @IsNumber()
   @Transform(({ value }) => (parseFloat(value) ? parseFloat(value) : 1))
@@ -73,7 +79,7 @@ export class SearchCategoryDto implements ICategory {
     type: Number,
   })
   @IsOptional()
-  page: number;
+  page?: number;
 
   @IsNumber()
   @Transform(({ value }) => (parseFloat(value) ? parseFloat(value) : 10))
@@ -83,7 +89,7 @@ export class SearchCategoryDto implements ICategory {
     type: Number,
   })
   @IsOptional()
-  limit: number;
+  limit?: number;
 
   @IsString()
   @ApiProperty({
@@ -91,5 +97,15 @@ export class SearchCategoryDto implements ICategory {
     type: String,
   })
   @IsOptional()
-  value: string;
+  value?: string;
+
+  @IsNumber()
+  @Transform(({ value }) => (parseFloat(value) ? parseFloat(value) : 10))
+  @ApiProperty({
+    required: false,
+    example: 3,
+    type: Number,
+  })
+  @IsOptional()
+  limitByUser?: number;
 }

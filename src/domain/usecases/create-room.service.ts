@@ -107,7 +107,10 @@ export class CreateRoomLiveService implements ICreateRoomUseCase {
     return channel;
   }
   async inviteUserLiveStream(dto: IInviteUserLiveStreamServiceDto) {
-    const user = await this.userRepository.findOne({ _id: dto.inviterId });
+    const user = await this.userRepository.findOne({
+      _id: dto.inviterId,
+      isBanned: false,
+    });
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_FOUND);
     }

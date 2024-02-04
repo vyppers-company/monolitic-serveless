@@ -36,6 +36,5 @@ export interface BaseInterfaceRepository<T extends Document> {
   ): Promise<T[]>;
 
   deleteById(id: string): Promise<void>;
-
   findPaginated(options: any, filter?: any): Promise<PaginateResult<any>>;
 }

@@ -4,18 +4,19 @@ import {
   colors,
   animals,
   names,
+  starWars,
 } from 'unique-names-generator';
 
-const generateName = (existentValues: string[]) => {
+const generateName = (existentValues: string[], length = 3) => {
   const randomName = uniqueNamesGenerator({
-    dictionaries: [animals, adjectives, colors, names],
+    dictionaries: [animals, adjectives, colors, names, starWars],
     separator: '_',
-    length: 3,
+    length,
   });
   if (!existentValues.includes(randomName)) {
     return randomName;
   }
-  generateName(existentValues);
+  generateName(existentValues, length <= 5 ? length : length + 1);
 };
 
 export { generateName };

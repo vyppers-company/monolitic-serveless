@@ -4,7 +4,6 @@ import { SetupIntentAdapter } from 'src/infra/adapters/payment/setup/setIntent.a
 import {
   ISetupIntentSecret,
   IPaymentMethodUseCases,
-  IPaymentMethodsList,
   IResponseDeleteCardDefault,
 } from '../interfaces/usecases/payment-method.interface';
 import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods/payment-methods.adapter';
@@ -28,6 +27,7 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
     const existentUser = await this.userRepository.findOne(
       {
         _id: myId,
+        isBanned: false,
       },
       null,
       {
@@ -101,7 +101,7 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
     myVypperId: string,
   ): Promise<IPaymentConfiguration['paymentMethods']> {
     const existentUser = await this.userRepository.findOne(
-      { _id: myVypperId },
+      { _id: myVypperId, isBanned: false },
       null,
       {
         lean: true,
@@ -191,6 +191,7 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
     const user = await this.userRepository.findOne(
       {
         owner: myId,
+        isBanned: false,
       },
       null,
       {

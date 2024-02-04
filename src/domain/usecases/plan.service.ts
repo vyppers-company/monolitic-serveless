@@ -24,13 +24,13 @@ export class PlanService implements PlanUseCase {
     private readonly planRepository: PlanRepository,
     private readonly userRepository: UserRepository,
     private readonly paymentPlanAdapter: PaymentPlanAdapter,
-    private readonly paymentSubscriptionAdapter: PaymentSubscriptionAdapter,
   ) {}
 
   async createPlan(myId: string, dto: IPlanEntity): Promise<void> {
     const result = await this.planRepository.find({
       owner: myId,
       activate: true,
+      isDeleted: false,
     });
 
     if (dto.isAnnual === true && !dto.annualPercentage) {
@@ -86,38 +86,7 @@ export class PlanService implements PlanUseCase {
     if (!plan) {
       throw new NotFoundException('plan not found');
     }
-    const hasSubscribers =
-      await this.paymentSubscriptionAdapter.verifyIfHasSubsByPlan(
-        plan.paymentPlanId,
-      );
-    if (hasSubscribers) {
-      throw new HttpException(
-        {
-          reason: 'SubscriptionError',
-          message: "this plan has activated subscribers, you can't remove",
-        },
-        HttpStatus.FORBIDDEN,
-      );
-    }
-    if (plan.isAnnual === true) {
-      const hasSubscribers =
-        await this.paymentSubscriptionAdapter.verifyIfHasSubsByPlan(
-          plan.paymentPlanId,
-        );
-      if (hasSubscribers) {
-        throw new HttpException(
-          {
-            reason: 'SubscriptionError',
-            message: "this plan has activated subscribers, you can't remove",
-          },
-          HttpStatus.FORBIDDEN,
-        );
-      }
-      await this.paymentPlanAdapter.deletePlan(plan.paymentPlanIdAnnual);
-    }
-    await this.paymentPlanAdapter.deletePlan(plan.paymentPlanId);
-    await this.userRepository.removePlan(myId, planId);
-    await this.planRepository.deleteById(plan._id);
+    await this.planRepository.deleteSoftOne(plan._id);
     return;
   }
 
@@ -145,7 +114,12 @@ export class PlanService implements PlanUseCase {
         'You cant have more than 3 plans activated, please deactive some plan before',
       );
     }
-
+    if (plan.isDeleted) {
+      throw new HttpException(
+        'You cant edit deleted plan',
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
     await this.paymentPlanAdapter.editPlan({
       paymentPlanId: plan.paymentPlanId,
       owner: plan.owner,
@@ -176,10 +150,7 @@ export class PlanService implements PlanUseCase {
   ): Promise<IPlanEntity[] | Pick<IPlanEntity, '_id' | 'name'>[]> {
     if (resumed) {
       if (myId !== userId) {
-        throw new HttpException(
-          'this mode was design just for your own plans',
-          HttpStatus.FORBIDDEN,
-        );
+        throw new HttpException('forbidden', HttpStatus.FORBIDDEN);
       }
       const plans = await this.planRepository.find({
         owner: userId,

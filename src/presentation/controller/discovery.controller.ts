@@ -6,7 +6,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SearchUsersService } from 'src/domain/usecases/search.service';
-import { SearchCategoryDto } from '../dtos/search-categories.dto';
+import {
+  SearchCategoryDto,
+  SearchQueriesCompleteDto,
+} from '../dtos/search-categories.dto';
 import {
   ICategoryBiotype,
   ICategoryEthnicity,
@@ -87,7 +90,7 @@ export class DiscoveryController {
     enum: ICategoryEthnicity,
   })
   async searchUserV2(
-    @Query() queries: SearchCategoryDto,
+    @Query() queries: SearchQueriesCompleteDto,
     @Logged() user: ILogged,
   ) {
     return this.searchService.searchUserV2(queries, user._id);
@@ -107,7 +110,7 @@ export class DiscoveryController {
     description: 'numero da pagina que deseja buscar. valo padrao 1',
   })
   async searchUserOpened(
-    @Query() queries: Pick<SearchCategoryDto, 'limit' | 'page'>,
+    @Query() queries: Pick<SearchQueriesCompleteDto, 'limit' | 'page'>,
   ) {
     return 'falta implementar';
   }

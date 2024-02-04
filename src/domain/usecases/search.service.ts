@@ -24,6 +24,7 @@ export class SearchUsersService implements ISearchUseCase {
       limit,
       page,
       verified,
+      limitByUser,
       ...rest
     }: IQueriesSearchUser) => {
       const categories = { ...rest };
@@ -109,6 +110,10 @@ export class SearchUsersService implements ISearchUseCase {
       bans: { $not: { $in: [myId] } },
     });
 
+    filters.push({
+      isBanned: false,
+    });
+
     const finalFilters = {};
     if (filters.length) {
       finalFilters['$and'] = filters;
@@ -118,6 +123,10 @@ export class SearchUsersService implements ISearchUseCase {
       {
         limit: Number(queries.limit) || 10,
         page: Number(queries.page) || 1,
+        sort: {
+          createdAt: -1,
+          followers: 1,
+        },
         populate: [
           {
             path: 'profileImage',
@@ -149,7 +158,7 @@ export class SearchUsersService implements ISearchUseCase {
   }
 
   async searchUserV2(
-    queries: IQueriesSearchUser,
+    { limitByUser = 3, ...queries }: IQueriesSearchUser,
     myId: string,
   ): Promise<PaginateResult<IContentEntity>> {
     const getCategories = ({
@@ -157,6 +166,7 @@ export class SearchUsersService implements ISearchUseCase {
       limit,
       page,
       verified,
+      limitByUser,
       ...rest
     }: IQueriesSearchUser) => {
       const categories = { ...rest };
@@ -212,6 +222,10 @@ export class SearchUsersService implements ISearchUseCase {
       filters.push(finalCategories);
     }
 
+    filters.push({
+      _id: { $not: { $eq: myId } },
+    });
+
     if (queries.value) {
       filters.push({
         $or: [
@@ -247,26 +261,24 @@ export class SearchUsersService implements ISearchUseCase {
       finalFilters['$and'] = filters;
     }
 
+    filters.push({
+      isDeleted: false,
+    });
+
     const result = await this.contentRepository.findPaginated(
       {
         limit: Number(queries.limit) || 10,
         page: Number(queries.page) || 1,
         sort: {
           likersId: -1,
-        },
-        group: {
-          _id: '$owner',
-          contents: { $push: '$$ROOT' },
-        },
-        project: {
-          contents: { $slice: ['$contents', 2] },
+          createdAt: -1,
         },
         populate: [
           {
             path: 'owner',
             model: 'User',
             select: 'name profileImage vypperId likersId verified plans',
-            match: { ...finalFilters },
+            match: finalFilters,
             populate: [
               {
                 path: 'profileImage',
@@ -292,18 +304,39 @@ export class SearchUsersService implements ISearchUseCase {
       }))
       .filter((item) => item.owner);
 
+    const finalDocsFiltered: IContentEntity[] = finalDocs.reduce(
+      (acc: IContentEntity[], curr: IContentEntity) => {
+        if (!acc.length) {
+          acc.push({ ...curr });
+          return acc;
+        }
+        const countByUser = acc.filter(
+          //@ts-ignore
+          (doc) => String(doc.owner._id) === String(curr.owner._id),
+        ).length;
+
+        if (countByUser < limitByUser) {
+          acc.push({ ...curr });
+        }
+        return acc;
+      },
+      [],
+    );
+
     return {
-      totalDocs: finalDocs.length,
+      totalDocs: finalDocsFiltered.length,
       limit: result.limit,
-      totalPages: finalDocs.length > result.limit ? result.page : 1,
+      totalPages: finalDocsFiltered.length > result.limit ? result.page : 1,
       page: result.page,
       offset: result.offset,
       pagingCounter: result.pagingCounter,
-      hasPrevPage: finalDocs.length > result.limit ? result.hasPrevPage : false,
-      hasNextPage: finalDocs.length > result.limit ? result.hasNextPage : false,
+      hasPrevPage:
+        finalDocsFiltered.length > result.limit ? result.hasPrevPage : false,
+      hasNextPage:
+        finalDocsFiltered.length > result.limit ? result.hasNextPage : false,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      docs: finalDocs,
+      docs: finalDocsFiltered,
     };
   }
 }

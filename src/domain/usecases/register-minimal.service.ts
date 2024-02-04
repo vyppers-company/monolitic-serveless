@@ -1,11 +1,7 @@
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { IRegisterMinimalUseCase } from '../interfaces/usecases/register.interface';
 import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { RegisterDtoMinimal } from 'src/presentation/dtos/register.dto';
 import { ITYPEUSER } from '../entity/user.entity';
@@ -22,16 +18,25 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
   ) {}
   async registerMinimal(dto: RegisterDtoMinimal) {
     if (dto.email && dto.phone) {
-      throw new ConflictException('only email or phone is needed nor both');
+      throw new HttpException(
+        'only email or phone is needed nor both',
+        HttpStatus.CONFLICT,
+      );
     }
     if (!dto.email && !dto.phone) {
-      throw new ConflictException('At least phone or email is required');
+      throw new HttpException(
+        'At least phone or email is required',
+        HttpStatus.CONFLICT,
+      );
     }
     if (!dto.termsAndConditions) {
-      throw new UnauthorizedException('the value needs to be TRUE');
+      throw new HttpException(
+        'the value needs to be TRUE',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     if (!dto.tokenCode) {
-      throw new UnauthorizedException('token is needed');
+      throw new HttpException('token is needed', HttpStatus.UNAUTHORIZED);
     }
 
     const decryptedCode = await decryptData(dto.tokenCode, ICryptoType.CODE);
@@ -41,7 +46,7 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
     });
 
     if (!code) {
-      throw new UnauthorizedException('invalid token code');
+      throw new HttpException('invalid token code', HttpStatus.UNAUTHORIZED);
     }
 
     const hashedPhone =
@@ -61,14 +66,21 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
     }
 
     if (code.owner !== hashedPhone && code.owner !== hashedEmail) {
-      throw new ConflictException('inconsistent payload info');
+      throw new HttpException('inconsistent payload info', HttpStatus.CONFLICT);
     }
 
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (findedOne) {
-      throw new ConflictException(
+      throw new HttpException(
         'email or phone already exist in our database',
+        HttpStatus.CONFLICT,
+      );
+    }
+    if (findedOne.isBanned) {
+      throw new HttpException(
+        'Account is banned, contact the support team to know more',
+        HttpStatus.UNAUTHORIZED,
       );
     }
 

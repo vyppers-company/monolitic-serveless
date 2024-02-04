@@ -10,6 +10,7 @@ export class EditContentService implements IEditContentUseCase {
     const content = await this.contentRepository.findOne({
       _id: dto.contentId,
       owner: dto.owner,
+      isDeleted: false,
     });
     if (!content) {
       throw new HttpException(

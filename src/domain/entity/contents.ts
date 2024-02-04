@@ -37,6 +37,7 @@ export interface IContentEntity {
   updatedAt?: Date;
   plans?: string[] | IPlanEntity[];
   productId?: string;
+  isDeleted?: boolean;
 }
 export interface IContentEntityExtended extends IContentEntity {
   isFollowed: boolean;

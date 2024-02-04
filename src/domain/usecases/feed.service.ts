@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { IFeedUseCase } from '../interfaces/usecases/feed.interface';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { PaginateResult } from 'mongoose';
@@ -19,7 +19,14 @@ export class FeedService implements IFeedUseCase {
     limit: number,
     page: number,
   ): Promise<PaginateResult<any>> {
-    const user = await this.userRepository.findOne({ _id: myId });
+    const user = await this.userRepository.findOne({
+      _id: myId,
+      isBanned: false,
+    });
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
 
     const filterUsers = [];
 
@@ -65,6 +72,10 @@ export class FeedService implements IFeedUseCase {
         owner: { $in: onwerIds },
       });
     }
+
+    filterContents.push({
+      isDeleted: false,
+    });
 
     const result = await this.contentRepository.findPaginated(
       {
@@ -124,12 +135,21 @@ export class FeedService implements IFeedUseCase {
           likersId: doc.likersId,
           plans:
             doc.plans && doc.plans.length
-              ? doc.plans.map((plan) => ({
-                  _id: plan._id,
-                  name: plan.name,
-                  price: plan.price,
-                  benefits: plan.benefits,
-                }))
+              ? doc.plans.map((plan) =>
+                  !plan.isDeleted || !plan.activate
+                    ? {
+                        _id: plan._id,
+                        name: plan.name,
+                        price: plan.price,
+                        benefits: plan.benefits,
+                      }
+                    : {
+                        _id: plan._id,
+                        name: 'Plano encerrado, não disponível para novos assinantes',
+                        price: plan.price,
+                        benefits: plan.benefits,
+                      },
+                )
               : [],
           isSubscriptor: isSubscriptor(doc.plans, myId),
           text: doc.text,

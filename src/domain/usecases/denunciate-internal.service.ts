@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { DenunciateRepository } from 'src/data/mongoose/repositories/denunciate.repository';
 import {
   IDenunciateQueryDto,
@@ -14,6 +14,7 @@ import { IContentEntity } from '../entity/contents';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
+import { IStatusDenunciate } from '../entity/denunciate';
 
 @Injectable()
 export class DenunciateInternalService {
@@ -26,27 +27,65 @@ export class DenunciateInternalService {
     private readonly cryptoAdapter: CryptoAdapter,
   ) {}
   async getTicketsToAnalise(filters: IDenunciateQueryDto) {
-    const filter = {};
+    const filterByUser = [];
+    const filterByContent = [];
+    const filterByComplaint = [];
 
     if (filters.status) {
-      filter['status'] = filters.status;
+      filterByComplaint.push({
+        status: filters.status,
+      });
     }
+
     if (filters.vypperId) {
-      filter['vypperId'] = filters.vypperId;
+      filterByUser.push({
+        vypperId: { $regex: filters.vypperId, $options: 'i' },
+      });
     }
-    if (filters.startDate) {
-      filter['startDate'] = filters.startDate;
-    }
-    if (filters.endDate) {
-      filter['endDate'] = filters.endDate;
+    if (filters.startDate && filters.endDate) {
+      filterByContent.push({
+        createdAt: {
+          $gte: new Date(filters.startDate),
+          $lte: new Date(filters.endDate),
+        },
+      });
+    } else {
+      // Se apenas startDate OU endDate for fornecido, aplica os filtros individualmente
+      if (filters.startDate) {
+        filterByContent.push({
+          createdAt: { $gte: new Date(filters.startDate) },
+        });
+      }
+      if (filters.endDate) {
+        filterByContent.push({
+          createdAt: { $lte: new Date(filters.endDate) },
+        });
+      }
     }
     if (filters.reason) {
-      filter['reason'] = filters.reason;
+      filterByComplaint.push({
+        reason: filters.reason,
+      });
     }
     if (filters.document) {
-      filter['document'] = filters.document;
+      filterByUser.push({
+        cpf: { $regex: filters.document, $options: 'i' },
+      });
     }
-    const tickets = await this.denunciateRepository.findPaginated(
+
+    const finalComplainantFilter = {};
+    if (filterByComplaint.length) {
+      finalComplainantFilter['$and'] = filterByComplaint;
+    }
+    const finalUserFilter = {};
+    if (filterByUser.length) {
+      finalUserFilter['$and'] = filterByUser;
+    }
+    const finalContentFilter = {};
+    if (filterByContent.length) {
+      finalContentFilter['$and'] = filterByContent;
+    }
+    const result = await this.denunciateRepository.findPaginated(
       {
         limit: Number(filters.limit) || 10,
         page: Number(filters.page) || 1,
@@ -54,25 +93,44 @@ export class DenunciateInternalService {
           {
             path: 'complainant',
             model: 'User',
-            select: 'vypperId name profileImage verified cpf type email phone',
           },
           {
             path: 'reported',
             model: 'User',
-            select: 'vypperId name profileImage verified cpf type email phone',
+            match: finalUserFilter,
           },
           {
             path: 'contentId',
             model: 'Content',
+            match: finalContentFilter,
           },
         ],
       },
-      filter,
+      finalComplainantFilter,
     );
-    return tickets;
+
+    return {
+      totalDocs: result.totalDocs,
+      limit: result.limit,
+      totalPages: result.totalPages,
+      page: result.page,
+      offset: result.offset,
+      pagingCounter: result.pagingCounter,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      docs: result.docs.map((doc) => ({
+        ...doc,
+        complainant: doc.complainant || 'Not Found, deleted by user',
+        reported: doc.reported || 'Not Found, deleted by user',
+        contentId: doc.contentId || 'Not Found, deleted by user',
+      })),
+    };
   }
+
   async getTicketById(ticketId: string) {
-    return await this.denunciateRepository.findOne(
+    const result = await this.denunciateRepository.findOne(
       { _id: ticketId },
       null,
       {
@@ -81,12 +139,10 @@ export class DenunciateInternalService {
           {
             path: 'complainant',
             model: 'User',
-            select: 'vypperId name profileImage verified cpf type email phone',
           },
           {
             path: 'reported',
             model: 'User',
-            select: 'vypperId name profileImage verified cpf type email phone',
           },
           {
             path: 'contentId',
@@ -94,23 +150,35 @@ export class DenunciateInternalService {
           },
         ],
       },
-      true,
     );
+    return {
+      ...result,
+      complainant: result.complainant || 'Not Found, deleted by user',
+      reported: result.reported || 'Not Found, deleted by user',
+      contentId: result.contentId || 'Not Found, deleted by user',
+    };
   }
   async verifyTicket(dto: IVerifyDenuncianteTicketDto) {
     const ticket = await this.denunciateRepository.findOne(
       {
         _id: dto.ticketId,
+        status: IStatusDenunciate.OPENED,
       },
       null,
       {
         populate: [
-          { model: 'User', path: 'reported', select: 'email phone name' },
-          { model: 'Content', path: 'contentId', select: 'text contents' },
+          {
+            model: 'User',
+            path: 'reported',
+          },
+          { model: 'Content', path: 'contentId' },
         ],
       },
-      true,
     );
+
+    if (!ticket) {
+      throw new HttpException('ticket not found', HttpStatus.NOT_FOUND);
+    }
 
     const { email, phone, name } = ticket.reported as IProfile;
     const {
@@ -119,18 +187,12 @@ export class DenunciateInternalService {
       _id: contentId,
     } = ticket.contentId as IContentEntity;
 
-    if (!ticket) {
-      throw new HttpException('ticket doesnt exists', 404);
-    }
     if (dto.decisionToBanUser) {
-      await this.userRepository.banFromPlataform(
-        ticket.reported,
-        dto.reviewerId,
-        dto.ticketId,
-      );
+      await this.userRepository.banFromPlataform(ticket.reported);
+      await this.contentRepository.deleteSoftMany(ticket.reported);
     }
     if (dto.excludeContent) {
-      await this.contentRepository.deleteById(contentId);
+      await this.contentRepository.deleteSoftOne(contentId);
     }
     await this.denunciateRepository.updateStatus(dto, dto.ticketId);
 

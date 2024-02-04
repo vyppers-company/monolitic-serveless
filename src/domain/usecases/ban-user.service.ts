@@ -15,9 +15,15 @@ export class BanUserService implements IBanUserUseCase {
     myId: string,
     queries: IBannedQuery,
   ): Promise<PaginateResult<IProfile> | []> {
-    const user = await this.userRepository.findOne({ _id: myId });
+    const user = await this.userRepository.findOne({
+      _id: myId,
+      isBanned: false,
+    });
 
-    const filter = {};
+    if (!user) {
+      throw new HttpException('not found user', HttpStatus.NOT_FOUND);
+    }
+    const filter = { isBanned: false };
 
     if (user.bans && user.bans.length) {
       filter['_id'] = { $in: user.bans };
@@ -69,6 +75,14 @@ export class BanUserService implements IBanUserUseCase {
       );
     }
     const user = await this.userRepository.findOne({ _id: myId });
+
+    if (!user) {
+      throw new HttpException(
+        { message: 'user not found', reason: 'BannedUser' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
     const userToBan = await this.userRepository.findOne({ _id: userId });
 
     if (!userToBan) {
@@ -104,7 +118,20 @@ export class BanUserService implements IBanUserUseCase {
         HttpStatus.NOT_FOUND,
       );
     }
-    const userToBan = await this.userRepository.findOne({ _id: userId });
+    const user = await this.userRepository.findOne({
+      _id: myId,
+      isBanned: false,
+    });
+    if (!user) {
+      throw new HttpException(
+        { message: 'user not found', reason: 'BannedUser' },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const userToBan = await this.userRepository.findOne({
+      _id: userId,
+      isBanned: false,
+    });
     if (!userToBan) {
       throw new HttpException(
         { message: 'user to ban not found', reason: 'BannedUser' },
@@ -117,7 +144,7 @@ export class BanUserService implements IBanUserUseCase {
         HttpStatus.CONFLICT,
       );
     }
-    const user = await this.userRepository.findOne({ _id: myId });
+
     if (user.bans && user.bans.length && !user.bans.includes(userId)) {
       throw new HttpException(
         { message: "This user haven't ever banned", reason: 'BannedUser' },

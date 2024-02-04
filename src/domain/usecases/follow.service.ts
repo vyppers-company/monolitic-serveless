@@ -6,7 +6,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 export class FollowService implements IFollowUseCase {
   constructor(private readonly userRepository: UserRepository) {}
   async makeFollow(myId: string, userId: string): Promise<void> {
-    const otherUser = await this.userRepository.findOne({ _id: userId });
+    const otherUser = await this.userRepository.findOne({
+      _id: userId,
+      isBanned: false,
+    });
     if (!otherUser) {
       throw new HttpException(
         {

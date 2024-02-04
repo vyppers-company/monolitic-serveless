@@ -24,7 +24,7 @@ export class InternalDenunciateController {
     return await this.internalDenunciateService.getTicketsToAnalise({
       ...filters,
       page: filters.page || 1,
-      limit: filters.limit || 100,
+      limit: filters.limit || 10,
     });
   }
 

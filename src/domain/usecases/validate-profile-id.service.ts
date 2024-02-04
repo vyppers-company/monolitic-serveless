@@ -26,7 +26,7 @@ export class ValidateDataService implements IValidateDataUseCase {
   }
 
   async validateEmail(email: string, myId: string): Promise<string> {
-    const user = await this.userRepository.findOne({ email });
+    const user = await this.userRepository.findOne({ email, isBanned: false });
 
     if (user._id !== myId) {
       throw new BadRequestException('This phone have been used');
@@ -54,7 +54,7 @@ export class ValidateDataService implements IValidateDataUseCase {
     }
   }
   async validatePhone(phone: string, myId: string): Promise<string> {
-    const user = await this.userRepository.findOne({ phone });
+    const user = await this.userRepository.findOne({ phone, isBanned: false });
 
     if (user._id !== myId) {
       throw new BadRequestException('This phone have been used');

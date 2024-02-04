@@ -11,15 +11,18 @@ import {
   QueryOptions,
   QueryWithHelpers,
 } from 'mongoose';
-import { SoftDeleteModel } from 'mongoose-delete';
 import {
   BaseInterfaceRepository,
   IRelationParams,
 } from './base.interface.repository';
 
-export type BaseModel<T extends Document> = Model<T> &
-  SoftDeleteModel<T> &
-  PaginateModel<T>;
+export interface ConditionalsFilters {
+  isDeleted?: boolean;
+  isFreezed?: boolean;
+  isBanned?: boolean;
+}
+
+export type BaseModel<T extends Document> = Model<T> & PaginateModel<T>;
 export abstract class BaseAbstractRepository<T extends Document>
   implements BaseInterfaceRepository<T>
 {
@@ -44,11 +47,7 @@ export abstract class BaseAbstractRepository<T extends Document>
     filter?: FilterQuery<T>,
     projection?: unknown | null,
     options?: QueryOptions | null,
-    withDeleted = false,
   ): Promise<Query<T | null, T>> {
-    if (withDeleted) {
-      return await this.model.findOneWithDeleted(filter, projection, options);
-    }
     return await this.model.findOne(filter, projection, options);
   }
 

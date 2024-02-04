@@ -21,6 +21,7 @@ export interface IPlanEntity {
   updatedAt?: string;
   isAnnual?: boolean;
   annualPercentage?: number;
+  isDeleted?: boolean;
 }
 
 export interface IPlanEntityExtendedResponse extends IPlanEntity {

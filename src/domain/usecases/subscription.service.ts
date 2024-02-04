@@ -34,15 +34,20 @@ export class SubscriptionService implements ISubscriptionsUseCases {
 
     const creator = await this.userRepository.findOne({
       _id: dto.creatorVypperId,
+      isBanned: false,
     });
 
     if (!creator) {
       throw new NotFoundException('creator not found');
     }
-    const buyer = await this.userRepository.findOne({ _id: myId }, null, {
-      lean: true,
-      populate: [{ model: 'Payment', path: 'paymentConfiguration' }],
-    });
+    const buyer = await this.userRepository.findOne(
+      { _id: myId, isBanned: false },
+      null,
+      {
+        lean: true,
+        populate: [{ model: 'Payment', path: 'paymentConfiguration' }],
+      },
+    );
 
     if (!buyer) {
       throw new HttpException('user not found', 404);
@@ -60,6 +65,12 @@ export class SubscriptionService implements ISubscriptionsUseCases {
 
     if (!plan) {
       throw new NotFoundException('plan not found');
+    }
+    if (plan.isDeleted || !plan.activate) {
+      throw new HttpException(
+        'This plan is closed for news subscribers',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     if (
