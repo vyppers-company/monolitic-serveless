@@ -17,7 +17,6 @@ export class BanUserService implements IBanUserUseCase {
   ): Promise<PaginateResult<IProfile> | []> {
     const user = await this.userRepository.findOne({
       _id: myId,
-      isBanned: false,
     });
 
     if (!user) {
@@ -120,7 +119,6 @@ export class BanUserService implements IBanUserUseCase {
     }
     const user = await this.userRepository.findOne({
       _id: myId,
-      isBanned: false,
     });
     if (!user) {
       throw new HttpException(

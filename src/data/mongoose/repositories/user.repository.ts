@@ -156,6 +156,5 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
         },
       },
     );
-    await this.user.deleteOne({ _id: userId });
   }
 }
