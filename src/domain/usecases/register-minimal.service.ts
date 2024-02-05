@@ -72,15 +72,15 @@ export class RegisterMinimalService implements IRegisterMinimalUseCase {
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (findedOne) {
+      if (findedOne.isBanned) {
+        throw new HttpException(
+          'Account is banned, contact the support team to know more',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
       throw new HttpException(
         'email or phone already exist in our database',
         HttpStatus.CONFLICT,
-      );
-    }
-    if (findedOne.isBanned) {
-      throw new HttpException(
-        'Account is banned, contact the support team to know more',
-        HttpStatus.UNAUTHORIZED,
       );
     }
 
