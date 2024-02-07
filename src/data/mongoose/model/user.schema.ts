@@ -78,7 +78,7 @@ export class User extends Document implements IProfile {
   @Prop({ type: Array })
   followers?: string[];
 
-  @Prop()
+  @Prop({ type: Boolean, default: false })
   isBanned?: boolean;
 
   @Prop({ type: Boolean, default: false })
