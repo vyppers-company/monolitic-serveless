@@ -2,8 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { CreateContentDto } from 'src/presentation/dtos/create-content.dto';
 import { ICreateContentUseCase } from '../interfaces/usecases/create-content.interface';
-import { ITypeContent } from '../entity/contents';
+import { AuthorizedTypesMidia, ITypeContent } from '../entity/contents';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
+import {
+  authorizedImages,
+  authorizedVideos,
+} from '../interfaces/adapters/s3.adapter';
 
 @Injectable()
 export class CreateContentService implements ICreateContentUseCase {
@@ -71,6 +75,14 @@ export class CreateContentService implements ICreateContentUseCase {
         await this.contentRepositoru.deleteById(hasProfileImage._id);
       }
     }
+    dto.contents.forEach((content) => {
+      if (
+        !authorizedImages.includes(content.extension) &&
+        !authorizedVideos.includes(content.extension)
+      ) {
+        throw new HttpException('format not allowed', HttpStatus.FORBIDDEN);
+      }
+    });
 
     const data = await this.contentRepositoru.create({
       ...dto,

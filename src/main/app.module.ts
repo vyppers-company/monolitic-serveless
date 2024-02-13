@@ -95,6 +95,8 @@ import { IVSRealTimeClient } from '@aws-sdk/client-ivs-realtime';
 import { InternalDenunciateController } from 'src/presentation/controller/internal-denunciate.controller';
 import { DenunciateInternalService } from 'src/domain/usecases/denunciate-internal.service';
 import { DiscoveryController } from 'src/presentation/controller/discovery.controller';
+import { NotificationAdapter } from 'src/infra/adapters/notification/notificationAdapter';
+import webPush from 'web-push';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -113,6 +115,17 @@ import { DiscoveryController } from 'src/presentation/controller/discovery.contr
     ]),
   ],
   providers: [
+    {
+      provide: 'web_push',
+      useFactory: () => {
+        webPush.setVapidDetails(
+          `mailto:${environment.vapid.email}`,
+          environment.vapid.publicKey,
+          environment.vapid.privateKey,
+        );
+        return webPush;
+      },
+    },
     {
       provide: 'stripe',
       useValue: new Stripe(environment.payment.stripe.secretKey),
@@ -210,6 +223,7 @@ import { DiscoveryController } from 'src/presentation/controller/discovery.contr
     PaymentCustomerAdapter,
     SetupIntentAdapter,
     PaymentMethodAdapter,
+    NotificationAdapter,
   ],
   controllers: [
     DiscoveryController,

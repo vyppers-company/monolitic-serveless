@@ -1,9 +1,13 @@
 import { IPlanEntity } from './plan';
 import { IProfile } from './user.entity';
-
+export enum AuthorizedTypesMidia {
+  VIDEO_EXTENSIONS = 'VIDEO',
+  IMAGE_EXTENSIONS = 'IMAGE',
+}
 export interface IUploadContent {
   _id?: string;
-  type: string;
+  extension: string;
+  type: AuthorizedTypesMidia;
   content: string;
   thumb?: string;
   blockedThumb?: string;

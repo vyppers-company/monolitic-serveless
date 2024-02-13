@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  AuthorizedTypesMidia,
   IContentEntity,
   ITypeContent,
   IUploadContent,
@@ -34,7 +35,10 @@ export class UploadContentDto implements IUploadContent {
   thumb?: string;
   @ApiProperty()
   @IsString()
-  type: string;
+  extension: string;
+  @ApiProperty()
+  @IsString()
+  type: AuthorizedTypesMidia;
 }
 export class CreateContentDto implements IContentEntity {
   @ApiProperty({
@@ -64,6 +68,7 @@ export class CreateContentDto implements IContentEntity {
         content: 'string',
         preview: 'string',
         shortContent: 'string',
+        group: 'string',
       },
     ]),
   })

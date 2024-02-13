@@ -1,11 +1,24 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { environment } from 'src/main/config/environment/environment';
 import * as mime from 'mime-types';
 import { randomUUID } from 'node:crypto';
-import { ITypeContent, IUploadContent } from '../entity/contents';
+import {
+  AuthorizedTypesMidia,
+  ITypeContent,
+  IUploadContent,
+} from '../entity/contents';
 import { blur } from 'src/shared/utils/sharp';
 import { captureScreenshotFromS3 } from 'src/shared/helpers/screenshot';
 import { S3Adapter } from 'src/infra/adapters/aws/s3/s3.adapter';
+import {
+  authorizedImages,
+  authorizedVideos,
+} from '../interfaces/adapters/s3.adapter';
 
 @Injectable()
 export class S3Service {
@@ -17,9 +30,21 @@ export class S3Service {
     if (file.mimetype.includes('video') && type === ITypeContent.PROFILE) {
       throw new BadRequestException('profile cant be a video');
     }
-    const uploads = { _id: randomUUID() } as IUploadContent;
-    uploads['type'] = mime.extension(file.mimetype) as string;
 
+    const uploads = { _id: randomUUID() } as IUploadContent;
+    uploads['extension'] = mime.extension(file.mimetype) as string;
+
+    const allAuthorizedTypes = authorizedImages.concat(authorizedVideos);
+
+    if (!allAuthorizedTypes.includes(uploads.extension)) {
+      throw new HttpException('format not allowed', HttpStatus.FORBIDDEN);
+    }
+    if (authorizedImages.includes(uploads.extension)) {
+      uploads['type'] = AuthorizedTypesMidia.IMAGE_EXTENSIONS;
+    }
+    if (authorizedVideos.includes(uploads.extension)) {
+      uploads['type'] = AuthorizedTypesMidia.VIDEO_EXTENSIONS;
+    }
     if (file.mimetype.includes('video')) {
       const fileExtName = mime.extension(file.mimetype);
       const randomName = randomUUID();

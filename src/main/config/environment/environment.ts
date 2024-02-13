@@ -9,6 +9,11 @@ export const environment = {
     cors: Array.from(process.env.ORIGINS.split(',')) || [],
     waterMark: process.env.WATER_MARK || '',
   },
+  vapid: {
+    publicKey: process.env.VAPID_PUBLIC_KEY || '',
+    privateKey: process.env.VAPID_PRIVATE_KEY || '',
+    email: process.env.VAPID_EMAIL || '',
+  },
   payment: {
     stripe: {
       secretKey: process.env.STRIPE_SECRET_KEY || '',
