@@ -1,10 +1,15 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Logger, Patch, Post } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 import { RecoveryService } from '../../domain/usecases/recovery.service';
 import { ChangePasswordDto } from '../dtos/change-pass.dto';
 import { Code, RecoveryDto, TokenCodeResponse } from '../dtos/recovery.dto';
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
+import { Logged } from 'src/shared/decorators/logged.decorator';
+import { userInfo } from 'os';
+import { ILogged } from 'src/domain/interfaces/others/logged.interface';
+import { VapidNotificationService } from 'src/domain/usecases/vapidNotification.service';
+import { SavePermissionVapid } from '../dtos/save-permission-vapid.dto';
 
 @Controller('notification')
 export class RecoveryController {
@@ -13,6 +18,7 @@ export class RecoveryController {
     private readonly recoveryService: RecoveryService,
     private readonly changePasswordService: ChangePasswordService,
     private readonly validateCodeService: ValidateCodeService,
+    private readonly vapidNotificationService: VapidNotificationService,
   ) {
     this.logger = new Logger();
   }
@@ -37,5 +43,18 @@ export class RecoveryController {
   @Post('v1/change-password')
   async changePassword(@Body() dto: ChangePasswordDto) {
     return await this.changePasswordService.change(dto);
+  }
+  @ApiTags('notification')
+  @Patch('v1/permission/browser')
+  @ApiBearerAuth()
+  @ApiBody({ type: SavePermissionVapid })
+  async savePermissionToSendNotificationByBrowser(
+    @Body() dto: SavePermissionVapid,
+    @Logged() user: ILogged,
+  ) {
+    return await this.vapidNotificationService.savePermissionNotificationBrowser(
+      dto,
+      user._id,
+    );
   }
 }

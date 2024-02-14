@@ -49,6 +49,9 @@ export const environment = {
       product: process.env.MONGODB_COLLECTION_PRODUCT || '',
       payment: process.env.MONGODB_COLLECTION_PAYMENT || '',
       verifyDocuments: process.env.MONGODB_COLLECTION_VERIFICATION || '',
+      configNotification:
+        process.env.MONGO_COLLECTION_CONFIG_NOTIFICATION || '',
+      notifications: process.env.MONGO_COLLECTION_NOTIFICATIONS || '',
     },
   },
   aws: {

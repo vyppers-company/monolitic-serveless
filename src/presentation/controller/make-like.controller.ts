@@ -16,6 +16,6 @@ export class ReactionsController {
     @Param('contentId') contentId: string,
     @Logged() logged: ILogged,
   ) {
-    await this.makeLike.makeLike(contentId, logged._id);
+    this.makeLike.makeLike(contentId, logged._id);
   }
 }

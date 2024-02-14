@@ -97,6 +97,17 @@ import { DenunciateInternalService } from 'src/domain/usecases/denunciate-intern
 import { DiscoveryController } from 'src/presentation/controller/discovery.controller';
 import { NotificationAdapter } from 'src/infra/adapters/notification/notificationAdapter';
 import webPush from 'web-push';
+import { VapidNotificationService } from 'src/domain/usecases/vapidNotification.service';
+import {
+  ConfigNotification,
+  NotificationConfigSchema,
+} from 'src/data/mongoose/model/notification-config';
+import {
+  NotificationMessage,
+  NotificationMessageSchema,
+} from 'src/data/mongoose/model/notification';
+import { ConfigNotificationRepository } from 'src/data/mongoose/repositories/config-notification.repository';
+import { NotificationsMessageRepository } from 'src/data/mongoose/repositories/notification.repository';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -112,6 +123,8 @@ import webPush from 'web-push';
       { name: VerifyDocuments.name, schema: VerifiDocumentsSchema },
       { name: InternalUser.name, schema: InternalUserSchema },
       { name: Denunciate.name, schema: denunciateSchema },
+      { name: ConfigNotification.name, schema: NotificationConfigSchema },
+      { name: NotificationMessage.name, schema: NotificationMessageSchema },
     ]),
   ],
   providers: [
@@ -172,6 +185,8 @@ import webPush from 'web-push';
         },
       }),
     },
+    ConfigNotificationRepository,
+    NotificationsMessageRepository,
     FacebookAuthStrategy,
     GoogleAuthStrategy,
     ContentRepository,
@@ -183,6 +198,8 @@ import webPush from 'web-push';
     ProductRepository,
     VerifyDocumentsRepository,
     InternalUserRepository,
+
+    VapidNotificationService,
     VerifyDocumentsInternalService,
     RegisterInternalUserService,
     AuthInternalUserService,
@@ -213,6 +230,8 @@ import webPush from 'web-push';
     VerifyDocumentsService,
     DenunciateService,
     DenunciateInternalService,
+    VapidNotificationService,
+
     CryptoAdapter,
     SESAdapter,
     S3Adapter,

@@ -20,7 +20,7 @@ export class NotificationAdapter implements INotificationAdapter {
     }
     await this.webPushProvider.sendNotification(
       payload.subscriber,
-      JSON.stringify(payload.paylad),
+      JSON.stringify(payload.payload),
     );
   }
 }
