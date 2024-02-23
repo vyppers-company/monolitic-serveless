@@ -6,7 +6,7 @@ export enum AuthorizedTypesMidia {
 }
 export interface IUploadContent {
   _id?: string;
-  extension: string;
+  extension?: string;
   type: AuthorizedTypesMidia;
   content: string;
   thumb?: string;

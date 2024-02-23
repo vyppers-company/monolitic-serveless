@@ -34,8 +34,9 @@ export class UploadContentDto implements IUploadContent {
   @IsOptional()
   thumb?: string;
   @ApiProperty()
+  @IsOptional()
   @IsString()
-  extension: string;
+  extension?: string;
   @ApiProperty()
   @IsString()
   type: AuthorizedTypesMidia;
@@ -57,18 +58,16 @@ export class CreateContentDto implements IContentEntity {
   type: ITypeContent;
 
   @IsArray()
-  @ValidateNested({ each: true })
   @Type(() => UploadContentDto)
   @ApiProperty({
     example: JSON.stringify([
       {
-        type: 'string',
+        _id: 'string',
+        extension: 'jpeg',
+        type: 'IMAGE',
+        content: 'string',
         thumb: 'string',
         blockedThumb: 'string',
-        content: 'string',
-        preview: 'string',
-        shortContent: 'string',
-        group: 'string',
       },
     ]),
   })

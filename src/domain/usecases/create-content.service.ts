@@ -75,14 +75,14 @@ export class CreateContentService implements ICreateContentUseCase {
         await this.contentRepositoru.deleteById(hasProfileImage._id);
       }
     }
-    dto.contents.forEach((content) => {
+    /* dto.contents.forEach((content) => {
       if (
         !authorizedImages.includes(content.extension) &&
         !authorizedVideos.includes(content.extension)
       ) {
         throw new HttpException('format not allowed', HttpStatus.FORBIDDEN);
       }
-    });
+    }); */
 
     const data = await this.contentRepositoru.create({
       ...dto,
