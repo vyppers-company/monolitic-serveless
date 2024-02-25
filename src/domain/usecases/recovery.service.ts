@@ -2,6 +2,8 @@ import {
   UnprocessableEntityException,
   Injectable,
   ConflictException,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
 import { SendSmsAdapter } from '../../infra/adapters/aws/sns/blow-io.adapter';
@@ -48,7 +50,7 @@ export class RecoveryService implements IRcoveryUseCase {
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (!findedOne) {
-      throw new UnprocessableEntityException();
+      throw new HttpException('', HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     const existentCode = await this.codeRecoveryRepository.findOne({
@@ -104,7 +106,7 @@ export class RecoveryService implements IRcoveryUseCase {
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (findedOne) {
-      throw new ConflictException('email or phone already exists');
+      throw new HttpException('', HttpStatus.UNPROCESSABLE_ENTITY);
     }
     const existentCode = await this.codeRecoveryRepository.findOne({
       owner: finalDto?.email ? finalDto.email : finalDto.phone,
