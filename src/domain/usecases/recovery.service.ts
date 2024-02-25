@@ -78,6 +78,7 @@ export class RecoveryService implements IRcoveryUseCase {
           IValidationCodeType.RECOVERY,
         );
       }
+      return code;
     }
   }
   async sendNaoLogado(dto: IRecoveryDto) {
@@ -133,6 +134,7 @@ export class RecoveryService implements IRcoveryUseCase {
           IValidationCodeType.REGISTER,
         );
       }
+      return code;
     }
   }
 }

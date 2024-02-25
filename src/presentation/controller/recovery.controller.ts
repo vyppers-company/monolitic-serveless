@@ -26,12 +26,12 @@ export class RecoveryController {
   @ApiTags('notification')
   @Post('v1/code/send/recovery')
   async recoveryCode(@Body() dto: RecoveryDto) {
-    await this.recoveryService.send(dto);
+    return await this.recoveryService.send(dto);
   }
   @ApiTags('notification')
   @Post('v1/code/send/register')
   async registerCode(@Body() dto: RecoveryDto) {
-    await this.recoveryService.sendNaoLogado(dto);
+    return await this.recoveryService.sendNaoLogado(dto);
   }
 
   @ApiTags('validation')
