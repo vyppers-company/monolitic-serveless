@@ -108,6 +108,7 @@ import {
 } from 'src/data/mongoose/model/notification';
 import { ConfigNotificationRepository } from 'src/data/mongoose/repositories/config-notification.repository';
 import { NotificationsMessageRepository } from 'src/data/mongoose/repositories/notification.repository';
+import { EventBridge, SQS } from 'aws-sdk';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -142,6 +143,26 @@ import { NotificationsMessageRepository } from 'src/data/mongoose/repositories/n
     {
       provide: 'stripe',
       useValue: new Stripe(environment.payment.stripe.secretKey),
+    },
+    {
+      provide: 'sqs',
+      useValue: new SQS({
+        credentials: {
+          accessKeyId: environment.aws.config.clientId,
+          secretAccessKey: environment.aws.config.secretKey,
+        },
+        region: 'us-east-1',
+      }),
+    },
+    {
+      provide: 'event-bridge',
+      useValue: new EventBridge({
+        credentials: {
+          accessKeyId: environment.aws.config.clientId,
+          secretAccessKey: environment.aws.config.secretKey,
+        },
+        region: 'us-east-1',
+      }),
     },
     {
       provide: 'ivs',

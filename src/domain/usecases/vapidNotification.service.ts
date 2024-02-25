@@ -57,4 +57,17 @@ export class VapidNotificationService implements IVapidNotificationService {
       payload: payload,
     });
   }
+
+  async sendCampaign(user: any, campaignNotification: any) {
+    this.notificationsMessage.create({
+      isViewed: false,
+      receiver: user.receiverId,
+      sender: campaignNotification.senderId,
+      payload: campaignNotification.payload,
+    });
+    this.notificationAdapter.sendNotification({
+      subscriber: user.subscriptionKey,
+      payload: campaignNotification.payload,
+    });
+  }
 }

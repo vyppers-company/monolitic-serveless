@@ -64,7 +64,7 @@ export class RecoveryService implements IRcoveryUseCase {
         expiresIn: Date.now() + environment.sendCode.expiration,
       });
 
-      if (isEmail) {
+      /*  if (isEmail) {
         await this.sesAdapter.sendEmailCode(
           dto.emailOrPhone,
           code.formated,
@@ -77,7 +77,7 @@ export class RecoveryService implements IRcoveryUseCase {
           code.formated,
           IValidationCodeType.RECOVERY,
         );
-      }
+      } */
       return code;
     }
   }
@@ -120,7 +120,7 @@ export class RecoveryService implements IRcoveryUseCase {
         type: IValidationCodeType.REGISTER,
       });
 
-      if (isEmail) {
+      /* if (isEmail) {
         this.sesAdapter.sendEmailCode(
           dto.emailOrPhone,
           code.formated,
@@ -133,7 +133,7 @@ export class RecoveryService implements IRcoveryUseCase {
           code.formated,
           IValidationCodeType.REGISTER,
         );
-      }
+      } */
       return code;
     }
   }
