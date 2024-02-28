@@ -175,10 +175,10 @@ export class AuthService implements IAuthUseCase {
     }
     const age = user.birthday ? getAge(user.birthday) : null;
 
-    if (!age) {
+    if (typeof age === 'number' && age !== null && age < 18) {
       throw new HttpException(
         {
-          message: 'You need have more than 18 years old',
+          message: 'You need to be at least 18 years old',
           reason: 'InvalidAge',
         },
         HttpStatus.CONFLICT,
