@@ -204,7 +204,7 @@ export class AuthService implements IAuthUseCase {
     await this.contentCreate.create(
       {
         type: ITypeContent.PROFILE,
-        contents: [urlS3[0]],
+        contents: [urlS3],
         plans: [],
       },
       String(newOne._id),
@@ -230,7 +230,7 @@ export class AuthService implements IAuthUseCase {
       info: {
         _id: newOne._id,
         name: newOne.name || null,
-        profileImage: urlS3 ? urlS3 : null,
+        profileImage: contentProfile ? contentProfile : null,
         vypperId: newOne.vypperId || null,
         verified: newOne.verified || null,
         bio: newOne.bio || null,
