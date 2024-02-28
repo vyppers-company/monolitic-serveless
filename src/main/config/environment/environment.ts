@@ -21,12 +21,6 @@ export const environment = {
   },
   oauth: {
     redirectFrontUrl: process.env.REDIRECT_FRONTEND_URL || '',
-    google: {
-      clientId: process.env.GOOGLE_AUTH_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET || '',
-      callbackUrl: process.env.GOOGLE_AUTH_CALLBACK_URL || '',
-      scope: Array.from(process.env.GOOGLE_AUTH_SCOPE.split(',')) || [],
-    },
     facebook: {
       clientId: process.env.FACEBOOK_AUTH_CLIENT_ID || '',
       clientSecret: process.env.FACEBOOK_AUTH_CLIENT_SECRET || '',

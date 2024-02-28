@@ -1,33 +1,21 @@
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { environment } from 'src/main/config/environment/environment';
 import axios from 'axios';
 import { IProfile } from '../entity/user.entity';
+import { AuthService } from './auth.service';
+import { AuthGoogleDto } from 'src/presentation/dtos/auth-google';
 
 @Injectable()
-export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor() {
-    super({
-      clientID: environment.oauth.google.clientId,
-      clientSecret: environment.oauth.google.clientSecret,
-      callbackURL: environment.oauth.google.callbackUrl,
-      scope: environment.oauth.google.scope,
-    });
-  }
-  async validate(
-    _accessToken: string,
-    _refreshToken: string,
-    profile: any,
-    done: VerifyCallback,
-  ): Promise<any> {
-    const {
-      _json: { email, name, picture },
-    } = profile;
+export class GoogleAuthStrategy {
+  constructor(private readonly authService: AuthService) {}
+  async validate(dto: AuthGoogleDto): Promise<any> {
+    const dataGoogle = await axios.get(
+      `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${dto.accessToken}`,
+    );
+
     const user: IProfile = {
-      email,
-      name,
-      profileImage: picture,
+      email: dataGoogle.data.email,
+      name: `${dataGoogle.data.given_name} ${dataGoogle.data.family_name}`,
+      profileImage: dataGoogle.data.picture,
       oauth2Partner: 'google',
       termsAndConditions: true,
       caracteristics: {
@@ -39,11 +27,11 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
       },
     };
 
-    const { data } = await axios.get(
+    /* const { data } = await axios.get(
       'https://people.googleapis.com/v1/people/me?personFields=genders,birthdays',
       {
         headers: {
-          Authorization: `Bearer ${_accessToken}`,
+          Authorization: `Bearer ${dto.accessToken}`,
         },
       },
     );
@@ -60,11 +48,16 @@ export class GoogleAuthStrategy extends PassportStrategy(Strategy, 'google') {
               : data.birthdays[1].date.day
           }T03:01:00Z`
         : null;
-
-    done(null, {
+ */
+    const response = await this.authService.loginOauth20({
       ...user,
-      birthday: formattedBirthday,
-      gender: data?.genders ? data.genders[0].value : null,
+      birthday: /* formattedBirthday */ null,
+      caracteristics: {
+        ...user.caracteristics,
+        gender: /* data?.genders ? data.genders[0].value : */ null,
+      },
     });
+
+    return response;
   }
 }
