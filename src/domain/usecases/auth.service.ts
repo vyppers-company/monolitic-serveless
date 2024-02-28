@@ -128,9 +128,6 @@ export class AuthService implements IAuthUseCase {
       null,
       {
         lean: true,
-        populate: [
-          { path: 'profileImage', select: 'contents', model: 'Content' },
-        ],
       },
     );
 
@@ -144,7 +141,7 @@ export class AuthService implements IAuthUseCase {
           HttpStatus.UNAUTHORIZED,
         );
       }
-
+      const image = await this.contentGet.getProfileImage(findedOne._id);
       const token = await generateToken(
         {
           _id: String(findedOne._id),
@@ -153,7 +150,7 @@ export class AuthService implements IAuthUseCase {
         },
         ICryptoType.USER,
       );
-      const profileImageInstance = findedOne.profileImage as IContentEntity;
+      const profileImageInstance = image;
 
       return {
         token,
@@ -208,6 +205,7 @@ export class AuthService implements IAuthUseCase {
       {
         type: ITypeContent.PROFILE,
         contents: [urlS3[0]],
+        plans: [],
       },
       String(newOne._id),
     );
@@ -230,16 +228,16 @@ export class AuthService implements IAuthUseCase {
     return {
       token,
       info: {
-        _id: findedOne._id,
-        name: findedOne.name || null,
+        _id: newOne._id,
+        name: newOne.name || null,
         profileImage: urlS3 ? urlS3 : null,
-        vypperId: findedOne.vypperId || null,
-        verified: findedOne.verified || null,
-        bio: findedOne.bio || null,
-        birthday: findedOne.birthday || null,
-        caracteristics: findedOne.caracteristics || null,
-        interests: findedOne.interests || null,
-        bans: findedOne.bans || null,
+        vypperId: newOne.vypperId || null,
+        verified: newOne.verified || null,
+        bio: newOne.bio || null,
+        birthday: newOne.birthday || null,
+        caracteristics: newOne.caracteristics || null,
+        interests: newOne.interests || null,
+        bans: newOne.bans || null,
       },
     };
   }
