@@ -92,6 +92,16 @@ export class VerifyDocumentsService implements IVerifyDocumentsUseCase {
     }
 
     const documentsInAnalise = await this.verify.find({ owner: myId }, null, {
+      populate: [
+        {
+          path: 'owner',
+          model: 'User',
+          select: 'name cpf verified profileImage',
+          populate: [
+            { path: 'profileImage', model: 'Content', select: 'contents' },
+          ],
+        },
+      ],
       sort: { createdAt: -1 },
       lean: true,
     });
