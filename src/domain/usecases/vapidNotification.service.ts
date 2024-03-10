@@ -46,16 +46,18 @@ export class VapidNotificationService implements IVapidNotificationService {
     const notificationConfig = await this.configNotificationRepository.findOne({
       owner: myId,
     });
-    await this.notificationsMessage.create({
-      isViewed: false,
-      receiver: receiverId,
-      sender: myId,
-      payload: payload,
-    });
-    await this.notificationAdapter.sendNotification({
-      subscriber: notificationConfig.subscriptionKey,
-      payload: payload,
-    });
+    if (notificationConfig) {
+      await this.notificationsMessage.create({
+        isViewed: false,
+        receiver: receiverId,
+        sender: myId,
+        payload: payload,
+      });
+      await this.notificationAdapter.sendNotification({
+        subscriber: notificationConfig.subscriptionKey,
+        payload: payload,
+      });
+    }
   }
 
   async sendCampaign(user: any, campaignNotification: any) {

@@ -55,22 +55,22 @@ export class MakeLikeService implements IMakeLikeUseCase {
       ]);
     }
     //criar fila e desacoplar envio de notifacao no futuro
-    //  if (myId !== content.owner) {
-    //trocar chamada direta por uma fila
+    if (myId !== content.owner) {
+      //trocar chamada direta por uma fila
 
-    await this.vapidNotificationService.sendNotification(
-      {
-        date: new Date().toISOString(),
-        title: `nova notificação`,
-        //@ts-ignore
-        image: user?.profileImage?.contents[0] || null,
-        message: `@${user.vypperId} ${
-          content.likersId.includes(myId) ? 'descurtiu' : 'curtiu'
-        } sua foto`,
-      },
-      myId,
-      content.owner,
-    );
-    //   }
+      await this.vapidNotificationService.sendNotification(
+        {
+          date: new Date().toISOString(),
+          title: `nova notificação`,
+          //@ts-ignore
+          image: user?.profileImage?.contents[0] || null,
+          message: `@${user.vypperId} ${
+            content.likersId.includes(myId) ? 'descurtiu' : 'curtiu'
+          } sua foto`,
+        },
+        myId,
+        content.owner,
+      );
+    }
   }
 }
