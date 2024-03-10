@@ -6,11 +6,14 @@ import { enableCors } from '../../config/cors';
 import { setupSwagger } from '../../config/swagger';
 import * as mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
+import { HttpExceptionFilter } from 'src/shared/filters/http-exception.filter';
 async function bootstrapServer() {
   mongoose.plugin(mongoosePaginate);
   const app = await NestFactory.create(AppModule);
   enableCors(app);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   setupSwagger(app);
   await app.listen(environment.app.port, () => {
     Logger.log('Listening at http://localhost:' + environment.app.port + '/');
