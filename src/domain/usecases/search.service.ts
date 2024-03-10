@@ -296,7 +296,7 @@ export class SearchUsersService implements ISearchUseCase {
     const finalDocs = result.docs
       .map((item) => ({
         ...item,
-        likersId: item.likersId.length,
+        likersId: item.likersId,
         plans: item.plans.map(({ paymentPlanId, subscribers, ...rest }) => ({
           ...rest,
           subscribers: subscribers.length,
