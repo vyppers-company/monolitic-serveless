@@ -11,8 +11,8 @@ async function bootstrapServer() {
   mongoose.plugin(mongoosePaginate);
   const app = await NestFactory.create(AppModule);
   enableCors(app);
-  app.useGlobalPipes(new ValidationPipe({ transform: true }));
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
   setupSwagger(app);
   await app.listen(environment.app.port, () => {

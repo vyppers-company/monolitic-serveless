@@ -8,6 +8,7 @@ import { ContentRepository } from 'src/data/mongoose/repositories/content.reposi
 import { IContentEntity, ITypeContent } from '../entity/contents';
 import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
+import { ITYPEUSER } from '../entity/user.entity';
 
 @Injectable()
 export class GetProfileService implements IGetProfileUseCase {
@@ -80,25 +81,16 @@ export class GetProfileService implements IGetProfileUseCase {
     }
     const contents = await this.contentRepository.find({ owner: user._id });
     const content = user.profileImage as IContentEntity;
-
     const paymentConfiguration = user.paymentConfiguration as any;
 
     const finalObjt = {
       _id: user._id,
+      birthday: user.type === ITYPEUSER.CREATOR ? user.birthday : null,
+      canEdit: myId === userId ? true : false,
       name: user.name,
       vypperId: user.vypperId || null,
       bio: user.bio || null,
       profileImage: content ? content.contents[0].content : null,
-      planConfiguration: user.planConfiguration.length
-        ? user.planConfiguration
-            //@ts-ignore
-            .filter((plan) => !plan.isDeleted)
-            .map((pln: any) => ({
-              ...pln,
-              subscribers:
-                myId === userId ? pln.subscribers : pln.subscribers.length,
-            }))
-        : [],
       followersQtd: user.followers ? user.followers.length : 0,
       isFollowed:
         user.followers && user.followers
@@ -125,16 +117,7 @@ export class GetProfileService implements IGetProfileUseCase {
     };
 
     if (myId === userId) {
-      finalObjt['caracteristics'] = user.caracteristics;
-      finalObjt['birthday'] = user.birthday;
-      finalObjt['email'] = user.email
-        ? this.crypto.decryptText(user.email, ICryptoType.USER)
-        : null;
-      finalObjt['phone'] = user.phone
-        ? this.crypto.decryptText(user.phone, ICryptoType.USER)
-        : null;
-      finalObjt['interests'] = user.interests;
-      finalObjt['bansQtd'] = user.bans ? user.bans.length : 0;
+      finalObjt['planConfiguration'] = user.planConfiguration;
       finalObjt['paymentConfiguration'] = paymentConfiguration
         ? {
             _id: paymentConfiguration._id,
@@ -143,6 +126,15 @@ export class GetProfileService implements IGetProfileUseCase {
             })),
           }
         : null;
+      finalObjt['caracteristics'] = user.caracteristics;
+      finalObjt['email'] = user.email
+        ? this.crypto.decryptText(user.email, ICryptoType.USER)
+        : null;
+      finalObjt['phone'] = user.phone
+        ? this.crypto.decryptText(user.phone, ICryptoType.USER)
+        : null;
+      finalObjt['interests'] = user.interests;
+      finalObjt['bansQtd'] = user.bans ? user.bans.length : 0;
     }
 
     return finalObjt;

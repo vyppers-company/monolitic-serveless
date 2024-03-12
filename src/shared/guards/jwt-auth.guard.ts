@@ -32,6 +32,7 @@ export class JwtAuthGuard implements CanActivate {
       if (!decrypted.payload) {
         throw new UnauthorizedException();
       }
+
       return true;
     } catch (err) {
       throw new UnauthorizedException();

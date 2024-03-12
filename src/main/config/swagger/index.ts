@@ -7,6 +7,15 @@ const setupSwagger = (app: INestApplication) => {
     .setTitle(`${environment.app.serviceName}`)
     .setVersion('1.0.0')
     .addBearerAuth()
+    .addGlobalParameters({
+      name: 'x-profile-id',
+      in: 'header',
+      required: true,
+      description: 'Profile ID from header',
+      schema: {
+        type: 'string',
+      },
+    })
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('swagger', app, document);

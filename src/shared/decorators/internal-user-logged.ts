@@ -1,6 +1,7 @@
 import {
   createParamDecorator,
   ExecutionContext,
+  HttpException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { environment } from '../../main/config/environment/environment';
@@ -17,7 +18,12 @@ export const InternalUserLogged = createParamDecorator(
       ) {
         throw new UnauthorizedException();
       }
-
+      if (
+        !request.headers['x-profile-id'] ||
+        request.headers['x-profile-id'] === undefined
+      ) {
+        throw new UnauthorizedException();
+      }
       const authorization =
         (request.headers.authorization || '').split(' ')[1] || '';
 
@@ -30,7 +36,10 @@ export const InternalUserLogged = createParamDecorator(
       if (!decrypted?.payload) {
         throw new UnauthorizedException();
       }
-
+      const { _id } = decrypted.payload;
+      if (_id !== request.hearders['x-profile-id']) {
+        throw new HttpException('unauthorize', 403);
+      }
       return decrypted.payload;
     } catch (err) {
       throw new UnauthorizedException();

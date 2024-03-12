@@ -98,6 +98,7 @@ import { DiscoveryController } from 'src/presentation/controller/discovery.contr
 import { NotificationAdapter } from 'src/infra/adapters/notification/notificationAdapter';
 import webPush from 'web-push';
 import { VapidNotificationService } from 'src/domain/usecases/vapidNotification.service';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import {
   ConfigNotification,
   NotificationConfigSchema,
