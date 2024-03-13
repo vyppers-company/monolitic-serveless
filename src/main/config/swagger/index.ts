@@ -7,17 +7,36 @@ const setupSwagger = (app: INestApplication) => {
     .setTitle(`${environment.app.serviceName}`)
     .setVersion('1.0.0')
     .addBearerAuth()
-    .addGlobalParameters({
+    .build();
+
+  const document = SwaggerModule.createDocument(app, options);
+
+  const bearerAuthRoutes = Object.keys(document.paths)
+    .filter((key) => document.paths[key])
+    .map((key) => {
+      const path = document.paths[key];
+      const firstField = Object.values(path)[0];
+      return firstField;
+    })
+    .filter(
+      (route) =>
+        route.security && route.security.some((security) => security.bearer),
+    );
+
+  bearerAuthRoutes.forEach((route) => {
+    const parameters = route.parameters || [];
+    parameters.push({
       name: 'x-profile-id',
       in: 'header',
       required: true,
-      description: 'Profile ID from header',
       schema: {
         type: 'string',
       },
-    })
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
+      description: 'Profile ID from header',
+    });
+    route.parameters = parameters;
+  });
+
   SwaggerModule.setup('swagger', app, document);
 };
 
