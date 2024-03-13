@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { SQS } from 'aws-sdk';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class SQSAdapter {
         },
       );
     } catch (error) {
-      console.error('Error on  EventBridge:', error);
+      throw new HttpException(error?.Error || 'Internal Server Error', 500);
     }
   }
 }

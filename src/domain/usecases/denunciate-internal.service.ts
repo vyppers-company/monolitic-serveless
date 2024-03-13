@@ -5,7 +5,6 @@ import {
   IVerifyDenuncianteTicketDto,
 } from '../interfaces/usecases/denunciate-internal.interface';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
-import { SendSmsAdapter } from 'src/infra/adapters/aws/sns/blow-io.adapter';
 import { SESAdapter } from 'src/infra/adapters/aws/ses/ses.adapter';
 import { IProfile } from '../entity/user.entity';
 import { templatesEmail } from 'src/shared/templates/emailTemplates';
@@ -15,13 +14,14 @@ import { ContentRepository } from 'src/data/mongoose/repositories/content.reposi
 import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { IStatusDenunciate } from '../entity/denunciate';
+import { SNSAdapter } from 'src/infra/adapters/aws/sns/aws-sns.adapter';
 
 @Injectable()
 export class DenunciateInternalService {
   constructor(
     private readonly denunciateRepository: DenunciateRepository,
     private userRepository: UserRepository,
-    private readonly sendSmsAdapter: SendSmsAdapter,
+    private readonly snsAdapter: SNSAdapter,
     private readonly sesAdapter: SESAdapter,
     private readonly contentRepository: ContentRepository,
     private readonly cryptoAdapter: CryptoAdapter,
@@ -220,7 +220,7 @@ export class DenunciateInternalService {
         phone,
         ICryptoType.USER,
       );
-      await this.sendSmsAdapter.sendSms(
+      await this.snsAdapter.sendSms(
         decryptedEPhone,
         templatesSMS.BAN_USER_MESSAGE.BODY(
           name,

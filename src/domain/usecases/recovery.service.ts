@@ -1,12 +1,5 @@
-import {
-  UnprocessableEntityException,
-  Injectable,
-  ConflictException,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CodeRepository } from '../../data/mongoose/repositories/code.repository';
-import { SendSmsAdapter } from '../../infra/adapters/aws/sns/blow-io.adapter';
 import { CryptoAdapter } from '../../infra/adapters/crypto/cryptoAdapter';
 import { environment } from '../../main/config/environment/environment';
 import regex from '../../shared/helpers/regex';
@@ -17,6 +10,8 @@ import { IRcoveryUseCase } from '../interfaces/usecases/send-email.interface';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { SESAdapter } from 'src/infra/adapters/aws/ses/ses.adapter';
 import { IValidationCodeType } from '../entity/code.entity';
+import { SNSAdapter } from 'src/infra/adapters/aws/sns/aws-sns.adapter';
+import { templatesSMS } from 'src/shared/templates/smsTemplates';
 
 @Injectable()
 export class RecoveryService implements IRcoveryUseCase {
@@ -24,7 +19,7 @@ export class RecoveryService implements IRcoveryUseCase {
     private readonly userRepository: UserRepository,
     private readonly codeRecoveryRepository: CodeRepository,
     private readonly cryptoAdapter: CryptoAdapter,
-    private readonly sendSmsAdapter: SendSmsAdapter,
+    private readonly snsAdapter: SNSAdapter,
     private readonly sesAdapter: SESAdapter,
   ) {}
   async send(dto: IRecoveryDto) {
@@ -50,7 +45,10 @@ export class RecoveryService implements IRcoveryUseCase {
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (!findedOne) {
-      throw new HttpException('', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(
+        'Unprocessable Entity',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
 
     const existentCode = await this.codeRecoveryRepository.findOne({
@@ -66,7 +64,7 @@ export class RecoveryService implements IRcoveryUseCase {
         expiresIn: Date.now() + environment.sendCode.expiration,
       });
 
-      /*  if (isEmail) {
+      if (isEmail) {
         await this.sesAdapter.sendEmailCode(
           dto.emailOrPhone,
           code.formated,
@@ -74,12 +72,12 @@ export class RecoveryService implements IRcoveryUseCase {
         );
       }
       if (isPhone) {
-        await this.sendSmsAdapter.send(
+        await this.snsAdapter.send(
           dto.emailOrPhone,
           code.formated,
           IValidationCodeType.RECOVERY,
         );
-      } */
+      }
       return code;
     }
   }
@@ -106,7 +104,10 @@ export class RecoveryService implements IRcoveryUseCase {
     const findedOne = await this.userRepository.findOne(finalDto);
 
     if (findedOne) {
-      throw new HttpException('', HttpStatus.UNPROCESSABLE_ENTITY);
+      throw new HttpException(
+        'Unprocessable Entity',
+        HttpStatus.UNPROCESSABLE_ENTITY,
+      );
     }
     const existentCode = await this.codeRecoveryRepository.findOne({
       owner: finalDto?.email ? finalDto.email : finalDto.phone,
@@ -122,7 +123,7 @@ export class RecoveryService implements IRcoveryUseCase {
         type: IValidationCodeType.REGISTER,
       });
 
-      /* if (isEmail) {
+      if (isEmail) {
         this.sesAdapter.sendEmailCode(
           dto.emailOrPhone,
           code.formated,
@@ -130,13 +131,11 @@ export class RecoveryService implements IRcoveryUseCase {
         );
       }
       if (isPhone) {
-        this.sendSmsAdapter.send(
+        this.snsAdapter.sendSms(
           dto.emailOrPhone,
-          code.formated,
-          IValidationCodeType.REGISTER,
+          templatesSMS.REGISTER_USER.BODY(code.formated),
         );
-      } */
-      return code;
+      }
     }
   }
 }

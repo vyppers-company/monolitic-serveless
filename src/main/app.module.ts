@@ -13,7 +13,6 @@ import { RecoveryController } from '../presentation/controller/recovery.controll
 import { RecoveryService } from '../domain/usecases/recovery.service';
 import { CodeRepository } from '../data/mongoose/repositories/code.repository';
 import { Code, CodeSchema } from '../data/mongoose/model/code.schema';
-import { SendSmsAdapter } from '../infra/adapters/aws/sns/blow-io.adapter';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
 import { UserController } from 'src/presentation/controller/user.controller';
@@ -98,7 +97,6 @@ import { DiscoveryController } from 'src/presentation/controller/discovery.contr
 import { NotificationAdapter } from 'src/infra/adapters/notification/notificationAdapter';
 import webPush from 'web-push';
 import { VapidNotificationService } from 'src/domain/usecases/vapidNotification.service';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import {
   ConfigNotification,
   NotificationConfigSchema,
@@ -109,7 +107,8 @@ import {
 } from 'src/data/mongoose/model/notification';
 import { ConfigNotificationRepository } from 'src/data/mongoose/repositories/config-notification.repository';
 import { NotificationsMessageRepository } from 'src/data/mongoose/repositories/notification.repository';
-import { EventBridge, SQS } from 'aws-sdk';
+import { EventBridge, SNS, SQS } from 'aws-sdk';
+import { SNSAdapter } from 'src/infra/adapters/aws/sns/aws-sns.adapter';
 @Module({
   imports: [
     MongooseModule.forRoot(environment.mongodb.url, {
@@ -188,6 +187,16 @@ import { EventBridge, SQS } from 'aws-sdk';
       }),
     },
     {
+      provide: 'sns',
+      useValue: new SNS({
+        region: 'us-east-1',
+        credentials: {
+          accessKeyId: environment.aws.config.clientId,
+          secretAccessKey: environment.aws.config.secretKey,
+        },
+      }),
+    },
+    {
       provide: 's3',
       useValue: new S3({
         region: environment.aws.config.region,
@@ -200,7 +209,7 @@ import { EventBridge, SQS } from 'aws-sdk';
     {
       provide: 'ses',
       useValue: new SESClient({
-        region: environment.aws.config.region,
+        region: 'us-east-1',
         credentials: {
           accessKeyId: environment.aws.config.clientId,
           secretAccessKey: environment.aws.config.secretKey,
@@ -257,7 +266,7 @@ import { EventBridge, SQS } from 'aws-sdk';
     CryptoAdapter,
     SESAdapter,
     S3Adapter,
-    SendSmsAdapter,
+    SNSAdapter,
     IVSAdapter,
     PaymentSubscriptionAdapter,
     PaymentPlanAdapter,
