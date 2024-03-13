@@ -1,5 +1,6 @@
 import { ExceptionFilter, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { environment } from 'src/main/config/environment/environment';
 
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
@@ -18,7 +19,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
         timestamp: new Date().toISOString(),
         path: request.url,
         name: exception.name,
-        stack: exception.stack,
+        stack: environment.app.env === 'prd' ? null : exception.stack,
       },
     });
   }
