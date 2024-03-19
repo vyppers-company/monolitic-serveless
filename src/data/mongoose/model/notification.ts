@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import {
-  IPushSubscription,
   INotificationMesssage,
   IPayloadNotification,
 } from 'src/domain/entity/notification.entity';

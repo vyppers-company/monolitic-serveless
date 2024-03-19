@@ -229,8 +229,6 @@ import { SNSAdapter } from 'src/infra/adapters/aws/sns/aws-sns.adapter';
     ProductRepository,
     VerifyDocumentsRepository,
     InternalUserRepository,
-
-    VapidNotificationService,
     VerifyDocumentsInternalService,
     RegisterInternalUserService,
     AuthInternalUserService,

@@ -3,7 +3,7 @@ import { IMakeLikeUseCase } from '../interfaces/usecases/make-like.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { VapidNotificationService } from './vapidNotification.service';
-import { IUploadContent } from '../entity/contents';
+import { correctDateNow } from 'src/shared/utils/correctDate';
 
 @Injectable()
 export class MakeLikeService implements IMakeLikeUseCase {
@@ -55,22 +55,21 @@ export class MakeLikeService implements IMakeLikeUseCase {
       ]);
     }
     //criar fila e desacoplar envio de notifacao no futuro
-    if (myId !== content.owner) {
-      //trocar chamada direta por uma fila
 
-      await this.vapidNotificationService.sendNotification(
-        {
-          date: new Date().toISOString(),
-          title: `nova notificação`,
-          //@ts-ignore
-          image: user?.profileImage?.contents[0] || null,
-          message: `@${user.vypperId} ${
-            content.likersId.includes(myId) ? 'descurtiu' : 'curtiu'
-          } sua foto`,
-        },
-        myId,
-        content.owner,
-      );
-    }
+    //trocar chamada direta por uma fila
+
+    await this.vapidNotificationService.sendNotification(
+      {
+        date: correctDateNow().toISOString(),
+        title: `nova notificação`,
+        //@ts-ignore
+        image: user?.profileImage?.contents[0] || null,
+        message: `@${user.vypperId} ${
+          content.likersId.includes(myId) ? 'descurtiu' : 'curtiu'
+        } sua foto`,
+      },
+      myId,
+      content.owner,
+    );
   }
 }

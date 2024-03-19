@@ -40,23 +40,28 @@ export class VapidNotificationService implements IVapidNotificationService {
   }
   async sendNotification(
     payload: IPayloadNotification,
-    myId: string,
+    senderId: string,
     receiverId: string,
   ) {
-    const notificationConfig = await this.configNotificationRepository.findOne({
-      owner: myId,
-    });
-    if (notificationConfig) {
-      await this.notificationsMessage.create({
-        isViewed: false,
-        receiver: receiverId,
-        sender: myId,
-        payload: payload,
-      });
-      await this.notificationAdapter.sendNotification({
-        subscriber: notificationConfig.subscriptionKey,
-        payload: payload,
-      });
+    try {
+      const notificationConfig =
+        await this.configNotificationRepository.findOne({
+          owner: receiverId,
+        });
+      if (notificationConfig) {
+        await this.notificationsMessage.create({
+          isViewed: false,
+          receiver: receiverId,
+          sender: senderId,
+          payload: payload,
+        });
+        await this.notificationAdapter.sendNotification({
+          subscriber: notificationConfig.subscriptionKey,
+          payload: payload,
+        });
+      }
+    } catch (error) {
+      return error;
     }
   }
 
@@ -71,5 +76,26 @@ export class VapidNotificationService implements IVapidNotificationService {
       subscriber: user.subscriptionKey,
       payload: campaignNotification.payload,
     });
+  }
+  async getUnread(userId: string) {
+    try {
+      const user = await this.userRepository.findOne({ _id: userId });
+      if (!user) {
+        throw new HttpException('User Not found', HttpStatus.NOT_FOUND);
+      }
+      const notifications = await this.notificationsMessage.find(
+        {
+          receiver: userId,
+        },
+        null,
+        { sort: { createdAt: -1 } },
+      );
+      return notifications;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async markAsViewed(userId: string, notificationId: string) {
+    await this.notificationsMessage.markAsViewed(userId, notificationId);
   }
 }

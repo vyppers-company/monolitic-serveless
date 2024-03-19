@@ -18,4 +18,17 @@ export class NotificationsMessageRepository extends BaseAbstractRepository<Notif
   ) {
     super(notificationMessage);
   }
+  async markAsViewed(userId: string, notificationId: string) {
+    return await this.notificationMessage.updateOne(
+      {
+        _id: notificationId,
+        receiver: userId,
+      },
+      {
+        $set: {
+          isViewed: true,
+        },
+      },
+    );
+  }
 }

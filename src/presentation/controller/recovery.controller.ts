@@ -1,4 +1,13 @@
-import { Body, Controller, Logger, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Patch,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
 import { RecoveryService } from '../../domain/usecases/recovery.service';
@@ -6,7 +15,6 @@ import { ChangePasswordDto } from '../dtos/change-pass.dto';
 import { Code, RecoveryDto, TokenCodeResponse } from '../dtos/recovery.dto';
 import { ValidateCodeService } from 'src/domain/usecases/validate-code.service';
 import { Logged } from 'src/shared/decorators/logged.decorator';
-import { userInfo } from 'os';
 import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 import { VapidNotificationService } from 'src/domain/usecases/vapidNotification.service';
 import { SavePermissionVapid } from '../dtos/save-permission-vapid.dto';
@@ -56,5 +64,20 @@ export class RecoveryController {
       dto,
       user._id,
     );
+  }
+  @ApiTags('notification')
+  @Get('v1/unread')
+  @ApiBearerAuth()
+  async getUnreadNotifications(@Logged() user: ILogged) {
+    return this.vapidNotificationService.getUnread(user._id);
+  }
+  @ApiTags('notification')
+  @Put('v1/mark/viewed/:notificationId')
+  @ApiBearerAuth()
+  async markAsViewed(
+    @Logged() user: ILogged,
+    @Param('notificationId') notificationId: string,
+  ) {
+    return this.vapidNotificationService.markAsViewed(user._id, notificationId);
   }
 }

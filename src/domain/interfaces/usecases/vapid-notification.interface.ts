@@ -5,4 +5,6 @@ export interface IVapidNotificationService {
     body: IPushSubscription,
     user: string,
   ) => Promise<void>;
+  getUnread: (userId: string) => Promise<any[]>;
+  markAsViewed: (userId: string, notificationId: string) => Promise<void>;
 }
