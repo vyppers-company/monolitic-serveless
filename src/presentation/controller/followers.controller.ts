@@ -7,10 +7,7 @@ import { Logged } from 'src/shared/decorators/logged.decorator';
 @Controller('followers')
 @ApiTags('followers')
 export class FollowersControllers {
-  private logger: Logger;
-  constructor(private readonly followersService: FollowService) {
-    this.logger = new Logger();
-  }
+  constructor(private readonly followersService: FollowService) {}
 
   @Put('v1/follow/:userId')
   @ApiOperation({

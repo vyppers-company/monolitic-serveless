@@ -23,10 +23,7 @@ import { Logged } from 'src/shared/decorators/logged.decorator';
 @ApiTags('discovery')
 @Controller('discovery')
 export class DiscoveryController {
-  private logger: Logger;
-  constructor(private readonly searchService: SearchUsersService) {
-    this.logger = new Logger(DiscoveryController.name);
-  }
+  constructor(private readonly searchService: SearchUsersService) {}
 
   @Get('v1/contents-by-user')
   @ApiBearerAuth()

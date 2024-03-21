@@ -9,8 +9,8 @@ import { UserSchema, User } from '../data/mongoose/model/user.schema';
 import { CryptoAdapter } from '../infra/adapters/crypto/cryptoAdapter';
 import { AuthController } from '../presentation/controller/auth.controller';
 import { AuthService } from '../domain/usecases/auth.service';
-import { RecoveryController } from '../presentation/controller/recovery.controller';
-import { RecoveryService } from '../domain/usecases/recovery.service';
+import { NotificaionController } from '../presentation/controller/notification.controller';
+import { RecoveryService } from '../domain/usecases/notification.service';
 import { CodeRepository } from '../data/mongoose/repositories/code.repository';
 import { Code, CodeSchema } from '../data/mongoose/model/code.schema';
 import { ChangePasswordService } from 'src/domain/usecases/change-password.service';
@@ -96,7 +96,7 @@ import { DenunciateInternalService } from 'src/domain/usecases/denunciate-intern
 import { DiscoveryController } from 'src/presentation/controller/discovery.controller';
 import { NotificationAdapter } from 'src/infra/adapters/notification/notificationAdapter';
 import webPush from 'web-push';
-import { VapidNotificationService } from 'src/domain/usecases/vapidNotification.service';
+import { VapidNotificationService } from 'src/domain/usecases/vapid-notification.service';
 import {
   ConfigNotification,
   NotificationConfigSchema,
@@ -109,8 +109,11 @@ import { ConfigNotificationRepository } from 'src/data/mongoose/repositories/con
 import { NotificationsMessageRepository } from 'src/data/mongoose/repositories/notification.repository';
 import { EventBridge, SNS, SQS } from 'aws-sdk';
 import { SNSAdapter } from 'src/infra/adapters/aws/sns/aws-sns.adapter';
+import { VapidNotificationController } from 'src/presentation/controller/vapid-notification.controller';
+import { LoggerModule } from 'nestjs-pino';
 @Module({
   imports: [
+    LoggerModule.forRoot(),
     MongooseModule.forRoot(environment.mongodb.url, {
       dbName: environment.app.serviceName,
     }),
@@ -280,7 +283,8 @@ import { SNSAdapter } from 'src/infra/adapters/aws/sns/aws-sns.adapter';
     SubscriptionController,
     SearchController,
     FollowersControllers,
-    RecoveryController,
+    NotificaionController,
+    VapidNotificationController,
     HealthcheckController,
     RegisterController,
     AuthController,

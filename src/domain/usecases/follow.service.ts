@@ -1,7 +1,7 @@
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { IFollowUseCase } from '../interfaces/usecases/follow.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { VapidNotificationService } from './vapidNotification.service';
+import { VapidNotificationService } from './vapid-notification.service';
 import { correctDateNow } from 'src/shared/utils/correctDate';
 
 @Injectable()

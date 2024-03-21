@@ -15,10 +15,7 @@ import { Logged } from 'src/shared/decorators/logged.decorator';
 @Controller('ban')
 @ApiTags('Banned Users')
 export class BanUserController {
-  private logger: Logger;
-  constructor(private readonly banService: BanUserService) {
-    this.logger = new Logger();
-  }
+  constructor(private readonly banService: BanUserService) {}
 
   @Post('v1/:userId')
   @ApiBearerAuth()

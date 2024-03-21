@@ -17,6 +17,7 @@ export interface NotificationConfigEntity {
   subscriptionKey: IPushSubscription;
   owner: string;
   enabled?: boolean;
+  dontShowAnymore?: boolean;
 }
 
 export interface INotificationMesssage {

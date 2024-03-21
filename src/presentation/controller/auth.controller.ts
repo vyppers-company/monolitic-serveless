@@ -23,14 +23,11 @@ import { AuthGoogleDto } from '../dtos/auth-google';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  private logger: Logger;
   constructor(
     private readonly authService: AuthService,
     private readonly authInternalService: AuthInternalUserService,
     private readonly googleService: GoogleAuthStrategy,
-  ) {
-    this.logger = new Logger();
-  }
+  ) {}
 
   @Post('v1/common')
   async auth(@Body() dto: Auth) {

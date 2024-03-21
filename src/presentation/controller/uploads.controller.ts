@@ -29,10 +29,7 @@ import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 @ApiTags('upload-general')
 @Controller('midia')
 export class UploadController {
-  logger: Logger;
-  constructor(private readonly s3Service: S3Service) {
-    this.logger = new Logger();
-  }
+  constructor(private readonly s3Service: S3Service) {}
 
   @Patch('v1/upload')
   @UseGuards(JwtAuthGuard)

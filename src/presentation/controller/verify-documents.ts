@@ -11,10 +11,9 @@ import {
 @ApiTags('verify-documents')
 @Controller('verify-documents')
 export class VerifyDocumentsController {
-  private logger: Logger;
-  constructor(private readonly verifyDocumentsService: VerifyDocumentsService) {
-    this.logger = new Logger();
-  }
+  constructor(
+    private readonly verifyDocumentsService: VerifyDocumentsService,
+  ) {}
 
   @Post('v1/submit')
   @ApiBearerAuth()

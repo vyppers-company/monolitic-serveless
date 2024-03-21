@@ -14,14 +14,11 @@ import { InternalUserLogged } from 'src/shared/decorators/internal-user-logged';
 
 @Controller('register')
 export class RegisterController {
-  private logger: Logger;
   constructor(
     private readonly registerService: RegisterService,
     private readonly registerInternalUserService: RegisterInternalUserService,
     private readonly registerMinimalService: RegisterMinimalService,
-  ) {
-    this.logger = new Logger();
-  }
+  ) {}
 
   @ApiTags('register')
   @Post('v1/user')

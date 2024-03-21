@@ -18,10 +18,7 @@ import { EditPlanDto, PlanDto } from '../dtos/plan-dto';
 @ApiTags('plan')
 @Controller('plan')
 export class PlanController {
-  private logger: Logger;
-  constructor(private readonly planService: PlanService) {
-    this.logger = new Logger(PlanController.name);
-  }
+  constructor(private readonly planService: PlanService) {}
 
   @Post('v1/create')
   @ApiBearerAuth()

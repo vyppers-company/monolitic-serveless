@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ILoggedInternalUser } from '../interfaces/others/logged.interface';
-import { VapidNotificationService } from './vapidNotification.service';
+import { VapidNotificationService } from './vapid-notification.service';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { EventBridgeAdapter } from 'src/infra/adapters/aws/eventbridge/event-bridge.adapter';
 import { SQSAdapter } from 'src/infra/adapters/aws/sqs/sqs.adapter';

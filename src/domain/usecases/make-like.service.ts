@@ -2,7 +2,7 @@ import { ContentRepository } from 'src/data/mongoose/repositories/content.reposi
 import { IMakeLikeUseCase } from '../interfaces/usecases/make-like.interface';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
-import { VapidNotificationService } from './vapidNotification.service';
+import { VapidNotificationService } from './vapid-notification.service';
 import { correctDateNow } from 'src/shared/utils/correctDate';
 
 @Injectable()

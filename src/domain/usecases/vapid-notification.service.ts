@@ -1,5 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { IVapidNotificationService } from '../interfaces/usecases/vapid-notification.interface';
+import {
+  IVapidNotificationService,
+  NotificationConfigInterface,
+} from '../interfaces/usecases/vapid-notification.interface';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import {
   IPayloadNotification,
@@ -48,7 +51,7 @@ export class VapidNotificationService implements IVapidNotificationService {
         await this.configNotificationRepository.findOne({
           owner: receiverId,
         });
-      if (notificationConfig) {
+      if (notificationConfig && notificationConfig?.enabled) {
         await this.notificationsMessage.create({
           isViewed: false,
           receiver: receiverId,
@@ -97,5 +100,32 @@ export class VapidNotificationService implements IVapidNotificationService {
   }
   async markAsViewed(userId: string, notificationId: string) {
     await this.notificationsMessage.markAsViewed(userId, notificationId);
+  }
+
+  async setConfiguration(myId: string, dto: NotificationConfigInterface) {
+    const user = await this.userRepository.findOne({
+      _id: myId,
+      isBanned: false,
+    });
+    if (!user) {
+      throw new HttpException('user not found', HttpStatus.NOT_FOUND);
+    }
+    const configNotification = await this.configNotificationRepository.findOne(
+      {
+        owner: user._id,
+      },
+      null,
+      { lean: true },
+    );
+    if (!configNotification) {
+      throw new HttpException(
+        'request permission before',
+        HttpStatus.NOT_ACCEPTABLE,
+      );
+    }
+    await this.configNotificationRepository.notificationConfig(
+      configNotification._id,
+      dto,
+    );
   }
 }

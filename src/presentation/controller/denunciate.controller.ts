@@ -8,10 +8,7 @@ import { IDenuncianteDto } from '../dtos/denunciante.dto';
 @ApiTags('denunciate')
 @Controller('denunciate')
 export class DenunciateController {
-  private logger: Logger;
-  constructor(private readonly denunciate: DenunciateService) {
-    this.logger = new Logger(DenunciateController.name);
-  }
+  constructor(private readonly denunciate: DenunciateService) {}
 
   @Post('v1/send/:contentId')
   @ApiBearerAuth()

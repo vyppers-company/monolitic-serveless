@@ -21,15 +21,12 @@ import { ProfileDto } from '../dtos/profile.dto';
 
 @Controller('user')
 export class UserController {
-  private logger: Logger;
   constructor(
     private readonly validateData: ValidateDataService,
     private readonly getProfileService: GetProfileService,
     private readonly updateProfile: UpdateProfileService,
     private readonly validateCompleteProfile: ValidateMissingDataProfileService,
-  ) {
-    this.logger = new Logger();
-  }
+  ) {}
 
   @ApiTags('profile')
   @Get('v1/info/home')

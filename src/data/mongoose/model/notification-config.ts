@@ -26,6 +26,8 @@ export class ConfigNotification
   owner: string;
   @Prop({ type: Boolean, default: true })
   enabled?: boolean;
+  @Prop({ type: Boolean, default: false })
+  dontShowAnymore?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }

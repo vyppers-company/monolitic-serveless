@@ -19,12 +19,9 @@ import { InternalUpdateStatusDocumentDto } from '../dtos/internal-verify-status-
 @ApiTags('verify-documents-internal')
 @Controller('internal-verify-documents')
 export class VerifyDocumentsInternalController {
-  private logger: Logger;
   constructor(
     private readonly verifyDocumentsService: VerifyDocumentsInternalService,
-  ) {
-    this.logger = new Logger();
-  }
+  ) {}
 
   @Put('v1/update-status')
   @ApiBearerAuth()

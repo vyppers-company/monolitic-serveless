@@ -11,10 +11,7 @@ import {
 @Controller('livestream')
 @ApiTags('livestream')
 export class LiveStreamingController {
-  private logger: Logger;
-  constructor(private readonly liveStream: CreateRoomLiveService) {
-    this.logger = new Logger();
-  }
+  constructor(private readonly liveStream: CreateRoomLiveService) {}
 
   /*  @Post('v1/create-live-channel')
   @ApiBearerAuth()

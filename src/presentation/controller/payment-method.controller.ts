@@ -15,10 +15,7 @@ import { Logged } from 'src/shared/decorators/logged.decorator';
 @Controller('payment-method')
 @ApiTags('payment-method')
 export class PaymentMethodController {
-  private logger: Logger;
-  constructor(private readonly paymentMethod: PaymentMethodsService) {
-    this.logger = new Logger();
-  }
+  constructor(private readonly paymentMethod: PaymentMethodsService) {}
 
   @Post('v1/create/secret/card')
   @ApiBearerAuth()

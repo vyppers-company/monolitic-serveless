@@ -8,12 +8,9 @@ import { InternalServiceNotification } from 'src/domain/usecases/internal-notifi
 @Controller('internal-notification')
 @ApiTags('internal-notification')
 export class InternalControllerNotification {
-  private logger: Logger;
   constructor(
     private readonly internalServiceNotification: InternalServiceNotification,
-  ) {
-    this.logger = new Logger(InternalControllerNotification.name);
-  }
+  ) {}
   @Post('v1/create-campaign')
   @ApiBearerAuth()
   @ApiBody({ type: CreateCampaignInternalDto })
