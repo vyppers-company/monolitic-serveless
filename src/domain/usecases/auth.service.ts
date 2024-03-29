@@ -15,6 +15,7 @@ import { S3Service } from './s3-upload.service';
 import { IContentEntity, ITypeContent } from '../entity/contents';
 import { GetContentService } from './get-content.service';
 import { generateName } from 'src/shared/helpers/generator-names';
+import { ConfigNotificationRepository } from 'src/data/mongoose/repositories/config-notification.repository';
 @Injectable()
 export class AuthService implements IAuthUseCase {
   constructor(
@@ -23,6 +24,7 @@ export class AuthService implements IAuthUseCase {
     private readonly s3: S3Service,
     private readonly contentCreate: CreateContentService,
     private readonly contentGet: GetContentService,
+    private readonly notificationConfig: ConfigNotificationRepository,
   ) {}
 
   async auth(dto: Auth) {
@@ -83,7 +85,13 @@ export class AuthService implements IAuthUseCase {
     }
 
     await this.userRepository.freezeAccount(findedOne._id, false);
-
+    const configNotificationResp = await this.notificationConfig.findOne(
+      {
+        owner: findedOne._id,
+      },
+      { enabled: 1, dontShowAnymore: 1 },
+      { lean: true },
+    );
     const token = await generateToken(
       {
         _id: String(findedOne._id),
@@ -108,6 +116,7 @@ export class AuthService implements IAuthUseCase {
         profileImage: profileImageInstance
           ? profileImageInstance.contents[0]
           : null,
+        configNotification: configNotificationResp || null,
       },
     };
   }
@@ -141,6 +150,9 @@ export class AuthService implements IAuthUseCase {
           HttpStatus.UNAUTHORIZED,
         );
       }
+      const configNotificationResp = await this.notificationConfig.findOne({
+        owner: findedOne._id,
+      });
       const image = await this.contentGet.getProfileImage(findedOne._id);
       const token = await generateToken(
         {
@@ -167,6 +179,7 @@ export class AuthService implements IAuthUseCase {
           profileImage: profileImageInstance
             ? profileImageInstance.contents[0]
             : null,
+          configNotification: configNotificationResp || null,
         },
       };
     }
@@ -238,6 +251,7 @@ export class AuthService implements IAuthUseCase {
         caracteristics: newOne.caracteristics || null,
         interests: newOne.interests || null,
         bans: newOne.bans || null,
+        notificationConfig: null,
       },
     };
   }

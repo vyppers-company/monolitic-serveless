@@ -9,6 +9,7 @@ import { IContentEntity, ITypeContent } from '../entity/contents';
 import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { ITYPEUSER } from '../entity/user.entity';
+import { ConfigNotificationRepository } from 'src/data/mongoose/repositories/config-notification.repository';
 
 @Injectable()
 export class GetProfileService implements IGetProfileUseCase {
@@ -16,6 +17,7 @@ export class GetProfileService implements IGetProfileUseCase {
     private readonly userRepository: UserRepository,
     private readonly contentRepository: ContentRepository,
     private readonly crypto: CryptoAdapter,
+    private readonly notificationConfig: ConfigNotificationRepository,
   ) {}
   async getPersonalData(
     userId: string,
@@ -117,6 +119,13 @@ export class GetProfileService implements IGetProfileUseCase {
     };
 
     if (myId === userId) {
+      const configNotificationResp = await this.notificationConfig.findOne(
+        {
+          owner: user._id,
+        },
+        { enabled: 1, dontShowAnymore: 1 },
+        { lean: true },
+      );
       finalObjt['planConfiguration'] = user.planConfiguration;
       finalObjt['paymentConfiguration'] = paymentConfiguration
         ? {
@@ -135,6 +144,7 @@ export class GetProfileService implements IGetProfileUseCase {
         : null;
       finalObjt['interests'] = user.interests;
       finalObjt['bansQtd'] = user.bans ? user.bans.length : 0;
+      finalObjt['configNotification'] = configNotificationResp || null;
     }
 
     return finalObjt;
