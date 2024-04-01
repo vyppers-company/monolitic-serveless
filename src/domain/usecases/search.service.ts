@@ -7,7 +7,7 @@ import {
 import { PaginateResult } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
-import { IContentEntity, ITypeContent } from '../entity/contents';
+import { IContentEntity } from '../entity/contents';
 
 @Injectable()
 export class SearchUsersService implements ISearchUseCase {
@@ -15,6 +15,73 @@ export class SearchUsersService implements ISearchUseCase {
     private readonly userRepository: UserRepository,
     private readonly contentRepository: ContentRepository,
   ) {}
+  async searchUserByCriteria(
+    type: string,
+    limit: number,
+    page: number,
+    myId: string,
+  ): Promise<PaginateResult<IProfile>> {
+    const finalFilter = {
+      options: {
+        limit: Number(limit) || 10,
+        page: Number(page) || 1,
+        populate: [
+          {
+            path: 'profileImage',
+            select: 'contents',
+            model: 'Content',
+          },
+        ],
+      },
+      filter: {},
+    };
+
+    if (type === 'NEWS') {
+      finalFilter.options['sort'] = {
+        createdAt: -1,
+      };
+      const dateFilter = new Date();
+      const finalDateFilter = dateFilter.setUTCDate(
+        dateFilter.getUTCDate() - 7,
+      );
+      finalFilter.filter['createdAt'] = {
+        $gte: new Date(finalDateFilter),
+      };
+    }
+
+    if (type === 'MOST_FOLLOWED') {
+      finalFilter.options['sort'] = {
+        followers: -1,
+      };
+    }
+
+    const result = await this.userRepository.findPaginated(
+      finalFilter.options,
+      finalFilter.filter,
+    );
+
+    return {
+      totalDocs: result.totalDocs,
+      limit: result.limit,
+      totalPages: result.totalPages,
+      page: result.page,
+      offset: result.offset,
+      pagingCounter: result.pagingCounter,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      docs: result.docs.map((doc: any) => ({
+        _id: doc._id,
+        vypperId: doc.vypperId,
+        name: doc.name,
+        profileImage: doc.profileImage,
+        isOnline: false,
+        sinceAt: doc.createdAt,
+      })),
+    };
+  }
+
   async searchUser(
     queries: IQueriesSearchUser,
     myId: string,

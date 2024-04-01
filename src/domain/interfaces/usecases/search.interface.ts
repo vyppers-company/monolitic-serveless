@@ -11,6 +11,11 @@ export interface IQueriesSearchUser extends ICategory {
   limitByUser?: number;
 }
 
+export interface IFilterPaginate {
+  limit: number;
+  page: number;
+}
+
 export interface ISearchUseCase {
   searchUser: (
     queries: IQueriesSearchUser,
@@ -20,4 +25,10 @@ export interface ISearchUseCase {
     queries: IQueriesSearchUser,
     myId: string,
   ) => Promise<PaginateResult<IContentEntity>>;
+  searchUserByCriteria: (
+    type: string,
+    limit: number,
+    page: number,
+    myId: string,
+  ) => Promise<PaginateResult<IProfile>>;
 }

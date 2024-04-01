@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Query } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -6,10 +6,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { SearchUsersService } from 'src/domain/usecases/search.service';
-import {
-  SearchCategoryDto,
-  SearchQueriesCompleteDto,
-} from '../dtos/search-categories.dto';
+import { SearchQueriesCompleteDto } from '../dtos/search-categories.dto';
 import {
   ICategoryBiotype,
   ICategoryEthnicity,
@@ -91,6 +88,36 @@ export class SearchController {
     @Logged() user: ILogged,
   ) {
     return this.searchService.searchUser(queries, user._id);
+  }
+
+  @Get('v1/users/type')
+  @ApiBearerAuth()
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    type: Number,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
+  })
+  @ApiQuery({
+    name: 'type',
+    required: false,
+    type: String,
+    description: 'tipo de filtro',
+    example: JSON.stringify(['NEWS', 'MOST_FOLLOWED']),
+  })
+  async searchUserByTyper(
+    @Query('type') type: string,
+    @Query('limit') limit: number,
+    @Query('page') page: number,
+    @Logged() user: ILogged,
+  ) {
+    return this.searchService.searchUserByCriteria(type, limit, page, user._id);
   }
 
   @Get('v1/consult/filter')
