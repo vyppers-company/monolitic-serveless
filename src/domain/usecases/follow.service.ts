@@ -44,9 +44,10 @@ export class FollowService implements IFollowUseCase {
           {
             date: correctDateNow().toISOString(),
             title: `nova notificação`,
+            user: myUser.vypperId,
             //@ts-ignore
             image: user?.profileImage?.contents[0] || null,
-            message: `FOLLOW`,
+            type: `FOLLOW`,
           },
           myId,
           otherUser._id,
@@ -71,9 +72,10 @@ export class FollowService implements IFollowUseCase {
       {
         date: correctDateNow().toISOString(),
         title: `nova notificação`,
+        user: myUser.vypperId,
         //@ts-ignore
         image: user?.profileImage?.contents[0] || null,
-        message: `UNFOLLOW`,
+        type: `UNFOLLOW`,
       },
       myId,
       otherUser._id,

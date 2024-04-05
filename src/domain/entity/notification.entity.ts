@@ -8,7 +8,8 @@ export interface IPushSubscription {
 }
 export interface IPayloadNotification {
   title: string;
-  message: string;
+  type: string;
+  user: string;
   image: string | null;
   date: string;
 }
