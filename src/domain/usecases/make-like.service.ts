@@ -64,9 +64,7 @@ export class MakeLikeService implements IMakeLikeUseCase {
         title: `nova notificação`,
         //@ts-ignore
         image: user?.profileImage?.contents[0] || null,
-        message: `@${user.vypperId} ${
-          content.likersId.includes(myId) ? 'descurtiu' : 'curtiu'
-        } sua foto`,
+        message: `${content.likersId.includes(myId) ? 'UNLIKE' : 'LIKE'}`,
       },
       myId,
       content.owner,

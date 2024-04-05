@@ -46,7 +46,7 @@ export class FollowService implements IFollowUseCase {
             title: `nova notificação`,
             //@ts-ignore
             image: user?.profileImage?.contents[0] || null,
-            message: `@${myUser.vypperId} deixo de seguir você`,
+            message: `FOLLOW`,
           },
           myId,
           otherUser._id,
@@ -73,7 +73,7 @@ export class FollowService implements IFollowUseCase {
         title: `nova notificação`,
         //@ts-ignore
         image: user?.profileImage?.contents[0] || null,
-        message: `@${myUser.vypperId} deixo de seguir você`,
+        message: `UNFOLLOW`,
       },
       myId,
       otherUser._id,
