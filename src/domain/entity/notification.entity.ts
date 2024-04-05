@@ -9,7 +9,7 @@ export interface IPushSubscription {
 export interface IPayloadNotification {
   title: string;
   type: string;
-  user: string;
+  username: string;
   image: string | null;
   date: string;
 }
