@@ -37,7 +37,7 @@ export const InternalUserLogged = createParamDecorator(
         throw new UnauthorizedException();
       }
       const { _id } = decrypted.payload;
-      if (_id !== request.hearders['x-profile-id']) {
+      if (_id !== request.headers['x-profile-id']) {
         throw new HttpException('unauthorize', 403);
       }
       return decrypted.payload;
