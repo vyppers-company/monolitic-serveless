@@ -1,14 +1,20 @@
 import {
   Controller,
-  Logger,
   Get,
   Query,
   Body,
   Patch,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiHeader,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { ValidatevypperIdDto } from '../dtos/validate-profile-id';
 import { ValidateDataService } from 'src/domain/usecases/validate-profile-id.service';
@@ -17,7 +23,8 @@ import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 import { GetProfileService } from 'src/domain/usecases/get-profile.service';
 import { UpdateProfileService } from 'src/domain/usecases/update-profile.service';
 import { ValidateMissingDataProfileService } from 'src/domain/usecases/validate-missing-profile-data.service';
-import { ProfileDto } from '../dtos/profile.dto';
+import { EditEmailDto, EditPasswordDto, ProfileDto } from '../dtos/profile.dto';
+import { RecaptchaGuard } from 'src/shared/decorators/recaptcha.decorator';
 
 @Controller('user')
 export class UserController {
@@ -43,6 +50,29 @@ export class UserController {
       );
     }
     return await this.getProfileService.getPersonalData(userId, logged._id);
+  }
+
+  @ApiTags('profile')
+  @Get('v1/sharelink')
+  @ApiQuery({
+    name: 'vId',
+    required: true,
+    description: 'arroba do usuario que esta compartilhando a pagina publica',
+  })
+  @ApiHeader({
+    name: 'x-recaptcha-token',
+    description: 'response of challenge on frontend',
+    required: true,
+  })
+  @UseGuards(RecaptchaGuard)
+  async sharePofile(@Query('vId') vId: string) {
+    if (!vId) {
+      throw new HttpException(
+        'userId query param is required',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return await this.getProfileService.publicProfile(vId);
   }
 
   @ApiTags('profile')
@@ -73,11 +103,25 @@ export class UserController {
     );
   }
 
-  @ApiTags('profile/update/common/data')
+  @ApiTags('profile/update')
   @Patch('v1/update/profile')
   @ApiBearerAuth()
   @ApiBody({ type: ProfileDto })
   async updateCommonData(@Body() body: ProfileDto, @Logged() user: ILogged) {
     await this.updateProfile.updateData(user._id, body);
+  }
+  @ApiTags('profile/update')
+  @Patch('v1/update/email')
+  @ApiBearerAuth()
+  @ApiBody({ type: EditEmailDto })
+  async updateEmail(@Body() body: EditEmailDto, @Logged() user: ILogged) {
+    return { body, user };
+  }
+  @ApiTags('profile/update')
+  @Patch('v1/update/password')
+  @ApiBearerAuth()
+  @ApiBody({ type: EditPasswordDto })
+  async updatePassword(@Body() body: EditPasswordDto, @Logged() user: ILogged) {
+    return { body, user };
   }
 }

@@ -10,6 +10,7 @@ import { CryptoAdapter } from 'src/infra/adapters/crypto/cryptoAdapter';
 import { ICryptoType } from '../interfaces/adapters/crypto.interface';
 import { ITYPEUSER } from '../entity/user.entity';
 import { ConfigNotificationRepository } from 'src/data/mongoose/repositories/config-notification.repository';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class GetProfileService implements IGetProfileUseCase {
@@ -19,6 +20,126 @@ export class GetProfileService implements IGetProfileUseCase {
     private readonly crypto: CryptoAdapter,
     private readonly notificationConfig: ConfigNotificationRepository,
   ) {}
+  async publicProfile(vId: string) {
+    const user = await this.userRepository.findOne(
+      { vypperId: vId, isPublic: true },
+      null,
+      {
+        lean: true,
+        populate: [
+          { path: 'profileImage', select: 'contents', model: 'Content' },
+          {
+            path: 'planConfiguration',
+            select: 'name description subscribers activated benefits price',
+            model: 'Plan',
+          },
+        ],
+      },
+    );
+    if (!user) {
+      throw new HttpException(
+        'Sorry, Maybe this user is not public or not exist :(',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    const contents = await this.contentRepository.find(
+      { owner: user._id },
+      null,
+      {
+        populate: [
+          {
+            path: 'productId',
+            model: 'Product',
+            select: ' price benefits activated owner',
+          },
+        ],
+      },
+    );
+    const content = user.profileImage as IContentEntity;
+
+    const finalObjt = {
+      _id: user._id,
+      canEdit: false,
+      name: user.name,
+      vypperId: user.vypperId || null,
+      bio: user.bio || null,
+      profileImage: content ? content.contents[0].content : null,
+      followersQtd: user.followers ? user.followers.length : 0,
+      isFollowed: false,
+      publicContents: contents
+        .filter(
+          (content) =>
+            !content.plans.length &&
+            !content.productId &&
+            content.type !== ITypeContent.PROFILE,
+        )
+        .map((content) => ({
+          type: content.type,
+          _id: content._id,
+          owner: content.owner,
+          likersQtd: content.likersId.length,
+          text: content.text,
+          contents: content.contents.map((image) => ({
+            ...image,
+            blockedThumb: null,
+            _id: randomUUID(),
+          })),
+        })),
+      privateContents: contents
+        .filter((content) => content.plans.length || content.productId)
+        .map((content) => ({
+          type: content.type,
+          _id: content._id,
+          owner: content.owner,
+          likersQtd: content.likersId.length,
+          text: content.text,
+          plans: content.plans.map((plan: any) => ({
+            _id: plan._id,
+            activate: plan.activate,
+            benefits: plan.benefits,
+            name: plan.name,
+            price: plan.price,
+            subscribers: plan.subscribers.length,
+          })),
+          productId: content.productId,
+          contents: content.contents.map((image) => ({
+            ...image,
+            content: null,
+            thumb: null,
+            _id: randomUUID(),
+          })),
+        })),
+      qtdLikes: contents.length
+        ? contents.reduce((acc, curr) => {
+            acc.push(...curr.likersId);
+            return acc;
+          }, []).length
+        : 0,
+      payedContents: contents.length
+        ? contents.filter(
+            (content) =>
+              content.type !== ITypeContent.PROFILE && content.plans.length,
+          ).length
+        : 0,
+      freeContents: contents.length
+        ? contents.filter(
+            (content) =>
+              content.type !== ITypeContent.PROFILE && !content.plans.length,
+          ).length
+        : 0,
+    };
+    finalObjt['planConfiguration'] = user.planConfiguration.length
+      ? user.planConfiguration.map((plan: any) => ({
+          _id: plan._id,
+          activate: plan.activate,
+          benefits: plan.benefits,
+          name: plan.name,
+          price: plan.price,
+        }))
+      : [];
+    return finalObjt;
+  }
+
   async getPersonalData(
     userId: string,
     myId: string,
@@ -145,6 +266,16 @@ export class GetProfileService implements IGetProfileUseCase {
       finalObjt['interests'] = user.interests;
       finalObjt['bansQtd'] = user.bans ? user.bans.length : 0;
       finalObjt['configNotification'] = configNotificationResp || null;
+    } else {
+      finalObjt['planConfiguration'] = user.planConfiguration.length
+        ? user.planConfiguration.map((plan: any) => ({
+            _id: plan._id,
+            activate: plan.activate,
+            benefits: plan.benefits,
+            name: plan.name,
+            price: plan.price,
+          }))
+        : [];
     }
 
     return finalObjt;

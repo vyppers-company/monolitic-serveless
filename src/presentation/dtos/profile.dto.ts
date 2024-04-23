@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsBoolean,
+  IsEmail,
   IsEnum,
   IsISO8601,
   IsOptional,
@@ -28,6 +30,36 @@ export class InterestsDto {
   gender?: ICategoryGender[];
 }
 
+export class EditEmailDto implements Pick<IProfile, 'email'> {
+  @ApiProperty({
+    required: true,
+    description: 'current email used to register',
+    example: 'email@email.com',
+  })
+  @IsEmail()
+  email: string;
+}
+export class EditPasswordDto implements Pick<IProfile, 'password'> {
+  @ApiProperty({
+    required: true,
+    description: 'current password',
+    example: 'myPassword@123',
+  })
+  @Matches(regex.senhaForte, {
+    message: 'invalid minimum format  password',
+  })
+  password: string;
+
+  @ApiProperty({
+    required: true,
+    description: 'new password',
+    example: 'myNewPassword@123',
+  })
+  @Matches(regex.senhaForte, {
+    message: 'invalid minimum format  password',
+  })
+  newPassword: string;
+}
 export class ProfileDto implements IProfile {
   @IsString()
   @ApiProperty({ required: false, example: 'Fulana ' })
@@ -47,6 +79,14 @@ export class ProfileDto implements IProfile {
   @IsOptional()
   @ApiProperty({ required: false, example: '1991-01-01T00:00:00.000Z' })
   birthday?: string;
+
+  @ApiProperty({
+    required: false,
+    example: false,
+    description: 'define if your profile can be access por non-users',
+  })
+  @IsBoolean()
+  isPublic?: boolean;
 
   @ApiProperty({
     required: false,

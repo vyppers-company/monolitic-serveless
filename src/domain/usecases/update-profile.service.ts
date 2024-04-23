@@ -28,6 +28,7 @@ export class UpdateProfileService implements IUpdateProfileUseCase {
       throw new ConflictException('you need to have 18 years old');
     }
     const final: ProfileDto = {
+      isPublic: dto.isPublic ?? user.isPublic,
       bio: dto.bio ?? user.bio,
       birthday: dto.birthday ?? user.birthday,
       caracteristics: Object.keys(dto.caracteristics || {}).length

@@ -48,4 +48,5 @@ export interface IProfile {
   followers?: string[];
   isBanned?: boolean;
   isFreezed?: boolean;
+  isPublic?: boolean;
 }

@@ -10,6 +10,10 @@ export const environment = {
     waterMark: process.env.WATER_MARK || '',
     domain: process.env.DOMAIN_WEB_APP || '',
   },
+  captcha: {
+    secret: process.env.SECRET_CAPTCHA || '',
+    verifyUrl: process.env.VERIFY_URL,
+  },
   vapid: {
     publicKey: process.env.VAPID_PUBLIC_KEY || '',
     privateKey: process.env.VAPID_PRIVATE_KEY || '',

@@ -69,6 +69,9 @@ export class User extends Document implements IProfile {
   @Prop({ default: ITYPEUSER.USER })
   type: ITYPEUSER;
 
+  @Prop({ default: false })
+  isPublic?: boolean;
+
   @Prop({ type: Object })
   interests?: ICategory;
 

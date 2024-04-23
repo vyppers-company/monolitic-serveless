@@ -10,6 +10,25 @@ export interface IProfileExt extends IProfile {
 }
 
 export interface IGetProfileUseCase {
+  publicProfile: (
+    vId: string,
+  ) => Promise<
+    Pick<
+      IProfileExt,
+      | 'bio'
+      | '_id'
+      | 'vypperId'
+      | 'name'
+      | 'profileImage'
+      | 'interests'
+      | 'planConfiguration'
+      | 'caracteristics'
+      | 'followersQtd'
+      | 'freeContents'
+      | 'payedContents'
+      | 'qtdLikes'
+    >
+  >;
   getPersonalData: (
     userId: string,
     myId: string,
