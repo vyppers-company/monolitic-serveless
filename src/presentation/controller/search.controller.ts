@@ -109,7 +109,7 @@ export class SearchController {
     required: false,
     type: String,
     description: 'tipo de filtro',
-    example: JSON.stringify(['NEWS', 'MOST_FOLLOWED']),
+    enum: ['NEWS', 'MOST_FOLLOWED'],
   })
   async searchUserByTyper(
     @Query('type') type: string,

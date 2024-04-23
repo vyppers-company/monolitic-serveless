@@ -127,6 +127,9 @@ export class FeedService implements IFeedUseCase {
       nextPage: result.nextPage,
       docs: result.docs.map((doc: any) => {
         const content = decideContent(doc, myId, myPurchases.contents);
+        const buyedAsSingleContent = myPurchases.contents.some(
+          (content) => String(doc._id) === String(content),
+        );
         return {
           _id: doc._id,
           type: doc.type,
@@ -163,6 +166,7 @@ export class FeedService implements IFeedUseCase {
                 )
               : [],
           isSubscriptor: isSubscriptor(doc.plans, myId),
+          isBuyerSingleContent: buyedAsSingleContent,
           text: doc.text,
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,
