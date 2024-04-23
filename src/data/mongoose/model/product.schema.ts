@@ -25,6 +25,16 @@ export class Product extends Document implements IProduct {
   owner?: string;
   @Prop({ enum: IModeproduct, required: true })
   mode: IModeproduct;
+  @Prop()
+  idAdapter: string;
+  @Prop({ default: null })
+  limit: number;
+  @Prop({ default: true })
+  activated?: boolean;
+  @Prop({ default: [] })
+  benefits?: string[];
+  @Prop({ default: null })
+  description?: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

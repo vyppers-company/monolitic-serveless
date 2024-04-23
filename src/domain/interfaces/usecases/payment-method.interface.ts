@@ -3,6 +3,13 @@ import { IPaymentConfiguration } from 'src/domain/entity/payment';
 export interface ISetupIntentSecret {
   clientSecret: string;
 }
+
+export interface IPaymentIntentResponse {
+  requireAction: boolean;
+  secretConfirmation?: string;
+  status: string;
+}
+
 export interface IResponseDeleteCardDefault {
   reason: string;
   message: string;

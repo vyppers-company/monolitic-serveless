@@ -3,6 +3,7 @@ import {
   Document,
   FilterQuery,
   //@ts-ignore
+  ClientSession,
   PaginateResult,
   Query,
   QueryOptions,
@@ -19,6 +20,8 @@ export interface BaseInterfaceRepository<T extends Document> {
   create(data: T | any): Promise<T>;
 
   findOneById(id: string): Promise<T | null>;
+
+  startSession(): Promise<ClientSession>;
 
   findOne(
     filter?: FilterQuery<T>,

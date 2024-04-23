@@ -6,13 +6,15 @@ import {
   Param,
   Patch,
   Put,
+  Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Logged } from 'src/shared/decorators/logged.decorator';
 import { ILogged } from 'src/domain/interfaces/others/logged.interface';
 import { SavePermissionVapid } from '../dtos/save-permission-vapid.dto';
 import { VapidNotificationService } from 'src/domain/usecases/vapid-notification.service';
 import { NotificationConfigDto } from '../dtos/config-vapid-notification.dto';
+import { ITypeNotification } from 'src/domain/interfaces/usecases/vapid-notification.interface';
 
 @Controller('vapid-notification')
 @ApiTags('vapid-notification')
@@ -34,10 +36,41 @@ export class VapidNotificationController {
     );
   }
 
-  @Get('v1/unread')
+  @Get('v1/notifications')
   @ApiBearerAuth()
-  async getUnreadNotifications(@Logged() user: ILogged) {
-    return this.vapidNotificationService.getUnread(user._id);
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'numero da pagina que deseja buscar. valo padrao 1',
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'quantidade que deseja buscar. valor padrao 10',
+  })
+  @ApiQuery({
+    name: 'type',
+    required: false,
+    example: ['all', 'only_read', 'only_unread'],
+    enum: ITypeNotification,
+    description: 'tipo da notificacao',
+  })
+  async getUnreadNotifications(
+    @Logged() user: ILogged,
+    @Query('limit') limit?: number,
+    @Query('page') page?: number,
+    @Query('type') type?: ITypeNotification,
+  ) {
+    return this.vapidNotificationService.getUnread(user._id, {
+      limit,
+      page,
+      type,
+    });
   }
 
   @Put('v1/mark/viewed/:notificationId')

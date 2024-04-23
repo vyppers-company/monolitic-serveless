@@ -5,6 +5,7 @@ import {
   BaseModel,
 } from '../helpers/base.abstract.repository';
 import { Product, ProductDocument } from '../model/product.schema';
+import { IEditProduct } from 'src/domain/entity/product';
 
 @Injectable()
 export class ProductRepository extends BaseAbstractRepository<ProductDocument> {
@@ -13,5 +14,19 @@ export class ProductRepository extends BaseAbstractRepository<ProductDocument> {
     private readonly product: BaseModel<ProductDocument>,
   ) {
     super(product);
+  }
+  async updateOne(dto: IEditProduct) {
+    await this.product.updateOne(
+      { _id: dto.productId, owner: dto.ownerId },
+      {
+        $set: {
+          limit: dto.limit,
+          price: dto.price,
+          activated: dto.activated,
+          benefits: dto.benefits,
+          description: dto.description,
+        },
+      },
+    );
   }
 }

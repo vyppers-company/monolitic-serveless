@@ -1,8 +1,17 @@
 import { IPlanEntity } from './plan';
 import { IProfile } from './user.entity';
+
 export enum AuthorizedTypesMidia {
   VIDEO_EXTENSIONS = 'VIDEO',
   IMAGE_EXTENSIONS = 'IMAGE',
+}
+
+export interface ISingleProductOnContentDto {
+  activated?: boolean;
+  benefits: string[];
+  description: string;
+  limit?: number;
+  price: number;
 }
 export interface IUploadContent {
   _id?: string;
@@ -13,6 +22,7 @@ export interface IUploadContent {
   blockedThumb?: string;
   preview?: string;
   shortContent?: string;
+  product?: string | ISingleProductOnContentDto;
 }
 
 export enum ITypeContent {
@@ -40,6 +50,7 @@ export interface IContentEntity {
   createdAt?: Date;
   updatedAt?: Date;
   plans?: string[] | IPlanEntity[];
+  product?: ISingleProductOnContentDto;
   productId?: string;
   isDeleted?: boolean;
 }

@@ -19,6 +19,7 @@ import { EditContentDto } from '../dtos/edit-content.dto';
 import { ITypeContent } from 'src/domain/entity/contents';
 import { CreateContentService } from 'src/domain/usecases/create-content.service';
 import { FeedService } from 'src/domain/usecases/feed.service';
+import { ICurrency } from 'src/domain/entity/currency';
 
 @ApiTags('content')
 @Controller('content')
@@ -69,6 +70,13 @@ export class ContentController {
       plans: dto.plans || [],
       contentId: contentId,
       owner: userLogged._id,
+      product: {
+        activated: dto.product.activated,
+        benefits: dto.product.benefits,
+        description: dto.product.description,
+        limit: dto.product.limit,
+        price: dto.product.price,
+      },
     });
   }
 

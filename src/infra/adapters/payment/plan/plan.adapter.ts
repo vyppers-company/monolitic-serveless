@@ -1,4 +1,4 @@
-import { HttpException, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { IPlanEntity } from 'src/domain/entity/plan';
 import { IPaymentPlanUseCases } from 'src/domain/interfaces/adapters/payment-plan.interface';
 import Stripe from 'stripe';
@@ -26,7 +26,11 @@ export class PaymentPlanAdapter implements IPaymentPlanUseCases {
       });
       return plan.id;
     } catch (error) {
-      throw new HttpException('Failed Dependency', 422, error);
+      throw new HttpException(
+        'Failed Dependency',
+        HttpStatus.FAILED_DEPENDENCY,
+        error,
+      );
     }
   }
   async createAnnualPlan(myId: string, dto: IPlanEntity): Promise<string> {
@@ -48,7 +52,11 @@ export class PaymentPlanAdapter implements IPaymentPlanUseCases {
       });
       return plan.id;
     } catch (error) {
-      throw new HttpException('Failed Dependency', 422, error);
+      throw new HttpException(
+        'Failed Dependency',
+        HttpStatus.FAILED_DEPENDENCY,
+        error,
+      );
     }
   }
   async deletePlan(planId: string): Promise<void> {

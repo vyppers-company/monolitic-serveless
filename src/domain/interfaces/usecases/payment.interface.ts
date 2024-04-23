@@ -6,7 +6,7 @@ export interface ISubscriptionsUseCases {
   processSubscription: (
     myId: string,
     dto: ProcessSubscriptionDto,
-  ) => Promise<string>;
+  ) => Promise<{ message: string }>;
   getMySubscriptions: (
     limit: number,
     page: number,

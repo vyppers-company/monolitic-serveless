@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
+  ClientSession,
   Document,
   FilterQuery,
   Model,
@@ -37,6 +38,10 @@ export abstract class BaseAbstractRepository<T extends Document>
   ): Promise<T> {
     const newDocument = new this.model(data);
     return await newDocument.save();
+  }
+
+  public async startSession(): Promise<ClientSession> {
+    return this.model.db.startSession();
   }
 
   public async findOneById(id: string): Promise<T | null> {

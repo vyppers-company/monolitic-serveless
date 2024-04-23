@@ -2,18 +2,20 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { CreateContentDto } from 'src/presentation/dtos/create-content.dto';
 import { ICreateContentUseCase } from '../interfaces/usecases/create-content.interface';
-import { AuthorizedTypesMidia, ITypeContent } from '../entity/contents';
+import { ITypeContent } from '../entity/contents';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
-import {
-  authorizedImages,
-  authorizedVideos,
-} from '../interfaces/adapters/s3.adapter';
+import { PaymentProductAdapter } from 'src/infra/adapters/payment/product/product.adapter';
+import { ICurrency } from '../entity/currency';
+import { ProductRepository } from 'src/data/mongoose/repositories/product.repository';
+import { IModeproduct } from '../entity/product';
 
 @Injectable()
 export class CreateContentService implements ICreateContentUseCase {
   constructor(
     private readonly contentRepositoru: ContentRepository,
     private readonly userrepo: UserRepository,
+    private readonly productPaymentStripe: PaymentProductAdapter,
+    private readonly productRepository: ProductRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
     if (
@@ -91,6 +93,39 @@ export class CreateContentService implements ICreateContentUseCase {
     });
     if (dto.type === ITypeContent.PROFILE) {
       await this.userrepo.updateProfileImage(owner, String(data._id));
+    }
+    const productIdAdapter = dto.product
+      ? await this.productPaymentStripe.createProduct({
+          activated: dto.product.activated,
+          benefits: dto.product.benefits,
+          limit: dto.product.limit,
+          currency: ICurrency.BRL,
+          ownerId: owner,
+          description: dto.product.description,
+          price: dto.product.price,
+          contents: data.contents.map((content) => content.content),
+          contentId: data._id,
+        })
+      : null;
+
+    if (productIdAdapter) {
+      const product = await this.productRepository.create({
+        content: data._id,
+        currency: ICurrency.BRL,
+        mode: IModeproduct.CREATED_BY_CREATOR,
+        price: dto.product.price,
+        owner: owner,
+        idAdapter: productIdAdapter,
+        limit: dto.product.limit,
+        activated: dto.product.activated,
+        benefits: dto.product.benefits,
+        description: dto.product.description,
+      });
+      await this.contentRepositoru.updateOne({
+        productId: product._id,
+        contentId: data._id,
+        owner,
+      });
     }
   }
 }

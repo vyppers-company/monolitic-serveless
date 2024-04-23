@@ -9,10 +9,14 @@ import {
 } from '../entity/contents';
 import { decideContent } from 'src/shared/utils/decideContent';
 import { isSubscriptor } from 'src/shared/utils/isSubscriptor';
+import { MyPurchasesRepository } from 'src/data/mongoose/repositories/my-purchases.repository';
 
 @Injectable()
 export class GetContentService implements IContentsUseCase {
-  constructor(private readonly contentRepository: ContentRepository) {}
+  constructor(
+    private readonly contentRepository: ContentRepository,
+    private readonly myPurchase: MyPurchasesRepository,
+  ) {}
   async getContents(
     profileId: string,
     myId: string,
@@ -26,6 +30,11 @@ export class GetContentService implements IContentsUseCase {
         limit: Number(limit),
         page: Number(page),
         populate: [
+          {
+            path: 'productId',
+            model: 'Product',
+            select: 'currency price limit benefits activated',
+          },
           {
             path: 'plans',
             model: 'Plan',
@@ -52,6 +61,8 @@ export class GetContentService implements IContentsUseCase {
       },
     );
 
+    const myPurchases = await this.myPurchase.findOne({ owner: myId });
+
     return {
       totalDocs: result.totalDocs,
       limit: result.limit,
@@ -77,8 +88,9 @@ export class GetContentService implements IContentsUseCase {
             ? doc.owner.followers.includes(myId)
             : false,
         canEdit: String(doc.owner._id) === String(myId) ? true : false,
-        contents: decideContent(doc, myId),
+        contents: decideContent(doc, myId, myPurchases.contents),
         likersId: doc.likersId,
+        product: doc.productId,
         plans:
           doc.plans && doc.plans.length
             ? doc.plans.map((plan) => ({
@@ -111,6 +123,11 @@ export class GetContentService implements IContentsUseCase {
       {
         populate: [
           {
+            path: 'productId',
+            model: 'Product',
+            select: 'currency price limit benefits activated',
+          },
+          {
             path: 'plans',
             model: 'Plan',
             select: 'subscribers name price benefits',
@@ -130,10 +147,12 @@ export class GetContentService implements IContentsUseCase {
         ],
       },
     );
+    const myPurchases = await this.myPurchase.findOne({ owner: myId });
 
     return {
-      contents: decideContent(content, myId),
+      contents: decideContent(content, myId, myPurchases.contents),
       likersId: content.likersId,
+      product: content.productId,
       owner: {
         _id: content.owner._id,
         name: content.owner.name,

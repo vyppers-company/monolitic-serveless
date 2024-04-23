@@ -31,7 +31,7 @@ export class Content extends Document implements IContentEntity {
   likersId?: string[];
   @Prop({ type: Array, default: [] })
   plans?: string[];
-  @Prop()
+  @Prop({ default: null })
   productId?: string;
   @Prop({ type: Boolean, default: false })
   isDeleted?: boolean;

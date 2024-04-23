@@ -149,9 +149,6 @@ export class PlanService implements PlanUseCase {
     resumed: boolean,
   ): Promise<IPlanEntity[] | Pick<IPlanEntity, '_id' | 'name'>[]> {
     if (resumed) {
-      if (myId !== userId) {
-        throw new HttpException('forbidden', HttpStatus.FORBIDDEN);
-      }
       const plans = await this.planRepository.find({
         owner: userId,
         activate: true,

@@ -6,12 +6,14 @@ import { ITypeContent } from '../entity/contents';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { decideContent } from 'src/shared/utils/decideContent';
 import { isSubscriptor } from 'src/shared/utils/isSubscriptor';
+import { MyPurchasesRepository } from 'src/data/mongoose/repositories/my-purchases.repository';
 
 @Injectable()
 export class FeedService implements IFeedUseCase {
   constructor(
     private readonly contentRepository: ContentRepository,
     private readonly userRepository: UserRepository,
+    private readonly myPurchase: MyPurchasesRepository,
   ) {}
   async feed(
     type: ITypeContent,
@@ -27,7 +29,9 @@ export class FeedService implements IFeedUseCase {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-
+    const myPurchases = await this.myPurchase.findOne({ owner: myId }, null, {
+      lean: true,
+    });
     const filterUsers = [];
 
     if (
@@ -82,7 +86,13 @@ export class FeedService implements IFeedUseCase {
         sort: { _id: -1 },
         limit: Number(limit),
         page: Number(page),
+        lean: true,
         populate: [
+          {
+            path: 'productId',
+            model: 'Product',
+            select: 'currency price limit benefits activated',
+          },
           {
             path: 'plans',
             model: 'Plan',
@@ -116,7 +126,7 @@ export class FeedService implements IFeedUseCase {
       prevPage: result.prevPage,
       nextPage: result.nextPage,
       docs: result.docs.map((doc: any) => {
-        const content = decideContent(doc, myId);
+        const content = decideContent(doc, myId, myPurchases.contents);
         return {
           _id: doc._id,
           type: doc.type,
@@ -133,6 +143,7 @@ export class FeedService implements IFeedUseCase {
           canEdit: String(doc.owner._id) === String(myId) ? true : false,
           contents: content,
           likersId: doc.likersId,
+          product: doc.productId,
           plans:
             doc.plans && doc.plans.length
               ? doc.plans.map((plan) =>

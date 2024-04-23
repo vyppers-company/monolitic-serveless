@@ -1,5 +1,5 @@
-import { IEditContentDto } from 'src/presentation/dtos/edit-content.dto';
+import { IEditContentDtoExtended } from 'src/presentation/dtos/edit-content.dto';
 
 export interface IEditContentUseCase {
-  editContent: (dto: IEditContentDto) => Promise<void>;
+  editContent: (dto: IEditContentDtoExtended) => Promise<void>;
 }

@@ -46,6 +46,7 @@ export class UserRepository extends BaseAbstractRepository<UserDocument> {
       {
         $set: {
           ...data,
+          caracteristics: data.caracteristics,
         },
       },
     );

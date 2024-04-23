@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import {
+  INotificationQueryParams,
+  ITypeNotification,
   IVapidNotificationService,
   NotificationConfigInterface,
 } from '../interfaces/usecases/vapid-notification.interface';
@@ -80,24 +82,42 @@ export class VapidNotificationService implements IVapidNotificationService {
       payload: campaignNotification.payload,
     });
   }
-  async getUnread(userId: string) {
-    try {
-      const user = await this.userRepository.findOne({ _id: userId });
-      if (!user) {
-        throw new HttpException('User Not found', HttpStatus.NOT_FOUND);
-      }
-      const notifications = await this.notificationsMessage.find(
-        {
-          receiver: userId,
-        },
-        null,
-        { sort: { createdAt: -1 } },
-      );
-      return notifications;
-    } catch (error) {
-      throw error;
+  async getUnread(userId: string, queryParams: INotificationQueryParams) {
+    const user = await this.userRepository.findOne({ _id: userId });
+    if (!user) {
+      throw new HttpException('User Not found', HttpStatus.NOT_FOUND);
     }
+
+    const filter = {};
+    if (queryParams.type !== ITypeNotification.all) {
+      filter['isViewed'] =
+        queryParams.type === ITypeNotification.only_unread ? false : true;
+    }
+    filter['receiver'] = userId;
+
+    const result = await this.notificationsMessage.findPaginated(
+      {
+        sort: { createdAt: -1 },
+        limit: Number(queryParams.limit),
+        page: Number(queryParams.page),
+      },
+      { ...filter },
+    );
+    return {
+      totalDocs: result.totalDocs,
+      limit: result.limit,
+      totalPages: result.totalPages,
+      page: result.page,
+      offset: result.offset,
+      pagingCounter: result.pagingCounter,
+      hasPrevPage: result.hasPrevPage,
+      hasNextPage: result.hasNextPage,
+      prevPage: result.prevPage,
+      nextPage: result.nextPage,
+      docs: result.docs,
+    };
   }
+
   async markAsViewed(userId: string, notificationId: string) {
     await this.notificationsMessage.markAsViewed(userId, notificationId);
   }

@@ -13,6 +13,7 @@ import { ProcessSubscriptionDto } from 'src/presentation/dtos/subscription.dto';
 import { PaginateResult } from 'mongoose';
 import { IPlanEntity } from '../entity/plan';
 import { IPaymentConfiguration } from '../entity/payment';
+import { TransactionRepository } from 'src/data/mongoose/repositories/transaction.repository';
 
 @Injectable()
 export class SubscriptionService implements ISubscriptionsUseCases {
@@ -20,6 +21,7 @@ export class SubscriptionService implements ISubscriptionsUseCases {
     private readonly userRepository: UserRepository,
     private readonly planRepository: PlanRepository,
     private readonly paymentAdapter: PaymentSubscriptionAdapter,
+    private readonly transactionRepository: TransactionRepository,
   ) {}
   async processSubscription(myId: string, dto: ProcessSubscriptionDto) {
     if (myId === dto.creatorVypperId) {
@@ -114,8 +116,18 @@ export class SubscriptionService implements ISubscriptionsUseCases {
       paymentSubscriptionId: newSubs,
       vypperSubscriptionId: String(buyer._id),
     });
-    return 'Subscription Well Successfully';
+
+    await this.transactionRepository.create({
+      buyer: myId,
+      idTransactionAdapter: newSubs,
+      plataformPercentage: 5, //needs to be transfer to entity
+      sellerPercentage: 95, //needs to be transfer to entity
+      planId: plan._id,
+      seller: dto.creatorVypperId,
+    });
+    return { message: 'Subscription Well Successfully' };
   }
+
   async getMySubscriptions(
     limit: number,
     page: number,

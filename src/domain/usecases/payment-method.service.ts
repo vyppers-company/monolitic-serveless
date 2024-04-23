@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PaymentCustomerAdapter } from 'src/infra/adapters/payment/customer/customer.adapter';
-import { SetupIntentAdapter } from 'src/infra/adapters/payment/setup/setIntent.adapter';
+import { IntentAdapter } from 'src/infra/adapters/payment/intents/intents.adapter';
 import {
   ISetupIntentSecret,
   IPaymentMethodUseCases,
@@ -19,7 +19,7 @@ export class PaymentMethodsService implements IPaymentMethodUseCases {
     private readonly userRepository: UserRepository,
     private readonly paymentRepository: PaymentRepository,
     private readonly paymentCustomerAdapter: PaymentCustomerAdapter,
-    private readonly setupIntentAdapter: SetupIntentAdapter,
+    private readonly setupIntentAdapter: IntentAdapter,
     private readonly paymentMethodAdapter: PaymentMethodAdapter,
     private readonly cryptoAdapter: CryptoAdapter,
   ) {}

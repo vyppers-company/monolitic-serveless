@@ -13,12 +13,18 @@ export class PaymentSubscriptionAdapter
     paymentPlanId: string,
     paymentCustomerId: string,
     currency: ICurrency,
+    promotionId?: string,
   ) {
     const result = await this.stripe.subscriptions.create({
       customer: paymentCustomerId,
       items: [{ plan: paymentPlanId }],
       currency: currency,
       collection_method: 'charge_automatically',
+      discounts: [
+        {
+          coupon: promotionId || null,
+        },
+      ],
     });
     return result.id;
   }

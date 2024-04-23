@@ -52,7 +52,7 @@ import { SubscriptionService } from 'src/domain/usecases/subscription.service';
 import Stripe from 'stripe';
 import { PaymentPlanAdapter } from 'src/infra/adapters/payment/plan/plan.adapter';
 import { PaymentCustomerAdapter } from 'src/infra/adapters/payment/customer/customer.adapter';
-import { SetupIntentAdapter } from 'src/infra/adapters/payment/setup/setIntent.adapter';
+import { IntentAdapter } from 'src/infra/adapters/payment/intents/intents.adapter';
 import { PaymentMethodController } from 'src/presentation/controller/payment-method.controller';
 import { PaymentMethodsService } from 'src/domain/usecases/payment-method.service';
 import { PaymentMethodAdapter } from 'src/infra/adapters/payment/payment-methods/payment-methods.adapter';
@@ -111,6 +111,19 @@ import { EventBridge, SNS, SQS } from 'aws-sdk';
 import { SNSAdapter } from 'src/infra/adapters/aws/sns/aws-sns.adapter';
 import { VapidNotificationController } from 'src/presentation/controller/vapid-notification.controller';
 import { LoggerModule } from 'nestjs-pino';
+import { PaymentProductAdapter } from 'src/infra/adapters/payment/product/product.adapter';
+import { TransactionRepository } from 'src/data/mongoose/repositories/transaction.repository';
+import {
+  Transaction,
+  TransactionSchema,
+} from 'src/data/mongoose/model/transactions.schema';
+import { PurchaseController } from 'src/presentation/controller/purchase.controller';
+import { PurchaseProductService } from 'src/domain/usecases/purchase-products.service';
+import {
+  MyPurchases,
+  MyPurchasesSchema,
+} from 'src/data/mongoose/model/purchase.schema';
+import { MyPurchasesRepository } from 'src/data/mongoose/repositories/my-purchases.repository';
 @Module({
   imports: [
     LoggerModule.forRoot(),
@@ -118,6 +131,8 @@ import { LoggerModule } from 'nestjs-pino';
       dbName: environment.app.serviceName,
     }),
     MongooseModule.forFeature([
+      { name: MyPurchases.name, schema: MyPurchasesSchema },
+      { name: Transaction.name, schema: TransactionSchema },
       { name: User.name, schema: UserSchema },
       { name: Code.name, schema: CodeSchema },
       { name: Content.name, schema: ContentSchema },
@@ -219,6 +234,8 @@ import { LoggerModule } from 'nestjs-pino';
         },
       }),
     },
+    MyPurchasesRepository,
+    TransactionRepository,
     ConfigNotificationRepository,
     NotificationsMessageRepository,
     FacebookAuthStrategy,
@@ -263,6 +280,7 @@ import { LoggerModule } from 'nestjs-pino';
     DenunciateService,
     DenunciateInternalService,
     VapidNotificationService,
+    PurchaseProductService,
 
     CryptoAdapter,
     SESAdapter,
@@ -272,7 +290,8 @@ import { LoggerModule } from 'nestjs-pino';
     PaymentSubscriptionAdapter,
     PaymentPlanAdapter,
     PaymentCustomerAdapter,
-    SetupIntentAdapter,
+    PaymentProductAdapter,
+    IntentAdapter,
     PaymentMethodAdapter,
     NotificationAdapter,
   ],
@@ -298,6 +317,7 @@ import { LoggerModule } from 'nestjs-pino';
     DenunciateController,
     LiveStreamingController,
     InternalDenunciateController,
+    PurchaseController,
   ],
 })
 export class AppModule {}

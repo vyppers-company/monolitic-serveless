@@ -8,6 +8,7 @@ export const environment = {
     serviceName: process.env.SERVICE_NAME || '',
     cors: Array.from(process.env.ORIGINS.split(',')) || [],
     waterMark: process.env.WATER_MARK || '',
+    domain: process.env.DOMAIN_WEB_APP || '',
   },
   vapid: {
     publicKey: process.env.VAPID_PUBLIC_KEY || '',
@@ -34,6 +35,8 @@ export const environment = {
   mongodb: {
     url: process.env.MONGODB_URL || '',
     collections: {
+      purchase: process.env.MONGO_COLLECTION_MY_PURCHASE || '',
+      transaction: process.env.MONGO_COLLECTION_TRANSACTION || '',
       denunciate: process.env.MONGO_COLLECTION_DENUNCIATE || '',
       code: process.env.MONGODB_COLLECTION_CODE || '',
       user: process.env.MONGODB_COLLECTION_USER || '',
