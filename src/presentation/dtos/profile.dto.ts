@@ -91,6 +91,7 @@ export class ProfileDto implements IProfileExtended {
     enum: ['true', 'false'],
   })
   @IsEnum(['true', 'false'])
+  @IsOptional()
   isPublic?: string;
 
   @ApiProperty({
