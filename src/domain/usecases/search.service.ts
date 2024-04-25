@@ -16,10 +16,13 @@ export class SearchUsersService implements ISearchUseCase {
     private readonly contentRepository: ContentRepository,
   ) {}
   async searchUserByCriteria(
-    type: string,
+    myId: string,
     limit: number,
     page: number,
-    myId: string,
+    type: string,
+    isFollowed: string,
+    sort: string,
+    isVerified: string,
   ): Promise<PaginateResult<IProfile>> {
     const finalFilter = {
       options: {
@@ -55,6 +58,32 @@ export class SearchUsersService implements ISearchUseCase {
       };
     }
 
+    if (isFollowed === 'true') {
+      finalFilter.filter['followers'] = { $in: [myId] };
+    }
+    if (isFollowed === 'false') {
+      finalFilter.filter['followers'] = { $not: { $in: [myId] } };
+    }
+
+    if (sort === 'from_recent') {
+      finalFilter.options['sort'] = {
+        createdAt: -1,
+      };
+    }
+
+    if (sort === 'from_older') {
+      finalFilter.options['sort'] = {
+        createdAt: 1,
+      };
+    }
+
+    if (isVerified === 'true') {
+      finalFilter.filter['verified'] = true;
+    }
+    if (isVerified === 'false') {
+      finalFilter.filter['verified'] = false;
+    }
+
     const result = await this.userRepository.findPaginated(
       finalFilter.options,
       finalFilter.filter,
@@ -78,6 +107,9 @@ export class SearchUsersService implements ISearchUseCase {
         profileImage: doc.profileImage,
         isOnline: false,
         sinceAt: doc.createdAt,
+        isVerified: doc.verified,
+        isFollowed:
+          doc.followers && doc.followers ? doc.followers.includes(myId) : false,
       })),
     };
   }

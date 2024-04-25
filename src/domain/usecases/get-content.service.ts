@@ -61,8 +61,11 @@ export class GetContentService implements IContentsUseCase {
       },
     );
 
-    const myPurchases = await this.myPurchase.findOne({ owner: myId });
+    const myPurchases = await this.myPurchase.findOne({ owner: myId }, null, {
+      lean: true,
+    });
 
+    const myPurchasesContents = myPurchases ? myPurchases.contents : [];
     return {
       totalDocs: result.totalDocs,
       limit: result.limit,
@@ -74,37 +77,44 @@ export class GetContentService implements IContentsUseCase {
       hasNextPage: result.hasNextPage,
       prevPage: result.prevPage,
       nextPage: result.nextPage,
-      docs: result.docs.map((doc: any) => ({
-        _id: doc._id,
-        type: doc.type,
-        owner: {
-          _id: doc.owner._id,
-          name: doc.owner.name,
-          vypperId: doc.owner.vypperId,
-          profileImage: doc.owner.profileImage,
-        },
-        isFollowed:
-          doc.owner.followers && doc.owner.followers.length
-            ? doc.owner.followers.includes(myId)
-            : false,
-        canEdit: String(doc.owner._id) === String(myId) ? true : false,
-        contents: decideContent(doc, myId, myPurchases.contents),
-        likersId: doc.likersId,
-        product: doc.productId,
-        plans:
-          doc.plans && doc.plans.length
-            ? doc.plans.map((plan) => ({
-                _id: plan._id,
-                name: plan.name,
-                price: plan.price,
-                benefits: plan.benefits,
-              }))
-            : [],
-        text: doc.text,
-        isSubscriptor: isSubscriptor(doc.plans, myId),
-        createdAt: doc.createdAt,
-        updatedAt: doc.updatedAt,
-      })),
+      docs: result.docs.map((doc: any) => {
+        const content = decideContent(doc, myId, myPurchasesContents);
+        const buyedAsSingleContent = myPurchasesContents.some(
+          (content) => String(doc._id) === String(content),
+        );
+        return {
+          _id: doc._id,
+          type: doc.type,
+          owner: {
+            _id: doc.owner._id,
+            name: doc.owner.name,
+            vypperId: doc.owner.vypperId,
+            profileImage: doc.owner.profileImage,
+          },
+          isFollowed:
+            doc.owner.followers && doc.owner.followers.length
+              ? doc.owner.followers.includes(myId)
+              : false,
+          canEdit: String(doc.owner._id) === String(myId) ? true : false,
+          contents: content,
+          likersId: doc.likersId,
+          product: doc.productId,
+          plans:
+            doc.plans && doc.plans.length
+              ? doc.plans.map((plan) => ({
+                  _id: plan._id,
+                  name: plan.name,
+                  price: plan.price,
+                  benefits: plan.benefits,
+                }))
+              : [],
+          text: doc.text,
+          isSubscriptor: isSubscriptor(doc.plans, myId),
+          isBuyerSingleContent: buyedAsSingleContent,
+          createdAt: doc.createdAt,
+          updatedAt: doc.updatedAt,
+        };
+      }),
     };
   }
 
@@ -147,10 +157,16 @@ export class GetContentService implements IContentsUseCase {
         ],
       },
     );
-    const myPurchases = await this.myPurchase.findOne({ owner: myId });
+    const myPurchases = await this.myPurchase.findOne({ owner: myId }, null, {
+      lean: true,
+    });
 
+    const myPurchasesContents = myPurchases ? myPurchases.contents : [];
+    const buyedAsSingleContent = myPurchasesContents.some(
+      (cont) => String(content._id) === String(cont),
+    );
     return {
-      contents: decideContent(content, myId, myPurchases.contents),
+      contents: decideContent(content, myId, myPurchasesContents),
       likersId: content.likersId,
       product: content.productId,
       owner: {
@@ -166,6 +182,7 @@ export class GetContentService implements IContentsUseCase {
       text: content.text,
       type: content.type,
       isSubscriptor: isSubscriptor(content.plans, myId),
+      isBuyerSingleContent: buyedAsSingleContent,
       plans:
         content.plans && content.plans.length
           ? content.plans.map((plan) => ({

@@ -109,15 +109,47 @@ export class SearchController {
     required: false,
     type: String,
     description: 'tipo de filtro',
-    enum: ['NEWS', 'MOST_FOLLOWED'],
+    enum: ['NEWS', 'MOST_FOLLOWED', 'IGNORE'],
+  })
+  @ApiQuery({
+    name: 'isfollowed',
+    required: false,
+    type: String,
+    description: 'se eu sigo ou nao a pessoa',
+    enum: ['true', 'false', 'ignore'],
+  })
+  @ApiQuery({
+    name: 'sort',
+    required: false,
+    type: String,
+    description: 'se eu sigo ou nao a pessoa',
+    enum: ['from_recent', 'from_older', 'ignore'],
+  })
+  @ApiQuery({
+    name: 'isverified',
+    required: false,
+    type: String,
+    description: 'se verificado ou nao',
+    enum: ['true', 'false', 'ignore'],
   })
   async searchUserByTyper(
-    @Query('type') type: string,
-    @Query('limit') limit: number,
-    @Query('page') page: number,
     @Logged() user: ILogged,
+    @Query('limit') limit?: number,
+    @Query('page') page?: number,
+    @Query('type') type?: string,
+    @Query('isfollowed') isFollowed?: string,
+    @Query('sort') sort?: string,
+    @Query('isverified') isVerified?: string,
   ) {
-    return this.searchService.searchUserByCriteria(type, limit, page, user._id);
+    return this.searchService.searchUserByCriteria(
+      user._id,
+      limit || 10,
+      page || 1,
+      type || 'IGNORE',
+      isFollowed || 'ignore',
+      sort || 'ignore',
+      isVerified || 'ignore',
+    );
   }
 
   @Get('v1/consult/filter')

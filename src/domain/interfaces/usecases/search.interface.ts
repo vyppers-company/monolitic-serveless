@@ -26,9 +26,12 @@ export interface ISearchUseCase {
     myId: string,
   ) => Promise<PaginateResult<IContentEntity>>;
   searchUserByCriteria: (
-    type: string,
+    myId: string,
     limit: number,
     page: number,
-    myId: string,
+    type: string,
+    isFollowed: string,
+    sort: string,
+    isVerified,
   ) => Promise<PaginateResult<IProfile>>;
 }
