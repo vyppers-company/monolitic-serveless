@@ -5,17 +5,17 @@ import { randomUUID } from 'node:crypto';
 const decideContent = (
   doc: IContentEntity,
   myId: string,
-  contentsPurchased: string[],
+  contentsPurchasedContents: string[],
 ) => {
   const { _id } = doc.owner as IProfile;
-  /*  if (String(_id) === myId) {
+  if (String(_id) === myId) {
     if (doc.plans.length) {
       return doc.contents.map((item) => ({ ...item, _id: randomUUID() }));
     }
     return doc.contents.map((item) => ({ ...item, _id: randomUUID() }));
-  } */
-  if (contentsPurchased.length && doc.productId) {
-    const buyedAsSingleContent = contentsPurchased.some(
+  }
+  if (doc.productId) {
+    const buyedAsSingleContent = contentsPurchasedContents.some(
       (content) => String(doc._id) === String(content),
     );
 
@@ -26,6 +26,12 @@ const decideContent = (
         _id: randomUUID(),
       }));
     }
+    return doc.contents.map((image) => ({
+      ...image,
+      content: null,
+      thumb: null,
+      _id: randomUUID(),
+    }));
   }
   if (doc.plans.length) {
     const isInSomePlan = doc.plans.some((plan) => {

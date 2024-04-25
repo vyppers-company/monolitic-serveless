@@ -29,9 +29,7 @@ export class FeedService implements IFeedUseCase {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    const myPurchases = await this.myPurchase.findOne({ owner: myId }, null, {
-      lean: true,
-    });
+
     const filterUsers = [];
 
     if (
@@ -114,6 +112,13 @@ export class FeedService implements IFeedUseCase {
       },
       { $and: filterContents },
     );
+
+    const myPurchases = await this.myPurchase.findOne({ owner: myId }, null, {
+      lean: true,
+    });
+
+    const myPurchasesContents = myPurchases ? myPurchases.contents : [];
+
     return {
       totalDocs: result.totalDocs,
       limit: result.limit,
@@ -126,8 +131,8 @@ export class FeedService implements IFeedUseCase {
       prevPage: result.prevPage,
       nextPage: result.nextPage,
       docs: result.docs.map((doc: any) => {
-        const content = decideContent(doc, myId, myPurchases.contents);
-        const buyedAsSingleContent = myPurchases.contents.some(
+        const content = decideContent(doc, myId, myPurchasesContents);
+        const buyedAsSingleContent = myPurchasesContents.some(
           (content) => String(doc._id) === String(content),
         );
         return {
