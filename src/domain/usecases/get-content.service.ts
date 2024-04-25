@@ -43,7 +43,8 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperId name profileImage followers planConfiguration',
+            select:
+              'vypperId name profileImage followers planConfiguration isOnline verified',
             populate: [
               {
                 path: 'profileImage',
@@ -89,6 +90,8 @@ export class GetContentService implements IContentsUseCase {
             _id: doc.owner._id,
             name: doc.owner.name,
             vypperId: doc.owner.vypperId,
+            isOnline: doc.owner.isOnline,
+            isVerfied: doc.owner.verified,
             profileImage: doc.owner.profileImage,
           },
           isFollowed:
@@ -145,7 +148,7 @@ export class GetContentService implements IContentsUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperId name profileImage followers',
+            select: 'vypperId name profileImage followers isOnline verified',
             populate: [
               {
                 path: 'profileImage',
@@ -173,6 +176,8 @@ export class GetContentService implements IContentsUseCase {
         _id: content.owner._id,
         name: content.owner.name,
         vypperId: content.owner.vypperId,
+        isOnline: content.owner.isOnline,
+        isVerfied: content.owner.verified,
         profileImage: content.owner.profileImage,
       },
       isFollowed:

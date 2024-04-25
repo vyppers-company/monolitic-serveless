@@ -72,6 +72,9 @@ export class User extends Document implements IProfile {
   @Prop({ default: false })
   isPublic?: boolean;
 
+  @Prop({ default: false })
+  isOnline?: boolean;
+
   @Prop({ type: Object })
   interests?: ICategory;
 

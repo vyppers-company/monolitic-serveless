@@ -105,7 +105,7 @@ export class SearchUsersService implements ISearchUseCase {
         vypperId: doc.vypperId,
         name: doc.name,
         profileImage: doc.profileImage,
-        isOnline: false,
+        isOnline: doc.isOnline,
         sinceAt: doc.createdAt,
         isVerified: doc.verified,
         isFollowed:

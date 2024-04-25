@@ -39,11 +39,14 @@ export interface IComment {
   createdAt: Date;
 }
 
+export interface IProfileExtended2 extends IProfile {
+  isVerfied?: boolean;
+}
 export interface IContentEntity {
   _id?: string;
   text?: string;
   type?: ITypeContent;
-  owner?: string | IProfile;
+  owner?: string | IProfileExtended2;
   contents?: IUploadContent[];
   likersId?: string[];
   canEdit?: boolean;
@@ -54,6 +57,7 @@ export interface IContentEntity {
   productId?: string;
   isDeleted?: boolean;
 }
+
 export interface IContentEntityExtended extends IContentEntity {
   isFollowed: boolean;
   isSubscriptor: boolean;

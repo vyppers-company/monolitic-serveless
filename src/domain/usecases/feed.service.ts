@@ -89,7 +89,7 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'productId',
             model: 'Product',
-            select: 'currency price limit benefits activated',
+            select: 'currency price limit benefits activated verified',
           },
           {
             path: 'plans',
@@ -99,7 +99,8 @@ export class FeedService implements IFeedUseCase {
           {
             path: 'owner',
             model: 'User',
-            select: 'vypperId name profileImage caracteristics bans followers',
+            select:
+              'vypperId name profileImage caracteristics bans followers isOnline verified',
             populate: [
               {
                 path: 'profileImage',
@@ -142,6 +143,8 @@ export class FeedService implements IFeedUseCase {
             _id: doc.owner._id,
             name: doc.owner.name,
             vypperId: doc.owner.vypperId,
+            isOnline: doc.owner.isOnline,
+            isVerfied: doc.owner.verified,
             profileImage: doc.owner.profileImage,
           },
           isFollowed:

@@ -215,6 +215,8 @@ export class GetProfileService implements IGetProfileUseCase {
       bio: user.bio || null,
       profileImage: content ? content.contents[0].content : null,
       followersQtd: user.followers ? user.followers.length : 0,
+      isOnline: user.isOnline,
+      isVerified: user.verified,
       isFollowed:
         user.followers && user.followers
           ? user.followers.includes(myId)

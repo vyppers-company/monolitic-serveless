@@ -60,7 +60,11 @@ export class EditPasswordDto implements Pick<IProfile, 'password'> {
   })
   newPassword: string;
 }
-export class ProfileDto implements IProfile {
+
+export interface IProfileExtended extends Omit<IProfile, 'isPublic'> {
+  isPublic?: string;
+}
+export class ProfileDto implements IProfileExtended {
   @IsString()
   @ApiProperty({ required: false, example: 'Fulana ' })
   @IsOptional()
@@ -84,9 +88,10 @@ export class ProfileDto implements IProfile {
     required: false,
     example: false,
     description: 'define if your profile can be access por non-users',
+    enum: ['true', 'false'],
   })
-  @IsBoolean()
-  isPublic?: boolean;
+  @IsEnum(['true', 'false'])
+  isPublic?: string;
 
   @ApiProperty({
     required: false,

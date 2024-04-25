@@ -49,4 +49,5 @@ export interface IProfile {
   isBanned?: boolean;
   isFreezed?: boolean;
   isPublic?: boolean;
+  isOnline?: boolean;
 }
