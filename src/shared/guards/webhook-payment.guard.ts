@@ -21,7 +21,7 @@ export class GuardPaymentSubscriptionPaymentFailed implements CanActivate {
 
     try {
       const event = await this.webhookPaymentAdapter.subscriptionPaymentFailed(
-        request.body,
+        JSON.stringify(request.body),
         stripeSignature,
       );
       console.log({ event });
