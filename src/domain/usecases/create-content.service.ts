@@ -21,7 +21,7 @@ export class CreateContentService implements ICreateContentUseCase {
     if (dto.plans.length && dto.type !== ITypeContent.PROFILE) {
       throw new HttpException(
         {
-          message: 'if the content is payed, is required to send payed',
+          message: 'profile cant be sold',
           reason: 'ContentError',
         },
         HttpStatus.BAD_REQUEST,
