@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { WebhookPaymentAdapter } from 'src/infra/adapters/payment/webhook/webhook-payment.adapter';
+import { environment } from 'src/main/config/environment/environment';
 
 @Injectable()
 export class GuardPaymentSubscriptionPaymentFailed implements CanActivate {
@@ -13,7 +14,11 @@ export class GuardPaymentSubscriptionPaymentFailed implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<any> {
     const request = context.switchToHttp().getRequest();
     const stripeSignature = request.headers['stripe-signature'];
-    console.log({ request, stripeSignature });
+    console.log({
+      body: request.body,
+      stripeSignature,
+      env: environment.payment.stripe.webhooks.payment.subscription.failed,
+    });
 
     try {
       if (!stripeSignature) {
