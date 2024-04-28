@@ -18,7 +18,7 @@ export class CreateContentService implements ICreateContentUseCase {
     private readonly productRepository: ProductRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
-    if (dto.plans.length && dto.type !== ITypeContent.PROFILE) {
+    if (dto.plans.length && dto.type === ITypeContent.PROFILE) {
       throw new HttpException(
         {
           message: 'profile cant be sold',

@@ -9,7 +9,7 @@ import {
 import { Type } from 'class-transformer';
 
 export class UploadDeleteContentDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsUrl()
   @IsOptional()
   blockedThumb?: string;
@@ -17,14 +17,14 @@ export class UploadDeleteContentDto {
   @ApiProperty()
   content: string;
   @IsUrl()
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   preview?: string;
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsOptional()
   @IsUrl()
   shortContent?: string;
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsUrl()
   @IsOptional()
   thumb?: string;
@@ -40,8 +40,6 @@ export class DeleteUpload {
         thumb: 'string',
         blockedThumb: 'string',
         content: 'string',
-        preview: 'string',
-        shortContent: 'string',
       },
     ]),
   })
