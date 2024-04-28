@@ -13,6 +13,7 @@ export class GuardPaymentSubscriptionPaymentFailed implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<any> {
     const request = context.switchToHttp().getRequest();
     const stripeSignature = request.headers['stripe-signature'];
+    console.log({ request, stripeSignature });
 
     if (!stripeSignature) {
       throw new HttpException('unauthorized request', HttpStatus.UNAUTHORIZED);
@@ -23,9 +24,11 @@ export class GuardPaymentSubscriptionPaymentFailed implements CanActivate {
         request.data,
         stripeSignature,
       );
+      console.log({ event });
       request.body.stripeEvent = event;
       return true;
     } catch (error) {
+      console.log(error);
       throw new HttpException(
         'Webhook Validation Fail:',
         HttpStatus.FORBIDDEN,
