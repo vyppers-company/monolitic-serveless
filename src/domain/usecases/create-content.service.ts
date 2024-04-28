@@ -18,11 +18,7 @@ export class CreateContentService implements ICreateContentUseCase {
     private readonly productRepository: ProductRepository,
   ) {}
   async create(dto: CreateContentDto, owner: string): Promise<any> {
-    if (
-      dto.plans.length &&
-      dto.contents.length % 2 === 1 &&
-      dto.type !== ITypeContent.PROFILE
-    ) {
+    if (dto.plans.length && dto.type !== ITypeContent.PROFILE) {
       throw new HttpException(
         {
           message: 'if the content is payed, is required to send payed',
