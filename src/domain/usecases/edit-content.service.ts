@@ -41,19 +41,11 @@ export class EditContentService implements IEditContentUseCase {
       await this.productRepository.updateOne({
         productId: product._id,
         ownerId: product.owner,
-        limit: dto.product.limit,
         price: dto.product.price,
-        activated: dto.product.activated,
-        benefits: dto.product.benefits,
-        description: dto.product.description,
       });
       await this.paymentStripeProduct.updateProduct({
         id: product.idAdapter,
-        limit: dto.product.limit,
         price: dto.product.price,
-        activated: dto.product.activated,
-        benefits: dto.product.benefits,
-        description: dto.product.description,
       });
     }
   }

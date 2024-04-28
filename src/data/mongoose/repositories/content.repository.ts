@@ -38,7 +38,7 @@ export class ContentRepository extends BaseAbstractRepository<ContentDocument> {
         $set: {
           text: dto.text,
           plans: dto.plans || [],
-          product: dto.productId || null,
+          productId: dto.productId || null,
         },
       },
     );

@@ -71,10 +71,6 @@ export class ContentController {
       contentId: contentId,
       owner: userLogged._id,
       product: {
-        activated: dto.product.activated,
-        benefits: dto.product.benefits,
-        description: dto.product.description,
-        limit: dto.product.limit,
         price: dto.product.price,
       },
     });

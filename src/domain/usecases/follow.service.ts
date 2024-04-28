@@ -46,7 +46,7 @@ export class FollowService implements IFollowUseCase {
             title: `nova notificação`,
             username: myUser.vypperId || 'null',
             //@ts-ignore
-            image: user?.profileImage?.contents[0] || null,
+            image: myUser?.profileImage?.contents[0] || null,
             type: `FOLLOW`,
           },
           myId,

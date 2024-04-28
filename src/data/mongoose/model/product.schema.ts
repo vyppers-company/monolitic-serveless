@@ -28,7 +28,7 @@ export class Product extends Document implements IProduct {
   @Prop()
   idAdapter: string;
   @Prop({ default: null })
-  limit: number;
+  limit?: number;
   @Prop({ default: true })
   activated?: boolean;
   @Prop({ default: [] })

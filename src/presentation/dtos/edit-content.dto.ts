@@ -15,10 +15,7 @@ export interface IEditContentDtoExtended {
   text?: string;
   contentId: string;
   plans?: string[];
-  product?: Pick<
-    ISingleProductOnContent,
-    'activated' | 'benefits' | 'description' | 'limit' | 'price'
-  >;
+  product?: Pick<ISingleProductOnContent, 'price'>;
 }
 
 export class EditContentDto implements Pick<IEditContentDto, 'text' | 'plans'> {
@@ -40,10 +37,6 @@ export class EditContentDto implements Pick<IEditContentDto, 'text' | 'plans'> {
   @ApiProperty({
     required: false,
     example: JSON.stringify({
-      activated: true,
-      benefits: ['beneficio 1', 'beneficio 2'],
-      description: 'string',
-      limit: 0,
       price: 100,
     }),
   })

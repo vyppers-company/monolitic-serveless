@@ -15,7 +15,7 @@ export class PaymentProductAdapter implements IPaymentProductUseCases {
       name: `single_content_${String(payload.contentId)}_owner_${
         payload.ownerId
       }`,
-      active: payload.activated,
+      active: true,
       images: payload.contents,
       shippable: false,
       default_price_data: {
@@ -23,10 +23,7 @@ export class PaymentProductAdapter implements IPaymentProductUseCases {
         unit_amount: payload.price,
         tax_behavior: 'exclusive',
       },
-      marketing_features: payload.benefits.map((benefit) => ({
-        name: benefit,
-      })),
-      description: payload.description,
+      description: 'single image',
       unit_label: '1',
       tax_code: 'txcd_10000000',
       metadata: {

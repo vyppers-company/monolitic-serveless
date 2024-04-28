@@ -15,23 +15,8 @@ import {
   IUploadContent,
 } from 'src/domain/entity/contents';
 import { Type } from 'class-transformer';
-import { ICurrency } from 'src/domain/entity/currency';
 
 export class SingleProductOnContentDto implements ISingleProductOnContentDto {
-  @IsBoolean()
-  @ApiProperty({ example: true })
-  @IsOptional()
-  activated?: boolean;
-  @IsArray()
-  @ApiProperty({ example: JSON.stringify(['benefit 1']) })
-  benefits: string[];
-  @ApiProperty({ example: 'string' })
-  @IsString()
-  description: string;
-  @ApiProperty({ example: 1 })
-  @IsNumber()
-  @IsOptional()
-  limit?: number;
   @ApiProperty({ example: 1000 })
   @IsNumber()
   price: number;
@@ -106,11 +91,6 @@ export class CreateContentDto implements IContentEntity {
   @ApiProperty({
     required: false,
     example: JSON.stringify({
-      activated: true,
-      benefits: ['beneficio 1', 'beneficio 2'],
-      currency: ICurrency.BRL,
-      description: 'string',
-      limit: 0,
       price: 100,
     }),
   })

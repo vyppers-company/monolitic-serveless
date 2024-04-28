@@ -20,11 +20,7 @@ export class ProductRepository extends BaseAbstractRepository<ProductDocument> {
       { _id: dto.productId, owner: dto.ownerId },
       {
         $set: {
-          limit: dto.limit,
           price: dto.price,
-          activated: dto.activated,
-          benefits: dto.benefits,
-          description: dto.description,
         },
       },
     );

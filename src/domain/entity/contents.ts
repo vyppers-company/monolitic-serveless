@@ -7,10 +7,6 @@ export enum AuthorizedTypesMidia {
 }
 
 export interface ISingleProductOnContentDto {
-  activated?: boolean;
-  benefits: string[];
-  description: string;
-  limit?: number;
   price: number;
 }
 export interface IUploadContent {

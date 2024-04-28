@@ -8,11 +8,7 @@ export enum IModeproduct {
 export interface IEditProduct {
   productId: string;
   ownerId: string;
-  limit: number;
   price: number;
-  activated: boolean;
-  benefits: string[];
-  description: string;
 }
 export interface IProduct {
   _id?: string;

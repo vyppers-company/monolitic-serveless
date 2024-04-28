@@ -96,12 +96,8 @@ export class CreateContentService implements ICreateContentUseCase {
     }
     const productIdAdapter = dto.product
       ? await this.productPaymentStripe.createProduct({
-          activated: dto.product.activated,
-          benefits: dto.product.benefits,
-          limit: dto.product.limit,
           currency: ICurrency.BRL,
           ownerId: owner,
-          description: dto.product.description,
           price: dto.product.price,
           contents: data.contents.map((content) => content.content),
           contentId: data._id,
@@ -116,13 +112,9 @@ export class CreateContentService implements ICreateContentUseCase {
         price: dto.product.price,
         owner: owner,
         idAdapter: productIdAdapter,
-        limit: dto.product.limit,
-        activated: dto.product.activated,
-        benefits: dto.product.benefits,
-        description: dto.product.description,
       });
       await this.contentRepositoru.updateOne({
-        productId: product._id,
+        productId: String(product._id),
         contentId: data._id,
         owner,
       });
