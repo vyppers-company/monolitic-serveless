@@ -36,9 +36,11 @@ export class ContentRepository extends BaseAbstractRepository<ContentDocument> {
       { _id: dto.contentId, owner: dto.owner },
       {
         $set: {
+          owner: dto.owner,
           text: dto.text,
-          plans: dto.plans || [],
-          productId: dto.productId || null,
+          contentId: dto.contentId,
+          plans: dto.plans,
+          productId: dto.productId,
         },
       },
     );
