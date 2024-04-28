@@ -12,4 +12,5 @@ export interface ISubscriptionsUseCases {
     page: number,
     myId: string,
   ) => Promise<PaginateResult<IPlanEntity>>;
+  processPaymentSubscriptionFailedWebhook: (param: any) => Promise<any>;
 }

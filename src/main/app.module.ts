@@ -124,6 +124,8 @@ import {
   MyPurchasesSchema,
 } from 'src/data/mongoose/model/purchase.schema';
 import { MyPurchasesRepository } from 'src/data/mongoose/repositories/my-purchases.repository';
+import { WebHookController } from 'src/presentation/controller/webhook.controller';
+import { WebhookPaymentAdapter } from 'src/infra/adapters/payment/webhook/webhook-payment.adapter';
 @Module({
   imports: [
     LoggerModule.forRoot(),
@@ -293,9 +295,11 @@ import { MyPurchasesRepository } from 'src/data/mongoose/repositories/my-purchas
     PaymentProductAdapter,
     IntentAdapter,
     PaymentMethodAdapter,
+    WebhookPaymentAdapter,
     NotificationAdapter,
   ],
   controllers: [
+    WebHookController,
     DiscoveryController,
     PaymentMethodController,
     PlanController,

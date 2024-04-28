@@ -184,4 +184,7 @@ export class SubscriptionService implements ISubscriptionsUseCases {
       })),
     };
   }
+  async processPaymentSubscriptionFailedWebhook(param: any) {
+    return param;
+  }
 }

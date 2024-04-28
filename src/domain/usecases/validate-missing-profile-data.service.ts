@@ -56,7 +56,7 @@ export class ValidateMissingDataProfileService
     if (!user.bio) missingDatas.push('bio');
     if (!user.paymentConfiguration) missingDatas.push('paymentConfiguration');
     if (!user.planConfiguration.length) missingDatas.push('planConfiguration');
-
+    if (!user.isPublic) missingDatas.push('isPublic');
     return missingDatas;
   }
 }

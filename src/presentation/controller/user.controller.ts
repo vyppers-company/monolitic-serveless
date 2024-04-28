@@ -24,7 +24,7 @@ import { GetProfileService } from 'src/domain/usecases/get-profile.service';
 import { UpdateProfileService } from 'src/domain/usecases/update-profile.service';
 import { ValidateMissingDataProfileService } from 'src/domain/usecases/validate-missing-profile-data.service';
 import { EditEmailDto, EditPasswordDto, ProfileDto } from '../dtos/profile.dto';
-import { RecaptchaGuard } from 'src/shared/decorators/recaptcha.decorator';
+import { RecaptchaGuard } from 'src/shared/guards/recaptcha.guard';
 
 @Controller('user')
 export class UserController {

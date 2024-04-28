@@ -22,6 +22,13 @@ export const environment = {
   payment: {
     stripe: {
       secretKey: process.env.STRIPE_SECRET_KEY || '',
+      webhooks: {
+        payment: {
+          subscription: {
+            failed: process.env.WEBHOOK_PAYMENT_SUBSCRIPTION_FAILED || '',
+          },
+        },
+      },
     },
   },
   oauth: {
