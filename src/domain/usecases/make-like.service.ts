@@ -4,6 +4,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { UserRepository } from 'src/data/mongoose/repositories/user.repository';
 import { VapidNotificationService } from './vapid-notification.service';
 import { correctDateNow } from 'src/shared/utils/correctDate';
+import { IContentEntity } from '../entity/contents';
 
 @Injectable()
 export class MakeLikeService implements IMakeLikeUseCase {
@@ -28,7 +29,7 @@ export class MakeLikeService implements IMakeLikeUseCase {
     if (!user) {
       throw new HttpException('user not found', HttpStatus.NOT_ACCEPTABLE);
     }
-
+    const profileImage = user?.profileImage as IContentEntity;
     const content = await this.contentRepository.findOne(
       { _id: contentId },
       { likersId: 1, owner: 1 },
@@ -63,8 +64,7 @@ export class MakeLikeService implements IMakeLikeUseCase {
         date: correctDateNow().toISOString(),
         title: `nova notificação`,
         username: user.vypperId || 'null',
-        //@ts-ignore
-        image: user?.profileImage?.contents[0] || null,
+        image: profileImage.contents[0].content || null,
         type: `${content.likersId.includes(myId) ? 'UNLIKE' : 'LIKE'}`,
       },
       myId,
