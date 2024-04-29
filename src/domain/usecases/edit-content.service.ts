@@ -41,11 +41,11 @@ export class EditContentService implements IEditContentUseCase {
       await this.productRepository.updateOne({
         productId: product._id,
         ownerId: product.owner,
-        price: dto.product.price,
+        price: dto?.product?.price || product.price,
       });
       await this.paymentStripeProduct.updateProduct({
         id: product.idAdapter,
-        price: dto.product.price,
+        price: dto?.product?.price || product.price,
       });
     }
   }

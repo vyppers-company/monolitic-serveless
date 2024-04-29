@@ -84,6 +84,8 @@ export class SearchUsersService implements ISearchUseCase {
       finalFilter.filter['verified'] = false;
     }
 
+    finalFilter.filter = { _id: { $not: { $in: [myId] } } };
+
     const result = await this.userRepository.findPaginated(
       finalFilter.options,
       finalFilter.filter,
