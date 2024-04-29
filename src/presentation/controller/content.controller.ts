@@ -70,9 +70,11 @@ export class ContentController {
       plans: dto.plans || [],
       contentId: contentId,
       owner: userLogged._id,
-      product: {
-        price: dto.product.price,
-      },
+      product: dto.product
+        ? {
+            price: dto.product.price,
+          }
+        : null,
     });
   }
 
