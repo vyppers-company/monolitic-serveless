@@ -195,9 +195,11 @@ export class AuthService implements IAuthUseCase {
       );
     }
     const image = await getImageFromExternalUrl(user.profileImage as string);
-
+    const checkAll = await this.userRepository.findAll();
+    const uniqueName = generateName(checkAll.map((us) => us.vypperId));
     await this.userRepository.create({
       ...user,
+      vypperId: uniqueName,
       email: hashedEmail,
       type: ITYPEUSER.USER,
     });
@@ -227,8 +229,7 @@ export class AuthService implements IAuthUseCase {
       newOne._id,
       contentProfile._id,
     );
-    const checkAll = await this.userRepository.findAll();
-    const uniqueName = generateName(checkAll.map((us) => us.vypperId));
+
     const token = await generateToken(
       {
         _id: String(newOne._id),

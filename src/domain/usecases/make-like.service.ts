@@ -19,11 +19,12 @@ export class MakeLikeService implements IMakeLikeUseCase {
         _id: myId,
         isBanned: false,
       },
-      { profileImage: 1, vypperId: 1, isBanned: 1 },
+      null,
       {
         populate: [
           { path: 'profileImage', model: 'Content', select: 'contents' },
         ],
+        lean: true,
       },
     );
     if (!user) {
