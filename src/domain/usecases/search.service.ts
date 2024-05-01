@@ -388,6 +388,11 @@ export class SearchUsersService implements ISearchUseCase {
               },
             ],
           },
+          {
+            path: 'plans',
+            model: 'Plan',
+            select: 'name price subscribers',
+          },
         ],
         lean: true,
       },
@@ -398,8 +403,10 @@ export class SearchUsersService implements ISearchUseCase {
       .map((item) => ({
         ...item,
         likersId: item.likersId,
-        plans: item.plans.map(({ paymentPlanId, subscribers, ...rest }) => ({
-          ...rest,
+        plans: item.plans.map(({ name, price, subscribers, _id }) => ({
+          _id,
+          name,
+          price,
           subscribers: subscribers.length,
         })),
       }))
