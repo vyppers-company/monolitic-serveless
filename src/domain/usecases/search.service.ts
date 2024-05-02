@@ -7,7 +7,7 @@ import {
 import { PaginateResult } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
-import { IContentEntity } from '../entity/contents';
+import { IContentEntity, ITypeContent } from '../entity/contents';
 import { decideContent } from 'src/shared/utils/decideContent';
 import { MyPurchasesRepository } from 'src/data/mongoose/repositories/my-purchases.repository';
 import { isSubscriptor } from 'src/shared/utils/isSubscriptor';
@@ -400,7 +400,19 @@ export class SearchUsersService implements ISearchUseCase {
         ],
         lean: true,
       },
-      null,
+      {
+        $or: [
+          {
+            type: ITypeContent.FEED,
+          },
+          {
+            type: ITypeContent.STORY,
+          },
+          {
+            type: ITypeContent.SHORTS,
+          },
+        ],
+      },
     );
 
     const myPurchases = await this.myPurchase.findOne({ owner: myId }, null, {
@@ -410,6 +422,7 @@ export class SearchUsersService implements ISearchUseCase {
     const myPurchasesContents = myPurchases ? myPurchases.contents : [];
 
     const finalDocs = result.docs
+      .filter((item) => item.owner && item.contents.length)
       .map((doc) => {
         const content = decideContent(doc, myId, myPurchasesContents);
         const buyedAsSingleContent = myPurchasesContents.some(
@@ -458,8 +471,7 @@ export class SearchUsersService implements ISearchUseCase {
           createdAt: doc.createdAt,
           updatedAt: doc.updatedAt,
         };
-      })
-      .filter((item) => item.owner && item.contents.length);
+      });
 
     const finalDocsFiltered: IContentEntity[] = finalDocs.reduce(
       (acc: IContentEntity[], curr: IContentEntity) => {
