@@ -1,4 +1,3 @@
-import '../../../infra/adapters/trace/dd-trace.adapter';
 import { NestFactory } from '@nestjs/core';
 import serverlessExpress from '@vendia/serverless-express';
 import { Handler } from 'aws-lambda';

@@ -19,6 +19,7 @@ import {
   authorizedImages,
   authorizedVideos,
 } from '../interfaces/adapters/s3.adapter';
+import filterUrls from 'src/shared/helpers/filterUrls';
 
 @Injectable()
 export class S3Service {
@@ -124,9 +125,9 @@ export class S3Service {
   }
 
   async deleteObject(urls: string[]) {
-    const keys = urls.map((url) => url.split('/'));
+    const keys = filterUrls(urls);
     await Promise.all(
-      keys.map(async (key, index) => {
+      keys.validUrls.map(async (key, index) => {
         return await this.s3Adapter.deleteObjectCommand({
           Bucket: environment.aws.s3.midias,
           Key: `${key[index][3]}/${key[index][4]}/${key[index][5]}`,
