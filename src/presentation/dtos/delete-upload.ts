@@ -10,22 +10,17 @@ import { Type } from 'class-transformer';
 
 export class UploadDeleteContentDto {
   @ApiProperty({ required: false })
-  @IsUrl()
   @IsOptional()
   blockedThumb?: string;
-  @IsUrl()
   @ApiProperty()
   content: string;
-  @IsUrl()
   @ApiProperty({ required: false })
   @IsOptional()
   preview?: string;
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsUrl()
   shortContent?: string;
   @ApiProperty({ required: false })
-  @IsUrl()
   @IsOptional()
   thumb?: string;
 }
