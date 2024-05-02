@@ -16,8 +16,6 @@ export interface IUploadContent {
   content: string;
   thumb?: string;
   blockedThumb?: string;
-  preview?: string;
-  shortContent?: string;
   product?: string | ISingleProductOnContentDto;
 }
 

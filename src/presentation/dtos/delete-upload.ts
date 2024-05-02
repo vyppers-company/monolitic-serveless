@@ -16,12 +16,6 @@ export class UploadDeleteContentDto {
   content: string;
   @ApiProperty({ required: false })
   @IsOptional()
-  preview?: string;
-  @ApiProperty({ required: false })
-  @IsOptional()
-  shortContent?: string;
-  @ApiProperty({ required: false })
-  @IsOptional()
   thumb?: string;
 }
 

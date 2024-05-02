@@ -30,14 +30,6 @@ export class UploadContentDto implements IUploadContent {
   @ApiProperty()
   @IsOptional()
   content: string;
-  @IsString()
-  @ApiProperty()
-  @IsOptional()
-  preview?: string;
-  @ApiProperty()
-  @IsOptional()
-  @IsString()
-  shortContent?: string;
   @ApiProperty()
   @IsString()
   @IsOptional()
