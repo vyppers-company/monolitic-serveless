@@ -65,7 +65,7 @@ export class MakeLikeService implements IMakeLikeUseCase {
         date: correctDateNow().toISOString(),
         title: `nova notificação`,
         username: user.vypperId || 'null',
-        image: profileImage.contents[0].content || null,
+        image: profileImage?.contents[0]?.content || null,
         type: `${content.likersId.includes(myId) ? 'UNLIKE' : 'LIKE'}`,
       },
       myId,

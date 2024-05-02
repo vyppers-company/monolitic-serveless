@@ -27,7 +27,7 @@ export class Content extends Document implements IContentEntity {
   owner?: string;
   @Prop({ type: Array, default: [] })
   contents?: IUploadContent[];
-  @Prop()
+  @Prop({ default: [] })
   likersId?: string[];
   @Prop({ type: Array, default: [] })
   plans?: string[];
