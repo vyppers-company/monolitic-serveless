@@ -8,12 +8,16 @@ import { PaginateResult } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { ContentRepository } from 'src/data/mongoose/repositories/content.repository';
 import { IContentEntity } from '../entity/contents';
+import { decideContent } from 'src/shared/utils/decideContent';
+import { MyPurchasesRepository } from 'src/data/mongoose/repositories/my-purchases.repository';
+import { isSubscriptor } from 'src/shared/utils/isSubscriptor';
 
 @Injectable()
 export class SearchUsersService implements ISearchUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly contentRepository: ContentRepository,
+    private readonly myPurchase: MyPurchasesRepository,
   ) {}
   async searchUserByCriteria(
     myId: string,
@@ -399,18 +403,63 @@ export class SearchUsersService implements ISearchUseCase {
       null,
     );
 
+    const myPurchases = await this.myPurchase.findOne({ owner: myId }, null, {
+      lean: true,
+    });
+
+    const myPurchasesContents = myPurchases ? myPurchases.contents : [];
+
     const finalDocs = result.docs
-      .map((item) => ({
-        ...item,
-        likersId: item.likersId,
-        plans: item.plans.map(({ name, price, subscribers, _id }) => ({
-          _id,
-          name,
-          price,
-          subscribers: subscribers.length,
-        })),
-      }))
-      .filter((item) => item.owner);
+      .map((doc) => {
+        const content = decideContent(doc, myId, myPurchasesContents);
+        const buyedAsSingleContent = myPurchasesContents.some(
+          (content) => String(doc._id) === String(content),
+        );
+        return {
+          _id: doc._id,
+          type: doc.type,
+          owner: {
+            _id: doc.owner._id,
+            name: doc.owner.name,
+            vypperId: doc.owner.vypperId,
+            isOnline: doc.owner.isOnline,
+            isVerfied: doc.owner.verified,
+            profileImage: doc.owner.profileImage,
+          },
+          isFollowed:
+            doc.owner.followers && doc.owner.followers.length
+              ? doc.owner.followers.includes(myId)
+              : false,
+          canEdit: String(doc.owner._id) === String(myId) ? true : false,
+          contents: content,
+          likersId: doc.likersId,
+          product: doc.productId,
+          plans:
+            doc.plans && doc.plans.length
+              ? doc.plans.map((plan) =>
+                  !plan.isDeleted || !plan.activate
+                    ? {
+                        _id: plan._id,
+                        name: plan.name,
+                        price: plan.price,
+                        benefits: plan.benefits,
+                      }
+                    : {
+                        _id: plan._id,
+                        name: 'Plano encerrado, não disponível para novos assinantes',
+                        price: plan.price,
+                        benefits: plan.benefits,
+                      },
+                )
+              : [],
+          isSubscriptor: isSubscriptor(doc.plans, myId),
+          isBuyerSingleContent: buyedAsSingleContent,
+          text: doc.text,
+          createdAt: doc.createdAt,
+          updatedAt: doc.updatedAt,
+        };
+      })
+      .filter((item) => item.owner && item.contents.length);
 
     const finalDocsFiltered: IContentEntity[] = finalDocs.reduce(
       (acc: IContentEntity[], curr: IContentEntity) => {
