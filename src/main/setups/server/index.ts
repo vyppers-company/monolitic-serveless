@@ -9,7 +9,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import { HttpExceptionFilter } from 'src/shared/filters/http-exception.filter';
 async function bootstrapServer() {
   mongoose.plugin(mongoosePaginate);
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   enableCors(app);
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));

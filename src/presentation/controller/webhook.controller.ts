@@ -11,7 +11,7 @@ export class WebHookController {
   @Post('v1/subscription/payment/failed')
   @UseGuards(GuardPaymentSubscriptionPaymentFailed)
   async triggerPaymentSubcriptionFailed(@Body() data: any) {
-    return await this.subscriptionService.processPaymentSubscriptionFailedWebhook(
+    await this.subscriptionService.processPaymentSubscriptionFailedWebhook(
       data.eventStripe,
     );
   }

@@ -9,7 +9,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 
 async function bootstrapLambda(): Promise<Handler> {
   mongoose.plugin(mongoosePaginate);
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { rawBody: true });
   setupSwagger(app);
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
   await app.init();

@@ -4,20 +4,18 @@ import Stripe from 'stripe';
 
 export class WebhookPaymentAdapter {
   constructor(@Inject('stripe') private readonly stripe: Stripe) {}
-  async subscriptionPaymentFailed(payload: any, header: string) {
+  async subscriptionPaymentFailed(
+    payload: string | Buffer,
+    signature: string | string[],
+  ) {
+    const {
+      payment: {
+        subscription: { failed },
+      },
+    } = environment.payment.stripe.webhooks;
     try {
-      console.log(
-        payload,
-        header,
-        environment.payment.stripe.webhooks.payment.subscription.failed,
-      );
-      return this.stripe.webhooks.constructEvent(
-        payload,
-        header,
-        environment.payment.stripe.webhooks.payment.subscription.failed,
-      );
+      return this.stripe.webhooks.constructEvent(payload, signature, failed);
     } catch (error) {
-      console.log({ error });
       throw new HttpException(
         'Payment Service Error',
         HttpStatus.UNAUTHORIZED,

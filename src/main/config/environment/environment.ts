@@ -1,6 +1,6 @@
 import 'dotenv/config';
 
-export const environment = {
+export const environment = Object.freeze({
   app: {
     env: process.env.NODE_ENV || '',
     timeZone: process.env.TZ || '',
@@ -92,4 +92,4 @@ export const environment = {
       encrypt: process.env.ENCRYPT,
     },
   },
-};
+});

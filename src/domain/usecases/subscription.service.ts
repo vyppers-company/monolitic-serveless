@@ -185,6 +185,6 @@ export class SubscriptionService implements ISubscriptionsUseCases {
     };
   }
   async processPaymentSubscriptionFailedWebhook(param: any) {
-    return { message: 'chamada webhook bem sucedida', event: param.type };
+    return;
   }
 }
