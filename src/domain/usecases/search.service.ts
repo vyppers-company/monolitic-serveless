@@ -28,71 +28,106 @@ export class SearchUsersService implements ISearchUseCase {
     sort: string,
     isVerified: string,
   ): Promise<PaginateResult<IProfile>> {
-    const finalFilter = {
-      options: {
-        limit: Number(limit) || 10,
-        page: Number(page) || 1,
-        populate: [
-          {
-            path: 'profileImage',
-            select: 'contents',
-            model: 'Content',
-          },
-        ],
-      },
-      filter: {},
+    const options = {
+      limit: Number(limit) || 10,
+      page: Number(page) || 1,
+      populate: [
+        {
+          path: 'profileImage',
+          select: 'contents',
+          model: 'Content',
+        },
+      ],
     };
+    const filters = [];
 
     if (type === 'NEWS') {
-      finalFilter.options['sort'] = {
+      options['sort'] = {
         createdAt: -1,
       };
       const dateFilter = new Date();
       const finalDateFilter = dateFilter.setUTCDate(
         dateFilter.getUTCDate() - 7,
       );
-      finalFilter.filter['createdAt'] = {
-        $gte: new Date(finalDateFilter),
-      };
+      filters.push({
+        createdAt: {
+          $gte: new Date(finalDateFilter),
+        },
+      });
     }
 
     if (type === 'MOST_FOLLOWED') {
-      finalFilter.options['sort'] = {
+      options['sort'] = {
         followers: -1,
       };
     }
 
     if (isFollowed === 'true') {
-      finalFilter.filter['followers'] = { $in: [myId] };
+      filters.push({
+        followers: {
+          $in: [myId],
+        },
+      });
     }
     if (isFollowed === 'false') {
-      finalFilter.filter['followers'] = { $not: { $in: [myId] } };
+      filters.push({
+        followers: {
+          $not: {
+            $in: [myId],
+          },
+        },
+      });
     }
 
     if (sort === 'from_recent') {
-      finalFilter.options['sort'] = {
+      options['sort'] = {
         createdAt: -1,
       };
     }
 
     if (sort === 'from_older') {
-      finalFilter.options['sort'] = {
+      options['sort'] = {
         createdAt: 1,
       };
     }
 
     if (isVerified === 'true') {
-      finalFilter.filter['verified'] = true;
+      filters.push({
+        verified: true,
+      });
     }
     if (isVerified === 'false') {
-      finalFilter.filter['verified'] = false;
+      filters.push({
+        verified: false,
+      });
     }
 
-    finalFilter.filter = { _id: { $not: { $in: [myId] } } };
+    filters.push({ _id: { $not: { $in: [myId] } } });
+
+    const user = await this.userRepository.findOne({ _id: myId });
+
+    user.bans && user.bans.length
+      ? filters.push({
+          _id: { $not: { $in: user.bans } },
+        })
+      : null;
+
+    filters.push({
+      bans: { $not: { $in: [myId] } },
+    });
+
+    filters.push({
+      isBanned: false,
+    });
+
+    const finalFilters = {};
+    if (filters.length) {
+      finalFilters['$and'] = filters;
+    }
 
     const result = await this.userRepository.findPaginated(
-      finalFilter.options,
-      finalFilter.filter,
+      options,
+      finalFilters,
     );
 
     return {
